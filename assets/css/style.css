@@ -583,8 +583,6 @@ body::after {
   background: var(--ink);
   color: var(--paper);
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
 }
 .credits-strip__inner {
   display: flex;
