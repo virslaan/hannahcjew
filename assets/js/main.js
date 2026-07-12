@@ -88,8 +88,8 @@ if (toggle && links) {
   );
 }
 
-// ----- hero name: letter-stagger reveal -----
-document.querySelectorAll(".hero__name .split").forEach((el) => {
+// ----- display names: letter-stagger reveal -----
+document.querySelectorAll(".hero__name .split, .nfx-title .split").forEach((el) => {
   const text = el.textContent;
   el.textContent = "";
   [...text].forEach((ch, i) => {
