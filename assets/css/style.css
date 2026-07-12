@@ -416,18 +416,10 @@ body::after {
   from { transform: scale(1.02); }
   to { transform: scale(1.14) translateX(-1.5%); }
 }
-/* each theme re-grades the hero photo like a different lighting design */
+/* the hero photograph stays black and white in every theme;
+   only noir deepens the contrast slightly for its darker stage */
 [data-theme="noir"] .hero__img img {
   filter: grayscale(1) contrast(1.25) brightness(0.82);
-}
-[data-theme="porcelain"] .hero__img img {
-  filter: grayscale(1) sepia(0.5) hue-rotate(175deg) saturate(1.5) contrast(1.05);
-}
-[data-theme="crimson"] .hero__img img {
-  filter: grayscale(1) sepia(0.6) hue-rotate(-30deg) saturate(1.9) contrast(1.1) brightness(0.85);
-}
-[data-theme="jade"] .hero__img img {
-  filter: grayscale(1) sepia(0.45) hue-rotate(95deg) saturate(0.85) contrast(1.05);
 }
 .hero__img::after {
   content: "";
@@ -489,45 +481,83 @@ body::after {
   letter-spacing: 0.35em;
   color: var(--ink);
 }
+/* three clickable panels; hovering floods a panel with red
+   from below and flips the text to paper */
 .hero__roles {
   position: relative;
   z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(1rem, 3vw, 2rem);
-  padding: 1rem var(--pad);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   border-top: 1px solid rgb(var(--paper-rgb) / 0.35);
   background: rgb(var(--paper-rgb) / 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
-.hero__roles span {
+.hero__roles a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.15rem 0.5rem;
+  overflow: hidden;
+  border-left: 1px solid rgb(var(--ink-rgb) / 0.12);
+}
+.hero__roles a:first-child { border-left: none; }
+.hero__roles a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.45s var(--ease-out);
+}
+.hero__roles a:hover::before,
+.hero__roles a:focus-visible::before { transform: scaleY(1); }
+.hero__roles a span {
+  position: relative;
   font-size: 0.76rem;
+  font-weight: 600;
   letter-spacing: 0.34em;
   text-transform: uppercase;
   color: var(--ink-soft);
   white-space: nowrap;
+  transition: color 0.3s var(--ease-out), letter-spacing 0.45s var(--ease-out);
 }
-@media (max-width: 640px) {
-  .hero__roles { gap: 0.8rem; }
-  .hero__roles span { font-size: 0.6rem; letter-spacing: 0.2em; }
-}
-@media (max-width: 400px) {
-  .hero__roles { gap: 0.6rem; }
-  .hero__roles span { font-size: 0.55rem; letter-spacing: 0.14em; }
+.hero__roles a:hover span,
+.hero__roles a:focus-visible span {
+  color: var(--paper);
+  letter-spacing: 0.42em;
 }
 .hero__roles .shape {
-  width: 7px;
-  height: 7px;
+  position: relative;
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
   background: var(--red);
   animation: shapePulse 3s ease-in-out infinite;
+  transition: background 0.3s var(--ease-out);
 }
-.hero__roles .shape--diamond { transform: rotate(45deg); }
-.hero__roles .shape--circle { border-radius: 50%; animation-delay: 1.5s; }
+.hero__roles a:hover .shape { background: var(--paper); animation: shapeSpin 0.6s var(--ease-out); }
+.hero__roles .shape--diamond { rotate: 45deg; }
+.hero__roles .shape--circle { border-radius: 50%; animation-delay: 1s; }
+.hero__roles .shape--triangle {
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  animation-delay: 2s;
+}
 @keyframes shapePulse {
   0%, 100% { opacity: 1; scale: 1; }
   50% { opacity: 0.45; scale: 0.7; }
+}
+@keyframes shapeSpin {
+  from { scale: 0; }
+  to { scale: 1; }
+}
+@media (max-width: 640px) {
+  .hero__roles a { gap: 0.5rem; padding: 0.95rem 0.3rem; }
+  .hero__roles a span { font-size: 0.56rem; letter-spacing: 0.16em; }
+  .hero__roles a:hover span { letter-spacing: 0.16em; }
 }
 
 .fade-in {
@@ -1713,7 +1743,11 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
 .insta-profile iframe {
   display: block;
   width: 100%;
-  height: min(68vh, 640px);
+  /* instagram's anonymous profile embed serves exactly 6 posts
+     (2 rows); this height fits them snugly with no dead space.
+     for more posts, list their URLs in assets/js/config.js and
+     the carousel takes over (up to 10). */
+  height: 480px;
   border: 0;
 }
 @media (max-width: 820px) {
