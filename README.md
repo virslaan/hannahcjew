@@ -104,5 +104,6 @@ Email attachments cap out quickly. Good options for sending originals: a shared 
 ## Design notes
 
 - **Palette**: warm paper white `#f6f4f0`, ink black `#0d0d0d`, and a single accent: vermillion `#d7281c`, the red of a Chinese seal stamp (印泥). The 周健倫 seal in the corner of the site is a nod toward a future logo.
-- **Type**: Fraunces (editorial serif) for display, Space Grotesk for UI, Noto Serif TC for Chinese characters.
+- **Type**: Bodoni Moda (high-contrast fashion serif, the Vogue look) for display, Space Grotesk for UI, Noto Serif TC for Chinese characters.
+- **Motion**: letter-by-letter hero reveal, scroll parallax on the hero photo, circular theme-switch sweep, and a living background per theme (noir has a cursor-tracked stage spotlight; porcelain and jade drift; crimson has a curtain sheen).
 - **Local preview**: from this folder run `python3 -m http.server 8080` and open `http://localhost:8080`.

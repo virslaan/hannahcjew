@@ -10,7 +10,7 @@
   <meta property="og:image" content="https://hannahcjew.com/assets/img/hero-tutu-bw.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,500;1,6..96,600&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="icon" href="favicon-512.png" type="image/png" sizes="512x512" />
@@ -52,9 +52,9 @@
         <img src="assets/img/hero-tutu-bw.jpg" alt="Hannah Jew in a tutu and pointe shoes, folded forward in an expressive pose" fetchpriority="high" />
       </div>
       <div class="hero__content">
-        <h1 class="hero__name">
-          <span class="reveal-line"><span>Hannah</span></span>
-          <span class="reveal-line last"><span>J<em>e</em>w</span></span>
+        <h1 class="hero__name" aria-label="Hannah Jew">
+          <span class="line"><span class="split" aria-hidden="true">Hannah</span></span>
+          <span class="line"><em class="split" aria-hidden="true">Jew</em></span>
         </h1>
         <div class="hero__zh-block fade-in">
           <span class="seal seal--hero" aria-hidden="true">周健倫</span>
@@ -74,6 +74,17 @@
           <span>AEA</span><span class="dot">●</span>
           <span>New York City</span><span class="dot">●</span>
         </div>
+      </div>
+    </section>
+
+    <!-- CREDITS STRIP -->
+    <section class="credits-strip" aria-label="Selected credits">
+      <div class="container credits-strip__inner will-reveal">
+        <span>The King and I · National Tour</span>
+        <span>New York City Opera</span>
+        <span>Smithsonian · World Premiere</span>
+        <span>New York Fashion Week</span>
+        <span>Adidas Original · Milan</span>
       </div>
     </section>
 

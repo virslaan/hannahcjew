@@ -17,7 +17,7 @@
   --grey: #8a877f;
   --line: rgb(var(--ink-rgb) / 0.14);
 
-  --font-display: "Fraunces", "Noto Serif TC", Georgia, serif;
+  --font-display: "Bodoni Moda", "Noto Serif TC", "Didot", Georgia, serif;
   --font-ui: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
   --font-tc: "Noto Serif TC", "Songti TC", "SimSun", serif;
 
@@ -89,6 +89,74 @@
   --line: rgb(var(--ink-rgb) / 0.14);
 }
 
+/* ------------------------------------------------------------
+   THEME AMBIENCE
+   Each theme gets its own living background layer:
+   noir      · a stage spotlight that follows the cursor
+   porcelain · slow-drifting pools of blue light
+   crimson   · a silky sheen sweeping across the curtain
+   jade      · soft mist breathing across the page
+   ------------------------------------------------------------ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  pointer-events: none;
+  z-index: 8990;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out);
+}
+
+[data-theme="noir"] body::before {
+  inset: 0; /* spotlight tracks the cursor in viewport coordinates */
+  opacity: 1;
+  background: radial-gradient(
+    46rem circle at var(--mx, 50%) var(--my, 30%),
+    rgb(255 233 195 / 0.11),
+    rgb(255 233 195 / 0.04) 42%,
+    transparent 68%
+  );
+  mix-blend-mode: screen;
+}
+
+[data-theme="porcelain"] body::before {
+  opacity: 1;
+  background:
+    radial-gradient(40rem 26rem at 16% 22%, rgb(27 79 216 / 0.08), transparent 68%),
+    radial-gradient(46rem 30rem at 86% 74%, rgb(27 79 216 / 0.06), transparent 68%);
+  animation: ambientDrift 24s ease-in-out infinite alternate;
+}
+
+[data-theme="crimson"] body::before {
+  opacity: 1;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    rgb(255 170 110 / 0.10) 46%,
+    rgb(255 170 110 / 0.04) 52%,
+    transparent 64%
+  );
+  background-size: 280% 100%;
+  animation: ambientSheen 10s ease-in-out infinite;
+}
+
+[data-theme="jade"] body::before {
+  opacity: 1;
+  background:
+    radial-gradient(44rem 26rem at 24% 78%, rgb(14 122 79 / 0.08), transparent 70%),
+    radial-gradient(38rem 24rem at 80% 18%, rgb(14 122 79 / 0.05), transparent 70%);
+  animation: ambientDrift 30s ease-in-out infinite alternate;
+}
+
+@keyframes ambientDrift {
+  to { transform: translate3d(4%, -3%, 0) scale(1.08); }
+}
+@keyframes ambientSheen {
+  0% { background-position: 130% 0; }
+  60% { background-position: -30% 0; }
+  100% { background-position: -30% 0; }
+}
+
 /* theme-change sweep: view transition circle reveal */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -104,7 +172,7 @@ html.theme-fading * {
 
 /* ---------- reset ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; font-optical-sizing: auto; }
 body {
   font-family: var(--font-ui);
   background: var(--paper);
@@ -309,19 +377,31 @@ body::after {
 .hero__name {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(3rem, 11vw, 9.5rem);
+  font-size: clamp(3.4rem, 12vw, 11rem);
   line-height: 0.95;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.005em;
 }
-.hero__name .last { 
+.hero__name .line {
   display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.hero__name em {
   font-style: italic;
   font-weight: 400;
-  color: var(--ink);
-}
-.hero__name .last em {
-  font-style: italic;
   color: var(--red);
+  padding-right: 0.12em; /* room for the italic sweep of the w */
+}
+.hero__name .char {
+  display: inline-block;
+  transform: translateY(118%) rotate(5deg);
+  transform-origin: 0 100%;
+  animation: charUp 1s var(--ease-out) forwards;
+  animation-delay: calc(0.3s + var(--i) * 0.06s);
+}
+@keyframes charUp {
+  to { transform: translateY(0) rotate(0); }
 }
 .hero__zh-block {
   display: flex;
@@ -360,26 +440,32 @@ body::after {
   to { transform: translateX(-50%); }
 }
 
-/* animated intro reveal for hero text */
-.reveal-line {
-  display: block;
-  overflow: hidden;
-}
-.reveal-line > span {
-  display: block;
-  transform: translateY(110%);
-  animation: riseUp 1s var(--ease-out) forwards;
-}
-.reveal-line:nth-child(2) > span { animation-delay: 0.12s; }
-
-@keyframes riseUp {
-  to { transform: translateY(0); }
-}
 .fade-in {
   opacity: 0;
-  animation: fadeIn 1.2s 0.5s var(--ease-out) forwards;
+  animation: fadeIn 1.2s 0.9s var(--ease-out) forwards;
 }
 @keyframes fadeIn { to { opacity: 1; } }
+
+/* ---------- credits strip (home) ---------- */
+.credits-strip {
+  border-bottom: 1px solid var(--line);
+}
+.credits-strip__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem 2.4rem;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 1.3rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+@media (max-width: 820px) {
+  .credits-strip__inner { justify-content: flex-start; }
+}
 
 /* ---------- generic page scaffolding ---------- */
 .page {

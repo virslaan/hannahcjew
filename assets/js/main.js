@@ -88,6 +88,57 @@ if (toggle && links) {
   );
 }
 
+// ----- hero name: letter-stagger reveal -----
+document.querySelectorAll(".hero__name .split").forEach((el) => {
+  const text = el.textContent;
+  el.textContent = "";
+  [...text].forEach((ch, i) => {
+    const span = document.createElement("span");
+    span.className = "char";
+    span.style.setProperty("--i", i);
+    span.textContent = ch;
+    el.appendChild(span);
+  });
+});
+
+// ----- hero parallax -----
+const heroImg = document.querySelector(".hero__img img");
+if (heroImg && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      heroImg.style.translate = "0 " + window.scrollY * 0.22 + "px";
+      ticking = false;
+    });
+  }, { passive: true });
+}
+
+// ----- noir spotlight: cursor-tracked, smoothed -----
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const root = document.documentElement.style;
+  let tx = innerWidth / 2, ty = innerHeight * 0.3;
+  let cx = tx, cy = ty, raf = null;
+  const step = () => {
+    cx += (tx - cx) * 0.07;
+    cy += (ty - cy) * 0.07;
+    root.setProperty("--mx", cx.toFixed(1) + "px");
+    root.setProperty("--my", cy.toFixed(1) + "px");
+    if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.5) {
+      raf = requestAnimationFrame(step);
+    } else {
+      raf = null;
+    }
+  };
+  window.addEventListener("pointermove", (e) => {
+    tx = e.clientX;
+    ty = e.clientY;
+    if (!raf) raf = requestAnimationFrame(step);
+  }, { passive: true });
+})();
+
 // ----- scroll reveal -----
 const revealEls = document.querySelectorAll(".will-reveal");
 if ("IntersectionObserver" in window && revealEls.length) {
