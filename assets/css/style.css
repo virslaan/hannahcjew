@@ -461,10 +461,10 @@ body::after {
   margin-bottom: -0.08em;
 }
 .hero__name em {
-  font-style: italic;
-  font-weight: 400;
+  /* upright: Bodoni's italic capital J reads oddly at display sizes */
+  font-style: normal;
+  font-weight: 500;
   color: var(--red);
-  padding-right: 0.12em; /* room for the italic sweep of the w */
 }
 .hero__name .char {
   display: inline-block;
@@ -934,7 +934,7 @@ body.page-dark {
   line-height: 0.95;
   letter-spacing: -0.01em;
 }
-.nfx-billboard__content h1 em { font-style: italic; color: var(--red); }
+.nfx-billboard__content h1 em { font-style: normal; color: var(--red); }
 .nfx-meta {
   margin-top: 1.2rem;
   font-size: 0.78rem;
