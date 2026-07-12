@@ -141,9 +141,19 @@
           <p class="kicker">On Instagram</p>
           <h1 style="font-size:clamp(2rem,4.5vw,3.4rem);">Latest from <em>@hannahjew</em></h1>
         </div>
-        <div class="insta-grid"></div>
+        <div class="insta-carousel will-reveal" hidden>
+          <button class="insta-nav prev" aria-label="Previous post">←</button>
+          <div class="insta-viewport">
+            <div class="insta-track"></div>
+          </div>
+          <button class="insta-nav next" aria-label="Next post">→</button>
+          <div class="insta-dots" role="tablist" aria-label="Instagram posts"></div>
+        </div>
         <div class="insta-profile will-reveal"></div>
-        <div class="insta-fallback will-reveal">
+        <div class="insta-follow-row will-reveal">
+          <a class="btn btn--red" href="https://www.instagram.com/hannahjew" target="_blank" rel="noopener">Follow @hannahjew <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="insta-fallback will-reveal" hidden>
           <p>Instagram embeds are shy sometimes. Head over to the profile for the latest rehearsal clips, show announcements, and behind-the-scenes.</p>
           <a class="btn btn--red" href="https://www.instagram.com/hannahjew" target="_blank" rel="noopener">Follow @hannahjew <span aria-hidden="true">→</span></a>
         </div>
@@ -168,6 +178,11 @@
       <span>Represented by Clear Talent Group · New York</span>
     </div>
   </footer>
+
+  <button class="music-toggle" aria-pressed="false">
+    <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="music-label">Sound</span>
+  </button>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>

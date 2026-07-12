@@ -215,16 +215,18 @@ if (lightbox) {
 }
 
 // ============================================================
-// INSTAGRAM FEED (home page)
-// Renders posts listed in config.js as official embeds.
-// With no posts configured, tries the profile grid embed and
-// falls back to a follow card if Instagram blocks it.
+// INSTAGRAM (home page)
+// Posts listed in config.js render as a one-at-a-time carousel
+// with arrows, dots, and gentle auto-advance. With no posts
+// configured, a phone-style profile embed shows instead, and a
+// follow card appears if Instagram blocks the embed.
 // ============================================================
 const instaSection = document.querySelector("[data-instagram]");
 if (instaSection) {
   const { username = "hannahjew", posts = [] } = cfg.instagram || {};
-  const grid = instaSection.querySelector(".insta-grid");
+  const carousel = instaSection.querySelector(".insta-carousel");
   const profileBox = instaSection.querySelector(".insta-profile");
+  const followRow = instaSection.querySelector(".insta-follow-row");
   const fallback = instaSection.querySelector(".insta-fallback");
 
   const renderWhenVisible = (render) => {
@@ -241,23 +243,55 @@ if (instaSection) {
   if (posts.length) {
     profileBox.remove();
     fallback.remove();
+    carousel.hidden = false;
     renderWhenVisible(() => {
-      posts.slice(0, 8).forEach((url) => {
-        const cell = document.createElement("div");
-        cell.className = "insta-post";
-        cell.innerHTML =
-          '<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="' +
+      const track = carousel.querySelector(".insta-track");
+      const dotsBox = carousel.querySelector(".insta-dots");
+      const items = posts.slice(0, 10);
+      let index = 0;
+      let timer = null;
+
+      items.forEach((url, i) => {
+        const slide = document.createElement("div");
+        slide.className = "insta-slide";
+        slide.innerHTML =
+          '<blockquote class="instagram-media" data-instgrm-permalink="' +
           url + '" data-instgrm-version="14"></blockquote>';
-        grid.appendChild(cell);
+        track.appendChild(slide);
+
+        const dot = document.createElement("button");
+        dot.setAttribute("aria-label", "Post " + (i + 1));
+        dot.addEventListener("click", () => go(i, true));
+        dotsBox.appendChild(dot);
       });
+
+      const dots = [...dotsBox.children];
+      const go = (i, manual) => {
+        index = (i + items.length) % items.length;
+        track.style.transform = "translateX(-" + index * 100 + "%)";
+        dots.forEach((d, j) => d.classList.toggle("is-active", j === index));
+        if (manual) restart();
+      };
+      const restart = () => {
+        clearInterval(timer);
+        timer = setInterval(() => go(index + 1), 7000);
+      };
+
+      carousel.querySelector(".prev").addEventListener("click", () => go(index - 1, true));
+      carousel.querySelector(".next").addEventListener("click", () => go(index + 1, true));
+      carousel.addEventListener("pointerenter", () => clearInterval(timer));
+      carousel.addEventListener("pointerleave", restart);
+
+      go(0);
+      restart();
+
       const s = document.createElement("script");
       s.async = true;
       s.src = "https://www.instagram.com/embed.js";
       document.body.appendChild(s);
     });
   } else {
-    grid.remove();
-    fallback.hidden = true;
+    carousel.remove();
     renderWhenVisible(() => {
       const iframe = document.createElement("iframe");
       iframe.src = "https://www.instagram.com/" + username + "/embed";
@@ -268,11 +302,51 @@ if (instaSection) {
       setTimeout(() => {
         if (!settled) {
           profileBox.remove();
+          followRow.remove();
           fallback.hidden = false;
         }
       }, 6000);
       profileBox.appendChild(iframe);
     });
+  }
+}
+
+// ============================================================
+// MUSIC
+// Erik Satie, Gymnopedie No. 1 (public domain recording by
+// Michael Laucke, via Wikimedia Commons). Off by default;
+// the visitor's choice is remembered for the session.
+// ============================================================
+const musicBtn = document.querySelector(".music-toggle");
+if (musicBtn) {
+  let audio = null;
+  const ensureAudio = () => {
+    if (!audio) {
+      audio = new Audio("assets/audio/gymnopedie-no1.mp3");
+      audio.loop = true;
+      audio.volume = 0.35;
+    }
+    return audio;
+  };
+  const setState = (playing) => {
+    musicBtn.classList.toggle("is-playing", playing);
+    musicBtn.setAttribute("aria-pressed", String(playing));
+    musicBtn.querySelector(".music-label").textContent = playing ? "Sound on" : "Sound";
+    sessionStorage.setItem("hj-music", playing ? "on" : "off");
+  };
+  musicBtn.addEventListener("click", () => {
+    const a = ensureAudio();
+    if (a.paused) {
+      a.play().then(() => setState(true)).catch(() => setState(false));
+    } else {
+      a.pause();
+      setState(false);
+    }
+  });
+  // resume across pages within the same visit
+  if (sessionStorage.getItem("hj-music") === "on") {
+    const a = ensureAudio();
+    a.play().then(() => setState(true)).catch(() => setState(false));
   }
 }
 

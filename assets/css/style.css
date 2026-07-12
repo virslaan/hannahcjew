@@ -338,30 +338,52 @@ body::after {
   min-height: 100svh;
   display: grid;
   grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto; /* name block takes the space, ticker pins to the bottom edge */
   overflow: hidden;
   background: var(--paper);
 }
 .hero__img {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  animation: heroReveal 1.5s var(--ease-out) both;
+}
+@keyframes heroReveal {
+  from { opacity: 0; clip-path: inset(0 0 14% 0); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
 }
 .hero__img img {
   width: 100%; height: 100%;
   object-fit: cover;
   object-position: center 30%;
   filter: grayscale(1) contrast(1.05);
-  animation: heroZoom 8s var(--ease-out) forwards;
+  transform-origin: 50% 35%;
+  animation: kenBurns 30s ease-in-out infinite alternate;
+  transition: filter 1s var(--ease-out);
 }
-@keyframes heroZoom {
-  from { transform: scale(1.08); }
-  to { transform: scale(1); }
+@keyframes kenBurns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.14) translateX(-1.5%); }
+}
+/* each theme re-grades the hero photo like a different lighting design */
+[data-theme="noir"] .hero__img img {
+  filter: grayscale(1) contrast(1.25) brightness(0.82);
+}
+[data-theme="porcelain"] .hero__img img {
+  filter: grayscale(1) sepia(0.5) hue-rotate(175deg) saturate(1.5) contrast(1.05);
+}
+[data-theme="crimson"] .hero__img img {
+  filter: grayscale(1) sepia(0.6) hue-rotate(-30deg) saturate(1.9) contrast(1.1) brightness(0.85);
+}
+[data-theme="jade"] .hero__img img {
+  filter: grayscale(1) sepia(0.45) hue-rotate(95deg) saturate(0.85) contrast(1.05);
 }
 .hero__img::after {
   content: "";
   position: absolute; inset: 0;
   background:
-    linear-gradient(to bottom, rgb(var(--paper-rgb) / 0.9) 0%, rgb(var(--paper-rgb) / 0) 16%),
-    linear-gradient(to top, rgb(var(--paper-rgb) / 0.92) 0%, rgb(var(--paper-rgb) / 0) 45%);
+    linear-gradient(to bottom, rgb(var(--paper-rgb) / 0.85) 0%, rgb(var(--paper-rgb) / 0) 14%),
+    linear-gradient(to top, rgb(var(--paper-rgb) / 0.55) 0%, rgb(var(--paper-rgb) / 0) 26%);
 }
 .hero__content {
   position: relative;
@@ -420,8 +442,10 @@ body::after {
   position: relative;
   z-index: 2;
   padding: 0.9rem var(--pad);
-  border-top: 1px solid var(--line);
-  background: var(--paper);
+  border-top: 1px solid rgb(var(--paper-rgb) / 0.35);
+  background: rgb(var(--paper-rgb) / 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
   white-space: nowrap;
 }
@@ -1063,41 +1087,89 @@ body::after {
   .nav__links .theme-picker select { font-size: 0.85rem; }
 }
 
-/* ---------- instagram section ---------- */
+/* ---------- instagram section: one-at-a-time carousel ---------- */
 .insta {
   padding-block: clamp(4rem, 10vh, 7rem);
 }
 .insta .page-head { margin-bottom: clamp(1.5rem, 4vh, 2.5rem); }
-.insta-grid {
+
+.insta-carousel {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: clamp(0.8rem, 2vw, 1.5rem);
-  align-items: start;
+  grid-template-columns: auto minmax(0, 460px) auto;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.8rem, 3vw, 2.5rem);
 }
-.insta-grid .insta-post {
-  border: 1px solid var(--line);
-  min-height: 320px;
+.insta-viewport {
   overflow: hidden;
-  background: var(--paper-dim);
+  border-radius: 20px;
 }
-.insta-grid blockquote.instagram-media {
+.insta-track {
+  display: flex;
+  transition: transform 0.7s var(--ease-out);
+}
+.insta-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+.insta-slide blockquote.instagram-media {
   margin: 0 !important;
   min-width: 0 !important;
   width: 100% !important;
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 24px 60px -30px rgb(var(--ink-rgb) / 0.35) !important;
 }
+.insta-nav {
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease-out);
+}
+.insta-nav:hover { background: var(--red); border-color: var(--red); color: var(--paper); }
+.insta-dots {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+}
+.insta-dots button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: all 0.3s var(--ease-out);
+}
+.insta-dots button.is-active {
+  background: var(--red);
+  transform: scale(1.35);
+}
+
+/* profile embed shown like a phone when no posts are configured */
 .insta-profile {
+  max-width: 420px;
+  margin-inline: auto;
   border: 1px solid var(--line);
+  border-radius: 26px;
   background: var(--paper-dim);
   overflow: hidden;
+  box-shadow: 0 30px 70px -35px rgb(var(--ink-rgb) / 0.4);
 }
 .insta-profile iframe {
   display: block;
   width: 100%;
-  height: min(72vh, 760px);
+  height: min(68vh, 680px);
   border: 0;
+}
+.insta-follow-row {
+  text-align: center;
+  margin-top: 1.8rem;
 }
 .insta-fallback {
   border: 1.5px dashed var(--line);
@@ -1109,11 +1181,55 @@ body::after {
   max-width: 46ch;
   margin: 0 auto 1.6rem;
 }
-@media (max-width: 1020px) {
-  .insta-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 640px) {
+  .insta-carousel { grid-template-columns: minmax(0, 1fr); }
+  .insta-nav { display: none; }
 }
-@media (max-width: 560px) {
-  .insta-grid { grid-template-columns: 1fr; }
+
+/* ---------- music toggle ---------- */
+.music-toggle {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(3.6rem, 8vh, 4.5rem);
+  z-index: 1200;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6em 1.2em;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  background: rgb(var(--paper-rgb) / 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: all 0.3s var(--ease-out);
+}
+.music-toggle:hover { border-color: var(--red); color: var(--ink); }
+.music-toggle .bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: 12px;
+}
+.music-toggle .bars i {
+  width: 2.5px;
+  height: 4px;
+  background: var(--red);
+  transition: height 0.3s;
+}
+.music-toggle.is-playing .bars i {
+  animation: eq 0.9s ease-in-out infinite alternate;
+}
+.music-toggle.is-playing .bars i:nth-child(1) { animation-delay: 0s; }
+.music-toggle.is-playing .bars i:nth-child(2) { animation-delay: 0.25s; }
+.music-toggle.is-playing .bars i:nth-child(3) { animation-delay: 0.5s; }
+@keyframes eq {
+  from { height: 3px; }
+  to { height: 12px; }
 }
 
 /* ---------- reduced motion ---------- */
