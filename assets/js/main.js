@@ -225,8 +225,8 @@ const instaSection = document.querySelector("[data-instagram]");
 if (instaSection) {
   const { username = "hannahjew", posts = [] } = cfg.instagram || {};
   const carousel = instaSection.querySelector(".insta-carousel");
+  const wall = instaSection.querySelector(".insta-wall");
   const profileBox = instaSection.querySelector(".insta-profile");
-  const followRow = instaSection.querySelector(".insta-follow-row");
   const fallback = instaSection.querySelector(".insta-fallback");
 
   const renderWhenVisible = (render) => {
@@ -241,7 +241,7 @@ if (instaSection) {
   };
 
   if (posts.length) {
-    profileBox.remove();
+    wall.remove();
     fallback.remove();
     carousel.hidden = false;
     renderWhenVisible(() => {
@@ -301,8 +301,7 @@ if (instaSection) {
       iframe.addEventListener("load", () => { settled = true; });
       setTimeout(() => {
         if (!settled) {
-          profileBox.remove();
-          followRow.remove();
+          wall.remove();
           fallback.hidden = false;
         }
       }, 6000);
