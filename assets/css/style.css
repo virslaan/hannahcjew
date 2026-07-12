@@ -22,6 +22,7 @@
   --font-tc: "Noto Serif TC", "Songti TC", "SimSun", serif;
 
   --nav-h: 76px;
+  --ticker-h: 46px;
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -332,13 +333,14 @@ body::after {
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    gap: 1.4rem;
+    gap: 1.3rem;
     padding-left: clamp(2rem, 10vw, 4rem);
     background: var(--ink);
     color: var(--paper);
-    opacity: 0;
+    /* circular wipe out of the hamburger corner */
+    clip-path: circle(0px at calc(100% - 40px) 38px);
     pointer-events: none;
-    transition: opacity 0.45s var(--ease-out);
+    transition: clip-path 0.65s var(--ease-out);
   }
   .nav__links::after {
     content: "周 健 倫";
@@ -349,13 +351,16 @@ body::after {
     writing-mode: vertical-rl;
     font-family: var(--font-tc);
     font-weight: 700;
-    font-size: clamp(3.4rem, 14vw, 5.5rem);
+    font-size: clamp(3.2rem, 12vw, 5rem);
     letter-spacing: 0.28em;
     color: transparent;
-    -webkit-text-stroke: 1.5px rgb(var(--paper-rgb) / 0.22);
+    -webkit-text-stroke: 1.5px rgb(var(--paper-rgb) / 0.14);
     pointer-events: none;
   }
-  .nav__links.is-open { opacity: 1; pointer-events: auto; }
+  .nav__links.is-open {
+    clip-path: circle(150% at calc(100% - 40px) 38px);
+    pointer-events: auto;
+  }
   .nav__links a {
     font-family: var(--font-display);
     font-style: italic;
@@ -386,7 +391,8 @@ body::after {
 /* ---------- hero (home) ---------- */
 .hero {
   position: relative;
-  min-height: 100svh;
+  /* leave room for the credits ticker at the fold, so it's visible on load */
+  min-height: calc(100svh - var(--ticker-h));
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr auto; /* name block takes the space, ticker pins to the bottom edge */
@@ -568,9 +574,12 @@ body::after {
 @keyframes fadeIn { to { opacity: 1; } }
 
 /* ---------- credits (home) ----------
-   A museum-legend band that drifts: each major credit gets its
-   own geometric mark, and the whole key glides in a slow loop. */
+   A slim drifting ticker: visible at the fold on load, then it
+   pins itself just under the nav while you scroll. */
 .credits-strip {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 950;
   background: var(--ink);
   color: var(--paper);
   overflow: hidden;
@@ -593,62 +602,57 @@ body::after {
 }
 .credit {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-  gap: 1.1rem;
-  text-align: center;
-  padding: clamp(2rem, 5vh, 3.2rem) clamp(2.2rem, 5vw, 4.5rem);
-  min-width: clamp(230px, 20vw, 300px);
-  text-align: center;
-  border-left: 1px solid rgb(var(--paper-rgb) / 0.12);
+  gap: 0.75rem;
+  padding: 0 clamp(1.8rem, 3.5vw, 3.2rem);
+  height: var(--ticker-h);
+  white-space: nowrap;
 }
 .credit span {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(0.95rem, 1.6vw, 1.25rem);
-  line-height: 1.25;
+  font-size: 0.95rem;
   color: rgb(var(--paper-rgb) / 0.92);
 }
 .credit small {
-  display: block;
   font-family: var(--font-ui);
   font-style: normal;
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: rgb(var(--paper-rgb) / 0.45);
-  margin-top: 0.5rem;
+  margin-left: 0.7em;
 }
 /* the marks */
 .glyph {
-  width: 22px;
-  height: 22px;
+  width: 10px;
+  height: 10px;
   flex: 0 0 auto;
   border: 1.5px solid var(--red);
   transition: transform 0.5s var(--ease-out), background 0.4s var(--ease-out);
 }
-.credit:hover .glyph { background: var(--red); transform: rotate(135deg) scale(1.08); }
+.credit:hover .glyph { background: var(--red); transform: rotate(135deg) scale(1.15); }
 .glyph--circle { border-radius: 50%; }
-.glyph--diamond { transform: rotate(45deg); width: 19px; height: 19px; }
-.credit:hover .glyph--diamond { transform: rotate(225deg) scale(1.08); }
+.glyph--diamond { transform: rotate(45deg); width: 9px; height: 9px; }
+.credit:hover .glyph--diamond { transform: rotate(225deg) scale(1.15); }
 .glyph--triangle {
   border: none;
   background: var(--red);
   clip-path: polygon(50% 0, 100% 100%, 0 100%);
   opacity: 0.9;
 }
-.credit:hover .glyph--triangle { transform: rotate(180deg) scale(1.08); background: var(--red); }
+.credit:hover .glyph--triangle { transform: rotate(180deg) scale(1.15); background: var(--red); }
 .glyph--star {
   border: none;
   background: var(--red);
   clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
 }
 @media (max-width: 820px) {
-  .credit { min-width: 200px; padding-inline: 1.8rem; }
-  .credits-strip__inner { animation-duration: 28s; }
+  .credit { padding-inline: 1.4rem; }
+  .credits-strip__inner { animation-duration: 26s; }
 }
 @media (prefers-reduced-motion: reduce) {
   .credits-strip__inner { animation: none; }
@@ -1070,12 +1074,29 @@ body.page-dark {
   padding: clamp(1.5rem, 4vh, 2.6rem) 0;
 }
 .nfx-row__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 1rem;
   padding: 0 var(--pad);
   margin-bottom: 0.4rem;
+}
+.nfx-row__head .nfx-row__title {
+  grid-column: 2;
+  text-align: center;
+}
+.nfx-row__head .nfx-row__nav {
+  grid-column: 3;
+  justify-self: end;
+}
+/* a small centered rule under the heading, gallery-plaque style */
+.nfx-row__title::after {
+  content: "";
+  display: block;
+  width: 2.4rem;
+  height: 1.5px;
+  background: var(--red);
+  margin: 0.55rem auto 0;
 }
 .nfx-row__nav {
   display: flex;
