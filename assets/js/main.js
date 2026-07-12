@@ -325,6 +325,20 @@ if (musicBtn) {
       audio = new Audio("assets/audio/gymnopedie-no1.mp3");
       audio.loop = true;
       audio.volume = 0.35;
+      // pick up where the previous page left off instead of restarting
+      const t = parseFloat(sessionStorage.getItem("hj-music-t") || "0");
+      if (t > 0) {
+        audio.addEventListener("loadedmetadata", () => {
+          if (t < audio.duration) audio.currentTime = t;
+        }, { once: true });
+      }
+      // keep the position fresh so navigation never loses more than a second
+      setInterval(() => {
+        if (!audio.paused) sessionStorage.setItem("hj-music-t", String(audio.currentTime));
+      }, 1000);
+      window.addEventListener("pagehide", () => {
+        if (!audio.paused) sessionStorage.setItem("hj-music-t", String(audio.currentTime));
+      });
     }
     return audio;
   };

@@ -13,7 +13,7 @@
   <link rel="icon" href="favicon-512.png" type="image/png" sizes="512x512" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 </head>
-<body>
+<body class="page-dark page-netflix">
 
   <header class="nav is-scrolled">
     <a class="nav__brand" href="index.html">
@@ -42,44 +42,70 @@
     </nav>
   </header>
 
-  <main class="page">
-    <div class="container">
-      <div class="page-head will-reveal">
+  <main>
+    <!-- billboard, streaming-service style -->
+    <section class="nfx-billboard">
+      <div class="nfx-billboard__img" aria-hidden="true">
+        <img src="assets/img/portrait-black-top.jpg" alt="" fetchpriority="high" />
+      </div>
+      <div class="nfx-billboard__content will-reveal is-visible">
         <p class="kicker">Headshots &amp; Resume</p>
-        <h1>The <em>materials</em></h1>
-        <p class="sub">Resume available to view or download as a PDF. New headshots are on their way, fresh from the studio and currently being retouched.</p>
-      </div>
-
-      <div class="resume-bar will-reveal">
-        <div class="txt">
-          <h2>Resume 2026</h2>
-          <p>Hannah Jew · AEA · Height 5'3" · Clear Talent Group</p>
-        </div>
+        <h1>Hannah <em>Jew</em></h1>
+        <p class="nfx-meta"><span class="badge">AEA</span> 2026 · Dancer · Choreographer · Educator · 5'3" · New York City</p>
+        <p class="sub">The materials: resume as a PDF, plus headshots. New shots are fresh from the studio and being retouched now.</p>
         <div class="actions">
-          <a class="btn btn--solid" href="assets/resume/Hannah-Jew-Resume.pdf" download>Download PDF <span aria-hidden="true">↓</span></a>
-          <a class="btn" href="assets/resume/Hannah-Jew-Resume.pdf" target="_blank" rel="noopener">View in browser <span aria-hidden="true">→</span></a>
+          <a class="btn btn--play" href="assets/resume/Hannah-Jew-Resume.pdf" download><span aria-hidden="true">↓</span> Download resume</a>
+          <a class="btn btn--ghost" href="assets/resume/Hannah-Jew-Resume.pdf" target="_blank" rel="noopener">View in browser</a>
         </div>
       </div>
+    </section>
 
-      <div class="headshot-grid">
-        <figure class="work will-reveal" data-lightbox data-title="Hannah Jew" data-credit="">
+    <!-- shelves -->
+    <section class="nfx-row">
+      <h2 class="nfx-row__title">Headshots <span class="zh" lang="zh-Hant" aria-hidden="true">大頭照</span></h2>
+      <div class="nfx-row__track">
+        <figure class="nfx-card" data-lightbox data-title="Hannah Jew" data-credit="">
+          <span class="num" aria-hidden="true">1</span>
           <img src="assets/img/portrait-black-top.jpg" alt="Portrait headshot of Hannah Jew wearing black, hair in motion" loading="lazy" />
-          <figcaption>
-            <span class="title">Portrait</span>
-          </figcaption>
         </figure>
-
-        <div class="pending will-reveal">
+        <div class="nfx-card nfx-card--pending">
+          <span class="num" aria-hidden="true">2</span>
           <span class="zh" lang="zh-Hant" aria-hidden="true">即將推出</span>
           <p>New headshots<br />coming soon</p>
         </div>
-
-        <div class="pending will-reveal">
+        <div class="nfx-card nfx-card--pending">
+          <span class="num" aria-hidden="true">3</span>
           <span class="zh" lang="zh-Hant" aria-hidden="true">即將推出</span>
           <p>New headshots<br />coming soon</p>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="nfx-row">
+      <h2 class="nfx-row__title">From the stage <span class="zh" lang="zh-Hant" aria-hidden="true">舞台</span></h2>
+      <div class="nfx-row__track">
+        <figure class="nfx-card" data-lightbox data-title="Studio: tutu &amp; pointe" data-credit="">
+          <span class="num" aria-hidden="true">1</span>
+          <img src="assets/img/hero-tutu-bw.jpg" alt="Hannah in a tutu and pointe shoes folded forward" loading="lazy" />
+        </figure>
+        <figure class="nfx-card" data-lightbox data-title="Blue silk in motion" data-credit="">
+          <span class="num" aria-hidden="true">2</span>
+          <img src="assets/img/blue-dress-flow.jpg" alt="Hannah mid-movement in a pale blue dress" loading="lazy" />
+        </figure>
+        <figure class="nfx-card" data-lightbox data-title="Duet in rehearsal" data-credit="">
+          <span class="num" aria-hidden="true">3</span>
+          <img src="assets/img/duet-lift.jpg" alt="A partnered lift in rehearsal" loading="lazy" />
+        </figure>
+        <figure class="nfx-card" data-lightbox data-title="Sculptural in green" data-credit="">
+          <span class="num" aria-hidden="true">4</span>
+          <img src="assets/img/green-leotard.jpg" alt="Hannah in a green leotard, arms curved" loading="lazy" />
+        </figure>
+        <figure class="nfx-card" data-lightbox data-title="Meatpacking, NYC" data-credit="">
+          <span class="num" aria-hidden="true">5</span>
+          <img src="assets/img/street-mirror.jpg" alt="Hannah reflected in a mirrored wall on a New York street" loading="lazy" />
+        </figure>
+      </div>
+    </section>
   </main>
 
   <!-- lightbox -->
