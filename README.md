@@ -19,9 +19,34 @@ Shared assets live in `assets/`:
 
 - `assets/img/` contains all photos (compressed for web, max 2200px)
 - `assets/resume/Hannah-Jew-Resume.pdf` is the downloadable resume
-- `assets/css/style.css` is the whole design system
-- `assets/js/main.js` handles the menu, gallery filters, lightbox, and scroll animations
-- `favicon.svg`, `favicon-32.png`, and `apple-touch-icon.png` are the seal-stamp site icon
+- `assets/css/style.css` is the whole design system, including all five themes
+- `assets/js/config.js` is the control panel: default theme + Instagram feed settings
+- `assets/js/main.js` handles the menu, gallery filters, lightbox, scroll animations, theme switching, and the Instagram feed
+- `favicon-512.png`, `favicon-32.png`, and `apple-touch-icon.png` are the dancer site icon
+
+## Themes
+
+The site ships with five looks, switchable from the dropdown in the navigation:
+
+| Theme | Feel |
+|---|---|
+| Seal | Paper white, ink black, vermillion red (the original) |
+| Noir | Black stage with a red spotlight |
+| Porcelain | Gallery white with cobalt blue |
+| Crimson | Deep red curtain with warm cream text |
+| Jade | Soft celadon with deep jade green |
+
+Switching themes plays a circular sweep animation out of the dropdown (modern browsers) or a smooth crossfade (older ones). Visitor choices are remembered per device.
+
+To lock the whole site to one theme, open `assets/js/config.js` and change `theme: "auto"` to e.g. `theme: "noir"`. The dropdown hides itself automatically. You can also preview any theme by adding `?theme=jade` (or any theme name) to a page URL.
+
+## Instagram feed
+
+The home page has a "Latest from Instagram" section controlled by `assets/js/config.js`:
+
+- Paste up to 8 post URLs into `instagram.posts` and they render as official Instagram embeds.
+- With no posts listed, the site tries the profile grid embed and otherwise shows a follow card.
+- Update `instagram.username` if the handle changes.
 
 ## Hosting
 

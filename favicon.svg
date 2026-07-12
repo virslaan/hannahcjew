@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <rect x="4" y="4" width="120" height="120" rx="22" fill="#d7281c"/>
-  <rect x="13" y="13" width="102" height="102" rx="15" fill="none" stroke="#f6f4f0" stroke-width="4" opacity="0.92"/>
-  <text x="64" y="66" text-anchor="middle" dominant-baseline="central"
-        font-family="'Noto Serif TC','Songti TC','SimSun',serif" font-weight="700"
-        font-size="66" fill="#f6f4f0">&#21608;</text>
-</svg>

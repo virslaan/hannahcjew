@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="icon" href="favicon-512.png" type="image/png" sizes="512x512" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 </head>
 <body>
@@ -29,6 +29,16 @@
       <a href="portfolio.html">Portfolio</a>
       <a href="upcoming.html">Upcoming</a>
       <a href="contact.html">Contact</a>
+      <div class="theme-picker">
+        <span class="swatch" aria-hidden="true"></span>
+        <select aria-label="Site theme">
+          <option value="seal">Seal</option>
+          <option value="noir">Noir</option>
+          <option value="porcelain">Porcelain</option>
+          <option value="crimson">Crimson</option>
+          <option value="jade">Jade</option>
+        </select>
+      </div>
     </nav>
   </header>
 
@@ -104,6 +114,7 @@
     </div>
   </footer>
 
+  <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

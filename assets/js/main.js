@@ -1,5 +1,69 @@
 /* Hannah Jew 周健倫 · site interactions */
 
+// ============================================================
+// THEMES
+// Reads assets/js/config.js. If config theme is "auto", the
+// visitor picks from the dropdown and the choice is saved to
+// their device. Switching animates as a circular sweep from
+// the dropdown (View Transitions API, with a fade fallback).
+// ============================================================
+const THEMES = ["seal", "noir", "porcelain", "crimson", "jade"];
+const cfg = window.SITE_CONFIG || {};
+const lockedTheme = THEMES.includes(cfg.theme) ? cfg.theme : null;
+
+function setTheme(name) {
+  if (name === "seal") {
+    document.documentElement.removeAttribute("data-theme");
+  } else {
+    document.documentElement.setAttribute("data-theme", name);
+  }
+}
+
+function currentTheme() {
+  if (lockedTheme) return lockedTheme;
+  const fromUrl = new URLSearchParams(location.search).get("theme");
+  if (THEMES.includes(fromUrl)) return fromUrl;
+  const saved = localStorage.getItem("hj-theme");
+  return THEMES.includes(saved) ? saved : "seal";
+}
+
+setTheme(currentTheme());
+
+function switchTheme(name, originEl) {
+  const apply = () => {
+    setTheme(name);
+    localStorage.setItem("hj-theme", name);
+  };
+
+  if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const rect = originEl ? originEl.getBoundingClientRect() : null;
+    const x = rect ? rect.left + rect.width / 2 : innerWidth / 2;
+    const y = rect ? rect.top + rect.height / 2 : 0;
+    const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const vt = document.startViewTransition(apply);
+    vt.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 750, easing: "cubic-bezier(0.16, 1, 0.3, 1)", pseudoElement: "::view-transition-new(root)" }
+      );
+    });
+  } else {
+    document.documentElement.classList.add("theme-fading");
+    apply();
+    setTimeout(() => document.documentElement.classList.remove("theme-fading"), 650);
+  }
+}
+
+document.querySelectorAll(".theme-picker").forEach((picker) => {
+  if (lockedTheme) {
+    picker.remove();
+    return;
+  }
+  const select = picker.querySelector("select");
+  select.value = currentTheme();
+  select.addEventListener("change", () => switchTheme(select.value, picker));
+});
+
 // ----- sticky nav background on scroll -----
 const nav = document.querySelector(".nav");
 const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 24);
@@ -97,6 +161,68 @@ if (lightbox) {
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") close();
   });
+}
+
+// ============================================================
+// INSTAGRAM FEED (home page)
+// Renders posts listed in config.js as official embeds.
+// With no posts configured, tries the profile grid embed and
+// falls back to a follow card if Instagram blocks it.
+// ============================================================
+const instaSection = document.querySelector("[data-instagram]");
+if (instaSection) {
+  const { username = "hannahjew", posts = [] } = cfg.instagram || {};
+  const grid = instaSection.querySelector(".insta-grid");
+  const profileBox = instaSection.querySelector(".insta-profile");
+  const fallback = instaSection.querySelector(".insta-fallback");
+
+  const renderWhenVisible = (render) => {
+    if (!("IntersectionObserver" in window)) return render();
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        io.disconnect();
+        render();
+      }
+    }, { rootMargin: "400px" });
+    io.observe(instaSection);
+  };
+
+  if (posts.length) {
+    profileBox.remove();
+    fallback.remove();
+    renderWhenVisible(() => {
+      posts.slice(0, 8).forEach((url) => {
+        const cell = document.createElement("div");
+        cell.className = "insta-post";
+        cell.innerHTML =
+          '<blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="' +
+          url + '" data-instgrm-version="14"></blockquote>';
+        grid.appendChild(cell);
+      });
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.instagram.com/embed.js";
+      document.body.appendChild(s);
+    });
+  } else {
+    grid.remove();
+    fallback.hidden = true;
+    renderWhenVisible(() => {
+      const iframe = document.createElement("iframe");
+      iframe.src = "https://www.instagram.com/" + username + "/embed";
+      iframe.loading = "lazy";
+      iframe.title = "Instagram feed for @" + username;
+      let settled = false;
+      iframe.addEventListener("load", () => { settled = true; });
+      setTimeout(() => {
+        if (!settled) {
+          profileBox.remove();
+          fallback.hidden = false;
+        }
+      }, 6000);
+      profileBox.appendChild(iframe);
+    });
+  }
 }
 
 // ----- footer year -----
