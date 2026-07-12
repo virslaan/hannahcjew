@@ -73,7 +73,13 @@
 
     <!-- shelves -->
     <section class="nfx-row">
-      <h2 class="nfx-row__title">Headshots <span class="zh" lang="zh-Hant" aria-hidden="true">大頭照</span></h2>
+      <div class="nfx-row__head">
+        <h2 class="nfx-row__title">Headshots <span class="zh" lang="zh-Hant" aria-hidden="true">大頭照</span></h2>
+        <div class="nfx-row__nav" aria-hidden="false">
+          <button class="prev" aria-label="Scroll back" disabled>←</button>
+          <button class="next" aria-label="Scroll forward">→</button>
+        </div>
+      </div>
       <div class="nfx-row__track">
         <figure class="nfx-card" data-lightbox data-title="Hannah Jew" data-credit="">
           <img src="assets/img/portrait-black-top.jpg" alt="Portrait headshot of Hannah Jew wearing black, hair in motion" loading="lazy" />
@@ -90,27 +96,53 @@
     </section>
 
     <section class="nfx-row">
-      <h2 class="nfx-row__title">Continue watching <span class="zh" lang="zh-Hant" aria-hidden="true">舞台</span></h2>
+      <div class="nfx-row__head">
+        <h2 class="nfx-row__title">Continue watching <span class="zh" lang="zh-Hant" aria-hidden="true">舞台</span></h2>
+        <div class="nfx-row__nav">
+          <button class="prev" aria-label="Scroll back" disabled>←</button>
+          <button class="next" aria-label="Scroll forward">→</button>
+        </div>
+      </div>
       <div class="nfx-row__track">
         <figure class="nfx-card nfx-card--watch" data-lightbox data-title="The King and I · National Tour" data-credit="">
           <img src="assets/img/hero-tutu-bw.jpg" alt="Hannah in a tutu and pointe shoes folded forward" loading="lazy" />
-          <figcaption><span>The King and I · National Tour</span><span class="bar" style="--p:100%"><i></i></span></figcaption>
+          <figcaption>
+            <span class="t">The King and I</span>
+            <span class="s">National Tour · Watched</span>
+            <span class="bar" style="--p:100%"><i></i></span>
+          </figcaption>
         </figure>
         <figure class="nfx-card nfx-card--watch" data-lightbox data-title="New York City Opera" data-credit="">
           <img src="assets/img/blue-dress-flow.jpg" alt="Hannah mid-movement in a pale blue dress" loading="lazy" />
-          <figcaption><span>New York City Opera</span><span class="bar" style="--p:100%"><i></i></span></figcaption>
+          <figcaption>
+            <span class="t">New York City Opera</span>
+            <span class="s">Lincoln Center · Watched</span>
+            <span class="bar" style="--p:100%"><i></i></span>
+          </figcaption>
         </figure>
         <figure class="nfx-card nfx-card--watch" data-lightbox data-title="Smithsonian · World Premiere" data-credit="">
           <img src="assets/img/duet-lift.jpg" alt="A partnered lift in rehearsal" loading="lazy" />
-          <figcaption><span>Smithsonian · World Premiere</span><span class="bar" style="--p:100%"><i></i></span></figcaption>
+          <figcaption>
+            <span class="t">Smithsonian</span>
+            <span class="s">World Premiere · Watched</span>
+            <span class="bar" style="--p:100%"><i></i></span>
+          </figcaption>
         </figure>
         <figure class="nfx-card nfx-card--watch" data-lightbox data-title="New York Fashion Week" data-credit="">
           <img src="assets/img/green-leotard.jpg" alt="Hannah in a green leotard, arms curved" loading="lazy" />
-          <figcaption><span>New York Fashion Week</span><span class="bar" style="--p:100%"><i></i></span></figcaption>
+          <figcaption>
+            <span class="t">New York Fashion Week</span>
+            <span class="s">Runway · Watched</span>
+            <span class="bar" style="--p:100%"><i></i></span>
+          </figcaption>
         </figure>
-        <figure class="nfx-card nfx-card--watch" data-lightbox data-title="CATS · Victoria · up next" data-credit="">
-          <img src="assets/img/street-mirror.jpg" alt="Hannah reflected in a mirrored wall on a New York street" loading="lazy" />
-          <figcaption><span>CATS · Victoria · up next</span><span class="bar" style="--p:12%"><i></i></span></figcaption>
+        <figure class="nfx-card nfx-card--watch nfx-card--next" data-lightbox data-title="CATS · Victoria · Beef &amp; Boards Dinner Theatre" data-credit="">
+          <img src="assets/img/cats-poster.jpg" alt="CATS poster: glowing cat eyes with dancer silhouettes inside the pupils" loading="lazy" style="object-position: center 22%;" />
+          <figcaption>
+            <span class="t">CATS · Victoria</span>
+            <span class="s"><em class="upnext">Up next</em> · 2026 · Beef &amp; Boards</span>
+            <span class="bar" style="--p:12%"><i></i></span>
+          </figcaption>
         </figure>
       </div>
     </section>

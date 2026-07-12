@@ -180,6 +180,26 @@ if (hashFilter) {
   if (btn) btn.click();
 }
 
+// ----- shelf row arrows (headshots page) -----
+document.querySelectorAll(".nfx-row").forEach((row) => {
+  const track = row.querySelector(".nfx-row__track");
+  const prev = row.querySelector(".nfx-row__nav .prev");
+  const next = row.querySelector(".nfx-row__nav .next");
+  if (!track || !prev || !next) return;
+
+  const page = () => Math.max(track.clientWidth * 0.8, 300);
+  prev.addEventListener("click", () => track.scrollBy({ left: -page(), behavior: "smooth" }));
+  next.addEventListener("click", () => track.scrollBy({ left: page(), behavior: "smooth" }));
+
+  const update = () => {
+    prev.disabled = track.scrollLeft <= 4;
+    next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 4;
+  };
+  track.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+});
+
 // ----- lightbox -----
 const lightbox = document.querySelector(".lightbox");
 if (lightbox) {

@@ -60,17 +60,22 @@
       -->
       <div class="show-list">
 
-        <article class="show will-reveal">
-          <div class="show__date">
-            <span class="month">TBA</span>
-            <span class="year">2026</span>
-          </div>
-          <div class="show__info">
+        <article class="show show--featured will-reveal">
+          <figure class="show__poster" data-lightbox data-title="CATS · Beef &amp; Boards Dinner Theatre · 2026" data-credit="">
+            <img src="assets/img/cats-poster.jpg" alt="CATS poster: glowing golden cat eyes with dancer silhouettes leaping inside the pupils" loading="lazy" />
+            <span class="shine" aria-hidden="true"></span>
+          </figure>
+          <div class="show__body">
+            <div class="show__date">
+              <span class="month">TBA</span>
+              <span class="year">2026</span>
+            </div>
             <h2><em>CATS</em></h2>
-            <p class="role">Victoria</p>
+            <p class="role">as Victoria, the White Cat</p>
             <p class="venue">Beef &amp; Boards Dinner Theatre · Indianapolis, IN</p>
+            <p class="onsale"><i aria-hidden="true"></i> Tickets on sale soon</p>
+            <a class="btn btn--red" href="https://beefandboards.com" target="_blank" rel="noopener">Tickets <span aria-hidden="true">→</span></a>
           </div>
-          <a class="btn btn--red" href="https://beefandboards.com" target="_blank" rel="noopener">Tickets <span aria-hidden="true">→</span></a>
         </article>
 
       </div>
@@ -78,6 +83,16 @@
       <p class="upcoming-note will-reveal">More announcements coming soon. Follow along on <a href="https://www.instagram.com/hannahjew" target="_blank" rel="noopener" style="border-bottom:1.5px solid var(--red);">Instagram</a> for the latest.</p>
     </div>
   </main>
+
+  <!-- lightbox -->
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="lightbox__close" aria-label="Close">×</button>
+    <div class="lightbox__inner">
+      <img src="" alt="" />
+      <p class="lightbox__caption"><span class="title"></span><span class="credit"></span></p>
+      <a class="lightbox__download" href="" download>Download image ↓</a>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="footer__top">
