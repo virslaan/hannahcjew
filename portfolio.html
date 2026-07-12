@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — Hannah Jew 周健倫</title>
+  <meta name="description" content="Portfolio of Hannah Jew 周健倫 — performer, choreographer, educator, and photoshoots. Photos and videos from shows and projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Grotesk:wght@400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%23d7281c'/><text x='50' y='68' font-size='52' text-anchor='middle' fill='%23f6f4f0' font-family='serif' font-weight='700'>周</text></svg>" />
+</head>
+<body>
+
+  <header class="nav is-scrolled">
+    <a class="nav__brand" href="index.html">
+      <span class="seal seal--nav" aria-hidden="true">周健倫</span>
+      <span>Hannah Jew</span>
+    </a>
+    <button class="nav__toggle" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav__links">
+      <a href="about.html">About</a>
+      <a href="headshots.html">Headshots &amp; Resume</a>
+      <a href="portfolio.html" class="is-active">Portfolio</a>
+      <a href="upcoming.html">Upcoming</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    <div class="container container--wide">
+      <div class="page-head will-reveal">
+        <p class="kicker">Portfolio</p>
+        <h1>The <em>work</em></h1>
+        <p class="sub">Selected photos and videos across performance, choreography, teaching, and photoshoots. Click any image to view full size. Photographers credited throughout.</p>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters" role="group" aria-label="Filter portfolio by category">
+        <button class="is-active" data-filter="all">All</button>
+        <button data-filter="performer">Performer</button>
+        <button data-filter="choreographer">Choreographer</button>
+        <button data-filter="educator">Educator</button>
+        <button data-filter="photoshoots">Photoshoots</button>
+      </div>
+
+      <!--
+        ══════════════════════════════════════════════════════════════
+        HOW TO ADD A NEW PORTFOLIO IMAGE (for Hannah / future editing):
+        1. Put the image file into assets/img/
+        2. Copy one of the <figure> blocks below and update:
+           - data-category:  performer | choreographer | educator | photoshoots
+           - data-title:     the project or show name
+           - data-credit:    "Photo: photographer name"
+           - img src:        assets/img/your-file.jpg
+           - img alt:        a short description of the photo
+           - the <span class="title"> and <span class="credit"> text
+        ══════════════════════════════════════════════════════════════
+      -->
+      <div class="work-grid">
+
+        <figure class="work will-reveal" data-category="performer" data-lightbox
+                data-title="Studio — tutu &amp; pointe" data-credit="Photographer credit coming soon">
+          <span class="tag">Performer</span>
+          <img src="assets/img/hero-tutu-bw.jpg" alt="Hannah in a tutu and pointe shoes folded forward in an expressive black and white pose" loading="lazy" />
+          <figcaption>
+            <span class="title">Studio — tutu &amp; pointe</span>
+            <span class="credit">Photo credit coming soon</span>
+          </figcaption>
+        </figure>
+
+        <figure class="work will-reveal" data-category="performer" data-lightbox
+                data-title="Blue silk in motion" data-credit="Photographer credit coming soon">
+          <span class="tag">Performer</span>
+          <img src="assets/img/blue-dress-flow.jpg" alt="Hannah mid-movement in a pale blue dress, fabric sweeping around her" loading="lazy" />
+          <figcaption>
+            <span class="title">Blue silk in motion</span>
+            <span class="credit">Photo credit coming soon</span>
+          </figcaption>
+        </figure>
+
+        <figure class="work will-reveal" data-category="choreographer" data-lightbox
+                data-title="Duet — rehearsal" data-credit="Photographer credit coming soon">
+          <span class="tag">Choreographer</span>
+          <img src="assets/img/duet-lift.jpg" alt="A partnered lift in rehearsal, Hannah balanced upside down mid-air" loading="lazy" />
+          <figcaption>
+            <span class="title">Duet — rehearsal</span>
+            <span class="credit">Photo credit coming soon</span>
+          </figcaption>
+        </figure>
+
+        <figure class="work will-reveal" data-category="educator" data-lightbox
+                data-title="In the studio" data-credit="Photographer credit coming soon">
+          <span class="tag">Educator</span>
+          <img src="assets/img/pointe-shoes-bw.jpg" alt="Close-up of pointe shoes stepping through a studio, black and white" loading="lazy" />
+          <figcaption>
+            <span class="title">In the studio</span>
+            <span class="credit">Photo credit coming soon</span>
+          </figcaption>
+        </figure>
+
+        <figure class="work will-reveal" data-category="photoshoots" data-lightbox
+                data-title="Sculptural — green" data-credit="Photographer credit coming soon">
+          <span class="tag">Photoshoots</span>
+          <img src="assets/img/green-leotard.jpg" alt="Hannah in a green leotard with arms curved in a sculptural shape" loading="lazy" />
+          <figcaption>
+            <span class="title">Sculptural — green</span>
+            <span class="credit">Photo credit coming soon</span>
+          </figcaption>
+        </figure>
+
+        <figure class="work will-reveal" data-category="photoshoots" data-lightbox
+                data-title="Meatpacking, NYC" data-credit="Photographer credit coming soon">
+          <span class="tag">Photoshoots</span>
+          <img src="assets/img/street-mirror.jpg" alt="Hannah in sunglasses reflected in a mirrored wall on a New York street" loading="lazy" />
+          <figcaption>
+            <span class="title">Meatpacking, NYC</span>
+            <span class="credit">Photo credit coming soon</span>
+          </figcaption>
+        </figure>
+
+        <figure class="work will-reveal" data-category="photoshoots" data-lightbox
+                data-title="Portrait in black" data-credit="Photographer credit coming soon">
+          <span class="tag">Photoshoots</span>
+          <img src="assets/img/portrait-black-top.jpg" alt="Portrait of Hannah wearing black with hair in motion" loading="lazy" />
+          <figcaption>
+            <span class="title">Portrait in black</span>
+            <span class="credit">Photo credit coming soon</span>
+          </figcaption>
+        </figure>
+
+      </div>
+
+      <p class="upcoming-note will-reveal">More photos and video are being added as projects are compiled — check back soon.</p>
+    </div>
+  </main>
+
+  <!-- lightbox -->
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button class="lightbox__close" aria-label="Close">×</button>
+    <div class="lightbox__inner">
+      <img src="" alt="" />
+      <p class="lightbox__caption"><span class="title"></span><span class="credit"></span></p>
+      <a class="lightbox__download" href="" download>Download image ↓</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer__top">
+      <p class="footer__name">Hannah Jew <span class="zh" lang="zh-Hant">周健倫</span></p>
+      <nav class="footer__links">
+        <a href="about.html">About</a>
+        <a href="headshots.html">Headshots &amp; Resume</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="upcoming.html">Upcoming</a>
+        <a href="contact.html">Contact</a>
+        <a href="https://www.instagram.com/hannahjew" target="_blank" rel="noopener">Instagram</a>
+      </nav>
+    </div>
+    <div class="footer__bottom">
+      <span>© <span data-year>2026</span> Hannah Jew. All rights reserved.</span>
+      <span>Represented by Clear Talent Group · New York</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
