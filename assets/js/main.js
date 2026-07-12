@@ -1,4 +1,4 @@
-/* Hannah Jew 周健倫 — site interactions */
+/* Hannah Jew 周健倫 · site interactions */
 
 // ----- sticky nav background on scroll -----
 const nav = document.querySelector(".nav");
