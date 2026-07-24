@@ -673,6 +673,23 @@ body::after {
   text-transform: uppercase;
   color: var(--grey);
 }
+.about-grid figcaption .dl {
+  float: right;
+  color: var(--red);
+  border-bottom: 1px solid var(--red);
+}
+.resume-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.2rem;
+}
+.headshot-note {
+  margin-top: 2.2rem;
+  font-size: 0.85rem !important;
+  font-style: italic;
+  color: var(--grey) !important;
+}
 .about-copy p {
   margin-bottom: 1.4rem;
   font-size: 1.05rem;
