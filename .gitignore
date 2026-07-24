@@ -1,3 +1,8 @@
 .DS_Store
 websitematerials/
 shots/
+
+# personal files, not part of the site
+*.pptx
+*.docx
+*.zip

@@ -341,21 +341,6 @@ body::after {
     pointer-events: none;
     transition: clip-path 0.65s var(--ease-out);
   }
-  .nav__links::after {
-    content: "周 健 倫";
-    position: absolute;
-    right: clamp(0.6rem, 4vw, 1.6rem);
-    top: 50%;
-    transform: translateY(-50%);
-    writing-mode: vertical-rl;
-    font-family: var(--font-tc);
-    font-weight: 700;
-    font-size: clamp(3.2rem, 12vw, 5rem);
-    letter-spacing: 0.28em;
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgb(var(--paper-rgb) / 0.14);
-    pointer-events: none;
-  }
   .nav__links.is-open {
     clip-path: circle(150% at calc(100% - 40px) 38px);
     pointer-events: auto;
@@ -477,14 +462,6 @@ body::after {
   display: flex;
   align-items: flex-end;
   gap: 1rem;
-}
-.hero__zh {
-  writing-mode: vertical-rl;
-  font-family: var(--font-tc);
-  font-weight: 600;
-  font-size: clamp(1.4rem, 3vw, 2.4rem);
-  letter-spacing: 0.35em;
-  color: var(--ink);
 }
 .fade-in {
   opacity: 0;
@@ -936,6 +913,10 @@ body.page-dark {
   -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--pad), #000 calc(100% - 2.5rem), transparent);
 }
 .nfx-row__track::-webkit-scrollbar { display: none; }
+/* center the row while it fits on screen; auto margins collapse
+   to zero once there are enough cards to overflow and scroll */
+.nfx-row__track > :first-child { margin-left: auto; }
+.nfx-row__track > :last-child { margin-right: auto; }
 .nfx-card {
   position: relative;
   flex: 0 0 clamp(200px, 24vw, 290px);
@@ -1497,14 +1478,6 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
   font-weight: 500;
   font-size: clamp(1.8rem, 4.5vw, 3.2rem);
   line-height: 1.05;
-}
-.footer__name .zh {
-  font-family: var(--font-tc);
-  font-size: 0.55em;
-  color: var(--red);
-  letter-spacing: 0.2em;
-  display: block;
-  margin-top: 0.3em;
 }
 .footer__links {
   display: flex;
