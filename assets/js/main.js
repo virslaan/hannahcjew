@@ -101,15 +101,24 @@ document.querySelectorAll(".hero__name .split, .nfx-title .split").forEach((el) 
   });
 });
 
-// ----- hero parallax -----
+// ----- hero scroll choreography -----
+// The photo sinks slower than the page (parallax), while the name
+// and seal drift up and dissolve, handing the scene off to the intro.
 const heroImg = document.querySelector(".hero__img img");
+const heroContent = document.querySelector(".hero__content");
 if (heroImg && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
   let ticking = false;
   window.addEventListener("scroll", () => {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      heroImg.style.translate = "0 " + window.scrollY * 0.22 + "px";
+      const y = window.scrollY;
+      heroImg.style.translate = "0 " + y * 0.22 + "px";
+      if (heroContent) {
+        const p = Math.min(y / (innerHeight * 0.75), 1);
+        heroContent.style.opacity = String(1 - p * p);
+        heroContent.style.translate = "0 " + y * -0.06 + "px";
+      }
       ticking = false;
     });
   }, { passive: true });
@@ -140,7 +149,13 @@ if (heroImg && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
 })();
 
 // ----- scroll reveal -----
-const revealEls = document.querySelectorAll(".will-reveal");
+// [data-stagger] containers cascade their children in one by one;
+// the per-child delay is set here as a CSS variable.
+document.querySelectorAll("[data-stagger]").forEach((group) => {
+  [...group.children].forEach((child, i) => child.style.setProperty("--d", i));
+});
+
+const revealEls = document.querySelectorAll(".will-reveal, [data-stagger]");
 if ("IntersectionObserver" in window && revealEls.length) {
   const io = new IntersectionObserver(
     (entries) => {
