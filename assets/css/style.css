@@ -437,7 +437,7 @@ body::after {
 .hero__name {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(3.4rem, 12vw, 11rem);
+  font-size: clamp(2.9rem, 9.5vw, 8rem);
   line-height: 0.95;
   letter-spacing: 0.005em;
 }
@@ -498,15 +498,10 @@ body::after {
   color: var(--red);
   margin-bottom: 1rem;
 }
-.page-head .kicker::before {
-  content: "";
-  width: 2.2rem; height: 1.5px;
-  background: var(--red);
-}
 .page-head h1 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
@@ -539,16 +534,6 @@ main {
     filter 0.9s var(--ease-out);
 }
 .will-reveal.is-visible { opacity: 1; transform: none; filter: none; }
-
-/* the red kicker rule draws itself in once its section is on stage */
-.will-reveal .kicker::before,
-.will-reveal .kicker::after {
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 1s 0.35s var(--ease-out);
-}
-.will-reveal.is-visible .kicker::before,
-.will-reveal.is-visible .kicker::after { transform: scaleX(1); }
 
 /* [data-stagger] grids cascade child by child; --d is set in main.js */
 [data-stagger] > * {
@@ -601,8 +586,8 @@ main {
 .intro h2 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(1.7rem, 3.4vw, 2.7rem);
-  line-height: 1.25;
+  font-size: clamp(1.45rem, 2.8vw, 2.1rem);
+  line-height: 1.3;
   letter-spacing: -0.01em;
 }
 .intro h2 em { font-style: italic; color: var(--red); }
@@ -684,34 +669,44 @@ main {
   .cat-card__label { border-radius: 0 0 8px 8px; }
 }
 
-/* ---------- home: next performance banner ---------- */
+/* ---------- home: next performance, a quiet single line ---------- */
 .next-show {
-  background: var(--ink);
-  color: var(--paper);
-  padding-block: clamp(3.5rem, 9vh, 6rem);
+  border-block: 1px solid var(--line);
+  padding-block: clamp(2rem, 5vh, 3rem);
+}
+.next-show .container {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem 2.5rem;
+  flex-wrap: wrap;
 }
 .next-show .kicker {
   color: var(--red);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   letter-spacing: 0.34em;
   text-transform: uppercase;
 }
 .next-show h2 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2rem, 5vw, 3.8rem);
-  margin-top: 0.8rem;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
   line-height: 1.1;
 }
 .next-show h2 em { font-style: italic; color: var(--red); }
 .next-show .meta {
-  margin-top: 1rem;
-  color: rgb(var(--paper-rgb) / 0.65);
-  font-size: 0.95rem;
+  color: var(--grey);
+  font-size: 0.88rem;
   letter-spacing: 0.04em;
 }
-.next-show .btn { margin-top: 2.2rem; border-color: var(--paper); color: var(--paper); }
-.next-show .btn:hover { background: var(--red); border-color: var(--red); }
+.next-show .btn {
+  margin: 0;
+  padding: 0 0 0.25em;
+  border: none;
+  border-bottom: 1.5px solid var(--red);
+  color: var(--ink);
+}
+.next-show .btn:hover { background: none; color: var(--red); }
 
 /* ---------- about ---------- */
 .about-grid {
@@ -1069,11 +1064,6 @@ body.page-gallery .work figcaption .credit { color: rgb(var(--paper-rgb) / 0.75)
 /* ---------- upcoming: the playbill ---------- */
 body.page-playbill .page-head { text-align: center; }
 body.page-playbill .page-head .kicker { justify-content: center; }
-body.page-playbill .page-head .kicker::after {
-  content: "";
-  width: 2.2rem; height: 1.5px;
-  background: var(--red);
-}
 body.page-playbill .page-head .sub { margin-inline: auto; }
 body.page-playbill .show-list {
   border-top: 4px double var(--ink);
@@ -1113,7 +1103,7 @@ body.page-playbill .show__date .year {
   color: var(--grey);
 }
 body.page-playbill .show__info h2 {
-  font-size: clamp(2.6rem, 7vw, 4.6rem);
+  font-size: clamp(2rem, 5vw, 3.4rem);
   font-weight: 400;
 }
 body.page-playbill .show__info .role {
@@ -1146,7 +1136,7 @@ body.page-playbill .show--featured .show__body {
 body.page-playbill .show--featured h2 {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(3rem, 6.5vw, 5.4rem);
+  font-size: clamp(2.4rem, 5vw, 4rem);
   line-height: 0.95;
 }
 body.page-playbill .show--featured h2 em { font-style: italic; color: var(--red); }
@@ -1254,7 +1244,7 @@ body.page-playbill .show--featured.is-visible .show__poster {
 }
 
 /* ---------- contact: the poster ---------- */
-body.page-poster .page-head h1 { font-size: clamp(3rem, 9vw, 6.8rem); }
+body.page-poster .page-head h1 { font-size: clamp(2.4rem, 6.5vw, 4.4rem); }
 body.page-poster main { position: relative; overflow: hidden; }
 body.page-poster .contact-grid { counter-reset: poster; }
 body.page-poster .contact-block { counter-increment: poster; }
@@ -1270,7 +1260,7 @@ body.page-poster .contact-block h3::before {
 body.page-poster .contact-block a.big {
   display: inline-block;
   font-style: italic;
-  font-size: clamp(1.8rem, 4.6vw, 3.4rem);
+  font-size: clamp(1.4rem, 3.2vw, 2.3rem);
   border-bottom: none;
   background-image: linear-gradient(var(--red), var(--red));
   background-repeat: no-repeat;
@@ -1535,7 +1525,7 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
 .footer {
   background: var(--ink);
   color: var(--paper);
-  padding: clamp(3rem, 8vh, 5rem) var(--pad) 2rem;
+  padding: clamp(2.2rem, 5vh, 3.2rem) var(--pad) 1.6rem;
 }
 .footer__top {
   display: flex;
@@ -1543,13 +1533,13 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
   justify-content: space-between;
   gap: 2rem;
   flex-wrap: wrap;
-  padding-bottom: 2.5rem;
+  padding-bottom: 1.8rem;
   border-bottom: 1px solid rgb(var(--paper-rgb) / 0.15);
 }
 .footer__name {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
   line-height: 1.05;
 }
 .footer__links {
@@ -1680,6 +1670,34 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
 }
 @media (max-width: 640px) {
   .insta-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ---------- mobile: quieter, tighter, more air ---------- */
+@media (max-width: 640px) {
+  .hero__content { padding-bottom: 2.2rem; }
+  .seal--hero { font-size: 1rem; }
+  .intro { padding-block: 3rem; gap: 2rem; }
+  .intro p { font-size: 0.95rem; }
+  .btn { font-size: 0.72rem; padding: 0.8em 1.5em; }
+  .page-head .sub { font-size: 0.95rem; }
+  .next-show .container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+  .insta { padding-block: 3rem; }
+  .footer__top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+  }
+  .footer__links { gap: 0.9rem 1.4rem; }
+  .footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding-top: 1.2rem;
+  }
 }
 
 /* ---------- reduced motion ---------- */
