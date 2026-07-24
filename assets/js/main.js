@@ -330,59 +330,6 @@ if (instaSection) {
   }
 }
 
-// ============================================================
-// MUSIC
-// Erik Satie, Gymnopedie No. 1 (public domain recording by
-// Michael Laucke, via Wikimedia Commons). Off by default;
-// the visitor's choice is remembered for the session.
-// ============================================================
-const musicBtn = document.querySelector(".music-toggle");
-if (musicBtn) {
-  let audio = null;
-  const ensureAudio = () => {
-    if (!audio) {
-      audio = new Audio("assets/audio/gymnopedie-no1.mp3");
-      audio.loop = true;
-      audio.volume = 0.35;
-      // pick up where the previous page left off instead of restarting
-      const t = parseFloat(sessionStorage.getItem("hj-music-t") || "0");
-      if (t > 0) {
-        audio.addEventListener("loadedmetadata", () => {
-          if (t < audio.duration) audio.currentTime = t;
-        }, { once: true });
-      }
-      // keep the position fresh so navigation never loses more than a second
-      setInterval(() => {
-        if (!audio.paused) sessionStorage.setItem("hj-music-t", String(audio.currentTime));
-      }, 1000);
-      window.addEventListener("pagehide", () => {
-        if (!audio.paused) sessionStorage.setItem("hj-music-t", String(audio.currentTime));
-      });
-    }
-    return audio;
-  };
-  const setState = (playing) => {
-    musicBtn.classList.toggle("is-playing", playing);
-    musicBtn.setAttribute("aria-pressed", String(playing));
-    musicBtn.querySelector(".music-label").textContent = playing ? "Sound on" : "Sound";
-    sessionStorage.setItem("hj-music", playing ? "on" : "off");
-  };
-  musicBtn.addEventListener("click", () => {
-    const a = ensureAudio();
-    if (a.paused) {
-      a.play().then(() => setState(true)).catch(() => setState(false));
-    } else {
-      a.pause();
-      setState(false);
-    }
-  });
-  // resume across pages within the same visit
-  if (sessionStorage.getItem("hj-music") === "on") {
-    const a = ensureAudio();
-    a.play().then(() => setState(true)).catch(() => setState(false));
-  }
-}
-
 // ----- footer year -----
 const yearEl = document.querySelector("[data-year]");
 if (yearEl) yearEl.textContent = new Date().getFullYear();

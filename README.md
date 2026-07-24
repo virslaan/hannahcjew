@@ -97,10 +97,6 @@ git commit -m "Add new show / photos"
 git push
 ```
 
-## Music
-
-A small "Sound" pill in the bottom-left corner plays Erik Satie's Gymnopedie No. 1 (a public domain recording by Michael Laucke, sourced from Wikimedia Commons, no attribution required). It's off by default; once a visitor turns it on it keeps playing across pages for that visit. To change the track, replace `assets/audio/gymnopedie-no1.mp3` with another mp3 of the same name.
-
 ## Sending large photo files
 
 Email attachments cap out quickly. Good options for sending originals: a shared Google Drive or Dropbox folder, or [WeTransfer](https://wetransfer.com) (free, up to 2GB per send, no account needed).
