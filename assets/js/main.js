@@ -2,16 +2,18 @@
 
 // ============================================================
 // THEMES
-// Reads assets/js/config.js. If config theme is "auto", the
-// visitor picks from the dropdown and the choice is saved to
-// their device. Switching animates as a circular sweep from
-// the dropdown (View Transitions API, with a fade fallback).
+// The look is Hannah's choice, not the visitor's: it lives in
+// assets/data/site.json and is set from the Studio bar. Visitors
+// just see whatever she published. Switching animates as a
+// circular sweep (View Transitions API, with a fade fallback).
 // ============================================================
 const THEMES = ["seal", "noir", "porcelain", "crimson", "jade"];
 const cfg = window.SITE_CONFIG || {};
 const lockedTheme = THEMES.includes(cfg.theme) ? cfg.theme : null;
+const THEME_CACHE = "hj-theme";
 
 function setTheme(name) {
+  if (!THEMES.includes(name)) name = "seal";
   if (name === "seal") {
     document.documentElement.removeAttribute("data-theme");
   } else {
@@ -23,17 +25,26 @@ function currentTheme() {
   if (lockedTheme) return lockedTheme;
   const fromUrl = new URLSearchParams(location.search).get("theme");
   if (THEMES.includes(fromUrl)) return fromUrl;
-  const saved = localStorage.getItem("hj-theme");
-  return THEMES.includes(saved) ? saved : "seal";
+  // site.json is still in flight on first paint, so repaint from the last
+  // published theme we saw and let content.js correct it if it changed
+  const cached = localStorage.getItem(THEME_CACHE);
+  return THEMES.includes(cached) ? cached : "seal";
 }
 
 setTheme(currentTheme());
 
+// content.js and the Studio bar both apply the published theme through here
+window.HJ_applyTheme = (name, originEl) => {
+  if (!THEMES.includes(name)) name = "seal";
+  try { localStorage.setItem(THEME_CACHE, name); } catch (e) {}
+  if (lockedTheme) return;
+  const now = document.documentElement.getAttribute("data-theme") || "seal";
+  if (now === name) return;
+  switchTheme(name, originEl);
+};
+
 function switchTheme(name, originEl) {
-  const apply = () => {
-    setTheme(name);
-    localStorage.setItem("hj-theme", name);
-  };
+  const apply = () => setTheme(name);
 
   if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const rect = originEl ? originEl.getBoundingClientRect() : null;
@@ -53,16 +64,6 @@ function switchTheme(name, originEl) {
     setTimeout(() => document.documentElement.classList.remove("theme-fading"), 650);
   }
 }
-
-document.querySelectorAll(".theme-picker").forEach((picker) => {
-  if (lockedTheme) {
-    picker.remove();
-    return;
-  }
-  const select = picker.querySelector("select");
-  select.value = currentTheme();
-  select.addEventListener("change", () => switchTheme(select.value, picker));
-});
 
 // ----- sticky nav background on scroll -----
 const nav = document.querySelector(".nav");

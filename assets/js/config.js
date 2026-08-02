@@ -7,18 +7,14 @@
 window.SITE_CONFIG = {
   /* ----------------------------------------------------------
      THEME
-     Which look the site uses. Options:
-       "seal"      · paper white / ink / vermillion red (original)
-       "noir"      · black stage with a red spotlight
-       "porcelain" · gallery white with cobalt blue
-       "crimson"   · deep red curtain, warm cream text
-       "jade"      · soft celadon with deep jade green
-       "auto"      · let each visitor pick with the dropdown
-                     (their choice is remembered on their device)
+     Visitors do not choose the look. Hannah picks it in the
+     Studio bar ("Look"), and it is saved with the rest of the
+     content in assets/data/site.json, so everyone sees the
+     same site once she publishes.
 
-     To lock the whole site to one theme later, change "auto"
-     to one of the five names above. The dropdown disappears
-     automatically when a theme is locked.
+     Leave this as "auto" for that. Setting it to one of
+     "seal", "noir", "porcelain", "crimson" or "jade" pins the
+     site to that look and ignores the Studio setting.
      ---------------------------------------------------------- */
   theme: "auto",
 

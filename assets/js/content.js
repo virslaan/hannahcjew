@@ -66,6 +66,12 @@
   }
   window.HJ_applyAccent = applyAccent;
 
+  // ----- published theme -----
+  function applyTheme(site) {
+    const name = (site.theme && site.theme.name) || "seal";
+    if (typeof window.HJ_applyTheme === "function") window.HJ_applyTheme(name);
+  }
+
   // ----- load -----
   async function fetchSite() {
     const res = await fetch("assets/data/site.json", { cache: "no-store" });
@@ -438,6 +444,7 @@
   }
 
   function hydrate(site) {
+    applyTheme(site);
     applyAccent(site);
     hydrateHome(site);
     hydrateAbout(site);

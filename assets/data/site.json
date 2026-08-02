@@ -162,6 +162,7 @@
     "imageCaption": "New York City"
   },
   "theme": {
+    "name": "seal",
     "accent": "#d7281c"
   }
 }

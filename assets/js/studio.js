@@ -25,6 +25,14 @@
     ["contact.html", "Contact"],
   ];
 
+  const LOOKS = [
+    ["seal", "Seal"],
+    ["noir", "Noir"],
+    ["porcelain", "Porcelain"],
+    ["crimson", "Crimson"],
+    ["jade", "Jade"],
+  ];
+
   const ACCENTS = [
     ["#d7281c", "Seal red"],
     ["#111111", "Ink"],
@@ -595,6 +603,12 @@
             `<a href="${href}" class="${href === here ? "is-here" : ""}">${label}</a>`
         ).join("")}
       </div>
+      <div class="studio-bar__look">
+        <span>Look</span>
+        <select data-look aria-label="Site look">
+          ${LOOKS.map(([id, label]) => `<option value="${id}">${label}</option>`).join("")}
+        </select>
+      </div>
       <div class="studio-bar__accent">
         <span>Accent</span>
         ${ACCENTS.map(
@@ -612,6 +626,15 @@
         <button type="button" class="btn" data-done>Done</button>
       </div>`;
     document.body.appendChild(bar);
+
+    const look = $("[data-look]", bar);
+    look.value = (site.theme && site.theme.name) || "seal";
+    look.onchange = () => {
+      site.theme = site.theme || {};
+      site.theme.name = look.value;
+      if (typeof window.HJ_applyTheme === "function") window.HJ_applyTheme(look.value, look);
+      touch();
+    };
 
     $$("[data-accent]", bar).forEach((btn) => {
       btn.onclick = () => {
