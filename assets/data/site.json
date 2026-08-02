@@ -4,8 +4,8 @@
     "introHeadline": "A multi-hyphenate artist moving between ballet, Broadway, and heritage, telling stories that don't fit in one box.",
     "introHeadlineEm": "ballet, Broadway, and heritage",
     "introBody": "Hannah Jew is a New York City-based dancer, choreographer, and educator. From the national tour of The King and I to world premieres at the Smithsonian, from pointe shoes to traditional Chinese ribbons and fans, her work lives where classical rigor meets cultural storytelling.",
-    "introImage": "assets/img/green-leotard.jpg",
-    "introImageAlt": "Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape",
+    "introImage": "assets/img/pointe-studio-bw.jpg",
+    "introImageAlt": "Hannah Jew seated in a studio, one foot en pointe, notes in hand",
     "nextShow": {
       "kicker": "Next on stage",
       "title": "CATS",
@@ -16,9 +16,9 @@
     }
   },
   "about": {
-    "image": "assets/img/pointe-studio-bw.jpg",
-    "imageAlt": "Hannah Jew resting in a dance studio, pointe shoe en pointe, papers in hand",
-    "imageCaption": "In the studio",
+    "image": "assets/img/green-leotard.jpg",
+    "imageAlt": "Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape",
+    "imageCaption": "Studio session",
     "paragraphs": [
       "Hannah Jew is a New York City-based dancer, choreographer, and educator: a multi-hyphenate artist whose work bridges classical ballet, musical theatre, and traditional Chinese dance.",
       "Trained at The University of Oklahoma (BFA, Ballet Performance) and shaped by intensives with Complexions Contemporary Ballet, the Joffrey Ballet, American Ballet Theatre, and San Francisco Ballet, Hannah has danced professionally with Nai-Ni Chen Dance Company, Ballet Hisp\u00e1nico (BHdos), Dayton Ballet, and Oklahoma City Ballet.",
@@ -174,5 +174,8 @@
     "image": "assets/img/street-mirror.jpg",
     "imageAlt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
     "imageCaption": "New York City"
+  },
+  "theme": {
+    "accent": "#d7281c"
   }
 }

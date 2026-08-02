@@ -239,6 +239,7 @@ if (lightbox) {
       if (fig.dataset.lbBound) return;
       fig.dataset.lbBound = "1";
       fig.addEventListener("click", () => {
+        if (document.body.classList.contains("hj-edit")) return;
         const img = fig.querySelector("img");
         lbImg.src = img.dataset.full || img.src;
         lbImg.alt = img.alt;

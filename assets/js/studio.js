@@ -1,570 +1,334 @@
 /* ============================================================
-   STUDIO · full-site editor for Hannah (gear button)
-   Edit Home, About, Resume, Headshots, Portfolio, Upcoming,
-   Contact. Add / keep / remove items. Draft saves on device;
-   Download or Publish to GitHub Pages.
+   STUDIO · Hannah edits the real website, in place.
+
+   Tap the gear at the very bottom, enter the passcode, and the
+   site itself becomes editable: click any words to type, click
+   any photo to swap it, add a photographer name under a photo,
+   add or remove photos and shows, and pick the accent colour.
+   No forms, no code. Edit mode follows her page to page.
    ============================================================ */
 (function () {
-  const DRAFT_KEY = "hj-site-draft";
   const UNLOCK_KEY = "hj-studio-unlocked";
+  const EDITING_KEY = "hj-studio-editing";
   const TOKEN_KEY = "hj-studio-gh-token";
+
   const cfg = (window.SITE_CONFIG && window.SITE_CONFIG.studio) || {};
   const PIN = String(cfg.pin || "hannah");
   const gh = cfg.github || { owner: "virslaan", repo: "hannahcjew", branch: "main" };
 
-  const TABS = [
-    ["home", "Home"],
-    ["about", "About"],
-    ["resume", "Resume & Headshots"],
-    ["portfolio", "Portfolio"],
-    ["upcoming", "Upcoming"],
-    ["contact", "Contact"],
+  const PAGES = [
+    ["index.html", "Home"],
+    ["about.html", "About"],
+    ["headshots.html", "Headshots"],
+    ["portfolio.html", "Portfolio"],
+    ["upcoming.html", "Upcoming"],
+    ["contact.html", "Contact"],
   ];
 
-  const CAT_OPTS = [
-    ["performer", "Performer"],
-    ["choreographer", "Choreographer"],
-    ["educator", "Educator"],
-    ["photoshoots", "Photoshoots"],
+  const ACCENTS = [
+    ["#d7281c", "Seal red"],
+    ["#111111", "Ink"],
+    ["#1e4fd8", "Cobalt"],
+    ["#0f7b6c", "Jade"],
+    ["#b8860b", "Gold"],
+    ["#c2185b", "Rose"],
   ];
 
-  let tab = "portfolio";
+  const CATEGORIES = ["performer", "choreographer", "educator", "photoshoots"];
+  const CAT_LABEL = {
+    performer: "Performer",
+    choreographer: "Choreographer",
+    educator: "Educator",
+    photoshoots: "Photoshoots",
+  };
+
+  const $ = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+
   let site = null;
+  let dirty = false;
 
-  const $ = (sel, root) => (root || document).querySelector(sel);
-  const $$ = (sel, root) => [...(root || document).querySelectorAll(sel)];
-
-  function uid(prefix) {
-    return prefix + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
-  }
-
-  function slugify(s) {
-    return String(s || "item")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "")
-      .slice(0, 48);
-  }
-
-  function today() {
+  const uid = (p) => p + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
+  const slug = (s) =>
+    String(s || "item").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 48);
+  const today = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  };
+
+  // ----- image handling -------------------------------------------------
+  function pickFile(accept, multiple) {
+    return new Promise((resolve) => {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = accept;
+      input.multiple = !!multiple;
+      input.onchange = () => resolve([...(input.files || [])]);
+      input.click();
+    });
   }
 
-  function attr(s) {
-    return String(s ?? "").replace(/"/g, "&quot;");
-  }
-
-  function fileToDataUrl(file, maxEdge = 1600, quality = 0.84) {
+  function readAsDataUrl(file) {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onerror = reject;
-      reader.onload = () => {
-        if (!file.type.startsWith("image/") || file.type === "application/pdf") {
-          resolve(reader.result);
-          return;
-        }
-        const img = new Image();
-        img.onload = () => {
-          let { width, height } = img;
-          const scale = Math.min(1, maxEdge / Math.max(width, height));
-          width = Math.round(width * scale);
-          height = Math.round(height * scale);
-          const canvas = document.createElement("canvas");
-          canvas.width = width;
-          canvas.height = height;
-          canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", quality));
-        };
-        img.onerror = () => resolve(reader.result);
-        img.src = reader.result;
+      const r = new FileReader();
+      r.onerror = reject;
+      r.onload = () => resolve(r.result);
+      r.readAsDataURL(file);
+    });
+  }
+
+  // shrink photos in the browser so the site stays fast
+  async function toWebImage(file, maxEdge = 1600, quality = 0.84) {
+    const raw = await readAsDataUrl(file);
+    if (!/^image\//.test(file.type)) return raw;
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        const scale = Math.min(1, maxEdge / Math.max(width, height));
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+        const c = document.createElement("canvas");
+        c.width = width;
+        c.height = height;
+        c.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve(c.toDataURL("image/jpeg", quality));
       };
-      reader.readAsDataURL(file);
+      img.onerror = () => resolve(raw);
+      img.src = raw;
     });
   }
 
-  function downloadBlob(blob, filename) {
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(a.href);
+  // ----- model helpers --------------------------------------------------
+  const get = (path) => window.HJ_getPath(site, path);
+  const set = (path, value) => window.HJ_setPath(site, path, value);
+
+  function touch() {
+    dirty = true;
+    localStorage.setItem("hj-site-draft", JSON.stringify(site));
+    updateBar();
   }
 
-  function downloadDataUrl(dataUrl, filename) {
-    const a = document.createElement("a");
-    a.href = dataUrl;
-    a.download = filename;
-    a.click();
-  }
-
-  function saveDraft() {
-    window.HJ_saveSite(site);
-  }
-
-  async function ensureSite() {
-    if (site) return site;
-    if (window.HJ_SITE) {
-      site = JSON.parse(JSON.stringify(window.HJ_SITE));
-      return site;
-    }
-    site = await window.HJ_loadSite();
-    site = JSON.parse(JSON.stringify(site));
-    return site;
-  }
-
-  // ----- GitHub publish: upload data-URLs then site.json -----
-  async function putGithubFile(path, contentB64, token, message) {
-    const api = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${path}`;
-    const headers = {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    };
-    let sha;
-    const meta = await fetch(api + `?ref=${gh.branch || "main"}`, { headers });
-    if (meta.ok) sha = (await meta.json()).sha;
-    const put = await fetch(api, {
-      method: "PUT",
-      headers,
-      body: JSON.stringify({
-        message,
-        content: contentB64,
-        branch: gh.branch || "main",
-        ...(sha ? { sha } : {}),
-      }),
+  function rerender() {
+    localStorage.setItem("hj-site-draft", JSON.stringify(site));
+    window.HJ_SITE = site;
+    window.HJ_hydrateSite(site);
+    dirty = true;
+    // re-arm editing on the fresh DOM
+    requestAnimationFrame(() => {
+      if (isEditing()) armEditing();
+      updateBar();
     });
-    if (!put.ok) throw new Error(await put.text());
-    return put.json();
   }
 
-  function dataUrlToB64(dataUrl) {
-    return dataUrl.split(",")[1];
-  }
+  // ----- edit mode ------------------------------------------------------
+  const isUnlocked = () => sessionStorage.getItem(UNLOCK_KEY) === "1";
+  const isEditing = () => sessionStorage.getItem(EDITING_KEY) === "1";
 
-  async function publish(token) {
-    // resume PDF
-    if (site.resume && site.resume.pdf && site.resume.pdf.startsWith("data:")) {
-      const path = "assets/resume/Hannah-Jew-Resume.pdf";
-      await putGithubFile(path, dataUrlToB64(site.resume.pdf), token, "Update resume PDF");
-      site.resume.pdf = path;
-    }
+  function armEditing() {
+    document.body.classList.add("hj-edit");
 
-    async function materialize(list, folder, nameFn) {
-      for (const item of list || []) {
-        if (item.src && item.src.startsWith("data:image")) {
-          const name = nameFn(item);
-          const path = `${folder}/${name}`;
-          await putGithubFile(path, dataUrlToB64(item.src), token, `Add image ${name}`);
-          item.src = path;
-        }
-        if (item.poster && item.poster.startsWith("data:image")) {
-          const name = slugify(item.title || "poster") + "_" + today() + ".jpg";
-          const path = `assets/img/shows/${name}`;
-          await putGithubFile(path, dataUrlToB64(item.poster), token, `Add show poster ${name}`);
-          item.poster = path;
-        }
-      }
-    }
+    // 1. text you can click and type
+    $$("[data-edit]").forEach((el) => {
+      if (el.dataset.armed === "1") return;
+      el.dataset.armed = "1";
+      el.setAttribute("contenteditable", "plaintext-only");
+      el.setAttribute("spellcheck", "true");
 
-    await materialize(site.headshots, "assets/img/headshots", (i) => `${slugify(i.title || "headshot")}_${today()}.jpg`);
-    await materialize(site.portfolio, "assets/img/portfolio", (i) => {
-      const ph = slugify(i.credit || "photo");
-      return `${slugify(i.title)}_${today()}_${ph}.jpg`;
-    });
-    await materialize(site.upcoming, "assets/img/shows", (i) => `${slugify(i.title)}_${today()}.jpg`);
-
-    // home / about / contact images
-    for (const [obj, key, folder, label] of [
-      [site.home, "heroImage", "assets/img", "hero"],
-      [site.home, "introImage", "assets/img", "intro"],
-      [site.about, "image", "assets/img", "about"],
-      [site.contact, "image", "assets/img", "contact"],
-    ]) {
-      if (obj && obj[key] && obj[key].startsWith("data:image")) {
-        const name = `${label}_${today()}.jpg`;
-        const path = `${folder}/${name}`;
-        await putGithubFile(path, dataUrlToB64(obj[key]), token, `Update ${label} image`);
-        obj[key] = path;
-      }
-    }
-
-    const json = JSON.stringify(site, null, 2);
-    const b64 = btoa(unescape(encodeURIComponent(json)));
-    await putGithubFile("assets/data/site.json", b64, token, "Update site content from Studio");
-    // keep portfolio.json mirror for convenience
-    await putGithubFile(
-      "assets/data/portfolio.json",
-      btoa(unescape(encodeURIComponent(JSON.stringify(site.portfolio || [], null, 2)))),
-      token,
-      "Sync portfolio.json from site content"
-    );
-    window.HJ_clearSiteDraft();
-    window.HJ_saveSite(site);
-    localStorage.removeItem(DRAFT_KEY);
-  }
-
-  function exportDownload() {
-    // download new binary assets
-    if (site.resume && site.resume.pdf && site.resume.pdf.startsWith("data:")) {
-      downloadDataUrl(site.resume.pdf, "Hannah-Jew-Resume.pdf");
-      site.resume.pdf = "assets/resume/Hannah-Jew-Resume.pdf";
-    }
-    const dump = (list, folder, nameFn) => {
-      (list || []).forEach((item) => {
-        if (item.src && item.src.startsWith("data:image")) {
-          const name = nameFn(item);
-          downloadDataUrl(item.src, name);
-          item.src = `${folder}/${name}`;
-        }
-        if (item.poster && item.poster.startsWith("data:image")) {
-          const name = slugify(item.title || "poster") + "_" + today() + ".jpg";
-          downloadDataUrl(item.poster, name);
-          item.poster = `assets/img/shows/${name}`;
-        }
+      el.addEventListener("input", () => {
+        set(el.dataset.edit, el.textContent.trim());
+        dirty = true;
+        updateBar();
       });
-    };
-    dump(site.headshots, "assets/img/headshots", (i) => `${slugify(i.title || "headshot")}_${today()}.jpg`);
-    dump(site.portfolio, "assets/img/portfolio", (i) => `${slugify(i.title)}_${today()}_${slugify(i.credit || "photo")}.jpg`);
-    dump(site.upcoming, "assets/img/shows", (i) => `${slugify(i.title)}_${today()}.jpg`);
-    for (const [obj, key, label] of [
-      [site.home, "heroImage", "hero"],
-      [site.home, "introImage", "intro"],
-      [site.about, "image", "about"],
-      [site.contact, "image", "contact"],
-    ]) {
-      if (obj && obj[key] && obj[key].startsWith("data:image")) {
-        const name = `${label}_${today()}.jpg`;
-        downloadDataUrl(obj[key], name);
-        obj[key] = `assets/img/${name}`;
-      }
-    }
-    downloadBlob(new Blob([JSON.stringify(site, null, 2)], { type: "application/json" }), "site.json");
-  }
-
-  // ----- field helpers -----
-  function field(label, value, key, multiline) {
-    if (multiline) {
-      return `<label class="studio__field"><span>${label}</span><textarea data-k="${key}" rows="3">${attr(value)}</textarea></label>`;
-    }
-    return `<label class="studio__field"><span>${label}</span><input data-k="${key}" value="${attr(value)}" /></label>`;
-  }
-
-  function listEditor(title, items, fields, addLabel, factory) {
-    const cards = (items || [])
-      .map((item, i) => {
-        const inputs = fields
-          .map(([label, key, type]) => {
-            if (type === "select") {
-              const opts = CAT_OPTS.map(
-                ([v, l]) => `<option value="${v}" ${item[key] === v ? "selected" : ""}>${l}</option>`
-              ).join("");
-              return `<label>${label}<select data-i="${i}" data-f="${key}">${opts}</select></label>`;
-            }
-            if (type === "check") {
-              return `<label class="studio__check"><input type="checkbox" data-i="${i}" data-f="${key}" ${item[key] ? "checked" : ""}/> ${label}</label>`;
-            }
-            return `<label>${label}<input data-i="${i}" data-f="${key}" value="${attr(item[key] || "")}" /></label>`;
-          })
-          .join("");
-        const thumb = item.src || item.poster || "";
-        return `<article class="studio__card" data-i="${i}">
-          ${thumb ? `<img src="${attr(thumb)}" alt="" />` : `<div class="studio__card-ph"></div>`}
-          <div class="studio__card-fields">
-            ${inputs}
-            <div class="studio__row-actions">
-              <button type="button" data-up="${i}">↑</button>
-              <button type="button" data-down="${i}">↓</button>
-              <button type="button" class="studio__remove" data-remove="${i}">Remove</button>
-            </div>
-          </div>
-        </article>`;
-      })
-      .join("");
-    return `
-      <div class="studio__section-head">
-        <h3>${title}</h3>
-        <button type="button" class="btn" data-add>${addLabel}</button>
-      </div>
-      <div class="studio__list" data-list>${cards || '<p class="studio__hint">Nothing here yet. Add one.</p>'}</div>`;
-  }
-
-  function bindList(root, getList, setList, factory) {
-    const list = getList();
-    root.addEventListener("input", (e) => {
-      const el = e.target;
-      if (el.dataset.i == null || !el.dataset.f) return;
-      const i = +el.dataset.i;
-      list[i][el.dataset.f] = el.type === "checkbox" ? el.checked : el.value;
-    });
-    root.addEventListener("click", (e) => {
-      const rem = e.target.closest("[data-remove]");
-      if (rem) {
-        list.splice(+rem.dataset.remove, 1);
-        setList(list);
-        paint();
-        return;
-      }
-      const up = e.target.closest("[data-up]");
-      if (up) {
-        const i = +up.dataset.up;
-        if (i > 0) {
-          [list[i - 1], list[i]] = [list[i], list[i - 1]];
-          setList(list);
-          paint();
+      el.addEventListener("blur", () => {
+        set(el.dataset.edit, el.textContent.trim());
+        touch();
+      });
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          el.blur();
         }
-        return;
-      }
-      const down = e.target.closest("[data-down]");
-      if (down) {
-        const i = +down.dataset.down;
-        if (i < list.length - 1) {
-          [list[i + 1], list[i]] = [list[i], list[i + 1]];
-          setList(list);
-          paint();
-        }
-        return;
-      }
-      if (e.target.closest("[data-add]")) {
-        list.push(factory());
-        setList(list);
-        paint();
-      }
+        e.stopPropagation();
+      });
+      el.addEventListener("click", (e) => e.stopPropagation());
     });
+
+    // 2. photos you can click to replace
+    $$("[data-edit-img]").forEach((el) => {
+      if (el.dataset.armedImg === "1") return;
+      el.dataset.armedImg = "1";
+      el.addEventListener("click", async (e) => {
+        if (!isEditing()) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const files = await pickFile("image/*");
+        if (!files.length) return;
+        set(el.dataset.editImg, await toWebImage(files[0]));
+        rerender();
+      });
+    });
+
+    // empty poster slots
+    $$("[data-edit-empty-img]").forEach((el) => {
+      if (el.dataset.armedImg === "1") return;
+      el.dataset.armedImg = "1";
+      el.addEventListener("click", async () => {
+        const files = await pickFile("image/*");
+        if (!files.length) return;
+        set(el.dataset.editEmptyImg, await toWebImage(files[0]));
+        rerender();
+      });
+    });
+
+    // 3. category chips cycle through the four sections
+    $$("[data-edit-choice]").forEach((el) => {
+      if (el.dataset.armedChoice === "1") return;
+      el.dataset.armedChoice = "1";
+      el.removeAttribute("contenteditable");
+      el.title = "Click to change section";
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const path = el.dataset.edit;
+        const current = get(path);
+        const next = CATEGORIES[(CATEGORIES.indexOf(current) + 1) % CATEGORIES.length];
+        set(path, next);
+        el.textContent = CAT_LABEL[next];
+        const fig = el.closest("[data-category]");
+        if (fig) fig.dataset.category = next;
+        touch();
+      });
+    });
+
+    // 4. ticket links
+    $$("[data-edit-href]").forEach((el) => {
+      if (el.dataset.armedHref === "1") return;
+      el.dataset.armedHref = "1";
+      el.addEventListener("click", (e) => {
+        if (!isEditing()) return;
+        e.preventDefault();
+        const path = el.dataset.editHref;
+        const next = prompt("Ticket link", get(path) || "");
+        if (next == null) return;
+        set(path, next.trim());
+        rerender();
+      });
+    });
+
+    // 5. per-item controls, list add buttons, resume swap
+    decorateItems();
+    decorateLists();
+    decorateResume();
   }
 
-  function paintHome(body) {
-    const h = site.home;
-    const ns = h.nextShow || (h.nextShow = {});
-    body.innerHTML = `
-      <p class="studio__help">Homepage hero, intro text, and the “next on stage” strip.</p>
-      ${field("Hero image URL", h.heroImage, "heroImage")}
-      <label class="btn studio__upload">Replace hero photo<input type="file" accept="image/*" hidden data-img="heroImage" /></label>
-      ${field("Intro headline", h.introHeadline, "introHeadline", true)}
-      ${field("Words to italicize in red", h.introHeadlineEm, "introHeadlineEm")}
-      ${field("Intro paragraph", h.introBody, "introBody", true)}
-      ${field("Intro image URL", h.introImage, "introImage")}
-      <label class="btn studio__upload">Replace intro photo<input type="file" accept="image/*" hidden data-img="introImage" /></label>
-      <h3 class="studio__h3">Next on stage</h3>
-      ${field("Kicker", ns.kicker, "ns.kicker")}
-      ${field("Show title", ns.title, "ns.title")}
-      ${field("Role", ns.role, "ns.role")}
-      ${field("Venue", ns.venue, "ns.venue")}
-      ${field("Link", ns.link, "ns.link")}
-      ${field("Link label", ns.linkLabel, "ns.linkLabel")}`;
-    body.addEventListener("input", onFlatInput);
-    body.addEventListener("change", onImgChange);
+  // the resume PDF gets its own button beside the download link
+  function decorateResume() {
+    const anchor = $("main [data-resume-pdf]");
+    if (!anchor || $(".hj-add[data-resume]")) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "hj-add";
+    btn.dataset.resume = "1";
+    btn.textContent = "↻ Replace resume PDF";
+    btn.addEventListener("click", async () => {
+      const files = await pickFile("application/pdf");
+      if (!files.length) return;
+      site.resume = site.resume || {};
+      site.resume.pdf = await readAsDataUrl(files[0]);
+      rerender();
+      toast("New resume loaded. Publish to put it online.");
+    });
+    anchor.insertAdjacentElement("afterend", btn);
   }
 
-  function onFlatInput(e) {
-    const k = e.target.dataset.k;
-    if (!k) return;
-    if (k.startsWith("ns.")) {
-      site.home.nextShow[k.slice(3)] = e.target.value;
-    } else if (tab === "home") {
-      site.home[k] = e.target.value;
-    } else if (tab === "about") {
-      site.about[k] = e.target.value;
-    } else if (tab === "resume") {
-      site.resume[k] = e.target.value;
-    } else if (tab === "contact") {
-      site.contact[k] = e.target.value;
-    } else if (k === "upcomingNote") {
-      site.upcomingNote = e.target.value;
+  function disarmEditing() {
+    document.body.classList.remove("hj-edit");
+    $$("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
+    $$(".hj-item-tools, .hj-add").forEach((el) => el.remove());
+  }
+
+  function itemInfo(el) {
+    const list = el.dataset.editItem;
+    let index = el.dataset.index;
+    if (index == null) {
+      const path = el.dataset.edit || "";
+      const last = path.split(".").pop();
+      index = /^\d+$/.test(last) ? last : null;
     }
+    return { list, index: index == null ? null : +index };
   }
 
-  async function onImgChange(e) {
-    const key = e.target.dataset.img;
-    if (!key || !e.target.files || !e.target.files[0]) return;
-    const data = await fileToDataUrl(e.target.files[0]);
-    if (tab === "home") site.home[key] = data;
-    else if (tab === "about") site.about[key] = data;
-    else if (tab === "contact") site.contact[key] = data;
-    paint();
-  }
+  function decorateItems() {
+    $$("[data-edit-item]").forEach((el) => {
+      if ($(".hj-item-tools", el)) return;
+      const { list, index } = itemInfo(el);
+      if (list == null || index == null) return;
 
-  function paintAbout(body) {
-    const a = site.about;
-    body.innerHTML = `
-      <p class="studio__help">About page photo and bio. Edit the lists below. Remove a line by deleting its text, or use Remove on each chip row.</p>
-      ${field("Photo URL", a.image, "image")}
-      <label class="btn studio__upload">Replace about photo<input type="file" accept="image/*" hidden data-img="image" /></label>
-      ${field("Photo caption", a.imageCaption, "imageCaption")}
-      ${field("Photo alt text", a.imageAlt, "imageAlt")}
-      <label class="studio__field"><span>Bio paragraphs (one blank line between)</span>
-        <textarea data-paras rows="10">${attr((a.paragraphs || []).join("\n\n"))}</textarea>
-      </label>
-      <label class="studio__field"><span>Highlights (one per line)</span>
-        <textarea data-highlights rows="6">${attr((a.highlights || []).join("\n"))}</textarea>
-      </label>
-      <label class="studio__field"><span>Movement languages (one per line)</span>
-        <textarea data-skills rows="6">${attr((a.skills || []).join("\n"))}</textarea>
-      </label>`;
-    body.addEventListener("input", (e) => {
-      onFlatInput(e);
-      if (e.target.dataset.paras != null || e.target.hasAttribute("data-paras")) {
-        a.paragraphs = e.target.value.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
-      }
-      if (e.target.hasAttribute("data-highlights")) {
-        a.highlights = e.target.value.split("\n").map((x) => x.trim()).filter(Boolean);
-      }
-      if (e.target.hasAttribute("data-skills")) {
-        a.skills = e.target.value.split("\n").map((x) => x.trim()).filter(Boolean);
-      }
-    });
-    body.addEventListener("change", onImgChange);
-  }
+      const tools = document.createElement("div");
+      tools.className = "hj-item-tools";
+      tools.contentEditable = "false";
+      tools.innerHTML = `
+        <button type="button" data-move="-1" title="Move up">↑</button>
+        <button type="button" data-move="1" title="Move down">↓</button>
+        <button type="button" data-del title="Remove">✕</button>`;
 
-  function paintResume(body) {
-    site.headshots = site.headshots || [];
-    site.resume = site.resume || {};
-    body.innerHTML = `
-      <p class="studio__help">Upload a new resume PDF anytime. Manage headshots: add, reorder, or remove.</p>
-      ${field("Resume blurb", site.resume.blurb, "blurb", true)}
-      <p class="studio__hint">Current resume: ${site.resume.pdf && site.resume.pdf.startsWith("data:") ? "new PDF ready to publish" : site.resume.pdf || "(none)"}</p>
-      <label class="btn btn--red studio__upload">Upload resume PDF<input type="file" accept="application/pdf" hidden data-resume /></label>
-      ${listEditor(
-        "Headshots",
-        site.headshots,
-        [
-          ["Title", "title"],
-          ["Photographer credit", "credit"],
-          ["Alt text", "alt"],
-        ],
-        "+ Add headshot",
-        () => ({ id: uid("hs"), src: "", title: "Hannah Jew", credit: "", alt: "" })
-      )}
-      <label class="btn studio__upload" style="margin-top:0.8rem">+ Upload headshot photo<input type="file" accept="image/*" multiple hidden data-hs-files /></label>`;
-    body.addEventListener("input", onFlatInput);
-    bindList(
-      body,
-      () => site.headshots,
-      (v) => (site.headshots = v),
-      () => ({ id: uid("hs"), src: "", title: "Hannah Jew", credit: "", alt: "" })
-    );
-    $("[data-resume]", body).onchange = async (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      site.resume.pdf = await fileToDataUrl(f);
-      paint();
-    };
-    $("[data-hs-files]", body).onchange = async (e) => {
-      for (const file of e.target.files) {
-        const src = await fileToDataUrl(file);
-        site.headshots.unshift({
-          id: uid("hs"),
-          src,
-          title: "Hannah Jew",
-          credit: "",
-          alt: "Headshot of Hannah Jew",
-        });
-      }
-      paint();
-    };
-  }
-
-  function paintPortfolio(body) {
-    site.portfolio = site.portfolio || [];
-    body.innerHTML = `
-      <p class="studio__help">Portfolio photos with photographer credits under each. Rename files like PhotoName_date_photographer before upload when you can.</p>
-      <label class="btn btn--red studio__upload">+ Add photos<input type="file" accept="image/*" multiple hidden data-files /></label>
-      ${listEditor(
-        "Portfolio pieces",
-        site.portfolio,
-        [
-          ["Title", "title"],
-          ["Photographer credit", "credit"],
-          ["Category", "category", "select"],
-          ["Alt text", "alt"],
-        ],
-        "+ Empty item",
-        () => ({
-          id: uid("p"),
-          src: "",
-          title: "New photo",
-          credit: "",
-          category: "photoshoots",
-          alt: "",
-        })
-      )}`;
-    bindList(
-      body,
-      () => site.portfolio,
-      (v) => (site.portfolio = v),
-      () => ({
-        id: uid("p"),
-        src: "",
-        title: "New photo",
-        credit: "",
-        category: "photoshoots",
-        alt: "",
-      })
-    );
-    $("[data-files]", body).onchange = async (e) => {
-      for (const file of e.target.files) {
-        const src = await fileToDataUrl(file);
-        const base = file.name.replace(/\.[^.]+$/, "");
-        const parts = base.split("_");
-        let title = base.replace(/[_-]+/g, " ");
-        let credit = "";
-        if (parts.length >= 3) {
-          credit = parts[parts.length - 1].replace(/[-]+/g, " ");
-          title = parts.slice(0, -2).join(" ").replace(/[-]+/g, " ") || title;
+      tools.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const arr = get(list) || [];
+        if (btn.hasAttribute("data-del")) {
+          const label = typeof arr[index] === "string" ? arr[index] : arr[index] && arr[index].title;
+          if (!confirm(`Remove “${label || "this item"}”?`)) return;
+          arr.splice(index, 1);
+        } else {
+          const to = index + +btn.dataset.move;
+          if (to < 0 || to >= arr.length) return;
+          [arr[to], arr[index]] = [arr[index], arr[to]];
         }
-        site.portfolio.unshift({
+        set(list, arr);
+        rerender();
+      });
+
+      if (getComputedStyle(el).position === "static") el.style.position = "relative";
+      el.appendChild(tools);
+    });
+  }
+
+  const LIST_ADD = {
+    "about.paragraphs": { label: "+ Add paragraph", make: () => "New paragraph. Click to write." },
+    "about.highlights": { label: "+ Add highlight", make: () => "New highlight" },
+    "about.skills": { label: "+ Add skill", make: () => "New skill" },
+    portfolio: {
+      label: "+ Add photos",
+      photo: true,
+      make: (src, name) => {
+        const parts = String(name || "").replace(/\.[^.]+$/, "").split("_");
+        const credit = parts.length >= 3 ? parts[parts.length - 1].replace(/-+/g, " ") : "";
+        const title =
+          parts.length >= 3
+            ? parts.slice(0, -2).join(" ").replace(/-+/g, " ")
+            : String(name || "New photo").replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ");
+        return {
           id: uid("p"),
           src,
           title: title.trim() || "New photo",
           credit: credit.trim(),
           category: "photoshoots",
           alt: title.trim() || "Portfolio photo",
-        });
-      }
-      paint();
-    };
-  }
-
-  function paintUpcoming(body) {
-    site.upcoming = site.upcoming || [];
-    body.innerHTML = `
-      <p class="studio__help">Add or remove shows. Featured shows get the big poster layout.</p>
-      ${field("Note under the list", site.upcomingNote || "", "upcomingNote", true)}
-      <label class="btn btn--red studio__upload">+ Add show with poster<input type="file" accept="image/*" hidden data-show-poster /></label>
-      ${listEditor(
-        "Shows",
-        site.upcoming,
-        [
-          ["Title", "title"],
-          ["Role", "role"],
-          ["Venue", "venue"],
-          ["Month", "month"],
-          ["Year", "year"],
-          ["On-sale note", "onsale"],
-          ["Tickets URL", "tickets"],
-          ["Featured", "featured", "check"],
-        ],
-        "+ Add show",
-        () => ({
-          id: uid("show"),
-          title: "New show",
-          role: "",
-          venue: "",
-          month: "TBA",
-          year: String(new Date().getFullYear()),
-          onsale: "",
-          tickets: "",
-          poster: "",
-          posterAlt: "",
-          featured: false,
-        })
-      )}`;
-    body.addEventListener("input", onFlatInput);
-    bindList(
-      body,
-      () => site.upcoming,
-      (v) => (site.upcoming = v),
-      () => ({
+        };
+      },
+    },
+    headshots: {
+      label: "+ Add headshot",
+      photo: true,
+      make: (src) => ({ id: uid("hs"), src, title: "Hannah Jew", credit: "", alt: "Headshot of Hannah Jew" }),
+    },
+    upcoming: {
+      label: "+ Add show",
+      make: () => ({
         id: uid("show"),
         title: "New show",
         role: "",
@@ -576,218 +340,366 @@
         poster: "",
         posterAlt: "",
         featured: false,
-      })
-    );
-    $("[data-show-poster]", body).onchange = async (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      const poster = await fileToDataUrl(f);
-      site.upcoming.unshift({
-        id: uid("show"),
-        title: "New show",
-        role: "",
-        venue: "",
-        month: "TBA",
-        year: String(new Date().getFullYear()),
-        onsale: "Tickets on sale soon",
-        tickets: "",
-        poster,
-        posterAlt: "",
-        featured: true,
+      }),
+    },
+  };
+
+  function decorateLists() {
+    $$("[data-edit-list]").forEach((listEl) => {
+      const path = listEl.dataset.editList;
+      const conf = LIST_ADD[path];
+      if (!conf) return;
+      if (listEl.nextElementSibling && listEl.nextElementSibling.classList.contains("hj-add")) return;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "hj-add";
+      btn.contentEditable = "false";
+      btn.textContent = conf.label;
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const arr = get(path) || [];
+        if (conf.photo) {
+          const files = await pickFile("image/*", true);
+          if (!files.length) return;
+          for (const f of files) {
+            arr.unshift(conf.make(await toWebImage(f), f.name));
+          }
+        } else {
+          arr.push(conf.make());
+        }
+        set(path, arr);
+        rerender();
       });
-      paint();
+      listEl.insertAdjacentElement("afterend", btn);
+    });
+  }
+
+  // ----- publishing -----------------------------------------------------
+  async function ghPut(path, b64, token, message) {
+    const api = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${path}`;
+    const headers = {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     };
+    let sha;
+    const meta = await fetch(`${api}?ref=${gh.branch || "main"}`, { headers });
+    if (meta.ok) sha = (await meta.json()).sha;
+    const res = await fetch(api, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({ message, content: b64, branch: gh.branch || "main", ...(sha ? { sha } : {}) }),
+    });
+    if (!res.ok) throw new Error(await res.text());
   }
 
-  function paintContact(body) {
-    const c = site.contact;
-    body.innerHTML = `
-      <p class="studio__help">Contact details and representation. Update anytime.</p>
-      ${field("Headline", c.headline, "headline")}
-      ${field("Italic word in headline", c.headlineEm, "headlineEm")}
-      ${field("Subline", c.sub, "sub", true)}
-      ${field("Email", c.email, "email")}
-      ${field("Agency", c.agency, "agency")}
-      ${field("Address", c.address, "address")}
-      ${field("Phone", c.phone, "phone")}
-      ${field("Fax", c.fax, "fax")}
-      ${field("Instagram URL", c.instagram, "instagram")}
-      ${field("Instagram handle", c.instagramHandle, "instagramHandle")}
-      ${field("LinkedIn URL", c.linkedin, "linkedin")}
-      ${field("LinkedIn label", c.linkedinLabel, "linkedinLabel")}
-      ${field("Photo URL", c.image, "image")}
-      <label class="btn studio__upload">Replace contact photo<input type="file" accept="image/*" hidden data-img="image" /></label>
-      ${field("Photo caption", c.imageCaption, "imageCaption")}`;
-    body.addEventListener("input", onFlatInput);
-    body.addEventListener("change", onImgChange);
-  }
+  const b64of = (dataUrl) => dataUrl.split(",")[1];
+  const jsonB64 = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2))));
 
-  function paint() {
-    const panel = $("#hj-studio");
-    if (!panel || panel.hidden) return;
-    const body = $("[data-body]", panel);
-    const unlocked = sessionStorage.getItem(UNLOCK_KEY) === "1";
-    if (!unlocked) {
-      body.innerHTML = `
-        <p class="studio__help">Edit every page of the site: photos, resume, credits, shows, and contact. Passcode keeps it private.</p>
-        <label class="studio__field"><span>Passcode</span>
-          <input type="password" data-pin placeholder="Enter passcode" autocomplete="current-password" />
-        </label>
-        <button type="button" class="btn btn--red" data-unlock>Unlock studio</button>
-        <p class="studio__hint">Ask Vipul for the passcode if you need it.</p>`;
-      $("[data-unlock]", body).onclick = () => {
-        if (($("[data-pin]", body).value || "").trim() === PIN) {
-          sessionStorage.setItem(UNLOCK_KEY, "1");
-          paint();
-        } else alert("That passcode isn't right.");
-      };
-      return;
+  async function publish(token, say) {
+    if (site.resume && String(site.resume.pdf || "").startsWith("data:")) {
+      say("Uploading resume…");
+      await ghPut("assets/resume/Hannah-Jew-Resume.pdf", b64of(site.resume.pdf), token, "Update resume PDF");
+      site.resume.pdf = "assets/resume/Hannah-Jew-Resume.pdf";
     }
 
-    const tabs = TABS.map(
-      ([id, label]) =>
-        `<button type="button" class="studio__tab ${tab === id ? "is-active" : ""}" data-tab="${id}">${label}</button>`
-    ).join("");
-
-    body.innerHTML = `
-      <nav class="studio__tabs">${tabs}</nav>
-      <div data-pane></div>
-      <div class="studio__footer-actions">
-        <button type="button" class="btn btn--red" data-save>Save &amp; preview</button>
-        <button type="button" class="btn" data-download>Download site.json</button>
-        <button type="button" class="btn" data-reset>Reset draft</button>
-      </div>
-      <details class="studio__publish">
-        <summary>Publish to GitHub Pages</summary>
-        <p class="studio__hint">Optional. Paste a fine-grained GitHub token with Contents access. Stored only in this browser session.</p>
-        <label class="studio__field"><span>GitHub token</span>
-          <input type="password" data-token placeholder="ghp_…" autocomplete="off" />
-        </label>
-        <button type="button" class="btn btn--red" data-publish>Publish live</button>
-        <p class="studio__status" data-status></p>
-      </details>`;
-
-    const pane = $("[data-pane]", body);
-    const painters = {
-      home: paintHome,
-      about: paintAbout,
-      resume: paintResume,
-      portfolio: paintPortfolio,
-      upcoming: paintUpcoming,
-      contact: paintContact,
-    };
-    painters[tab](pane);
-
-    $$("[data-tab]", body).forEach((btn) => {
-      btn.onclick = () => {
-        tab = btn.dataset.tab;
-        paint();
-      };
-    });
-
-    $("[data-save]", body).onclick = () => {
-      saveDraft();
-      $("[data-status]", body).textContent = "Saved on this device. Refresh any page to see it.";
-    };
-    $("[data-download]", body).onclick = () => {
-      exportDownload();
-      $("[data-status]", body).textContent =
-        "Downloaded site.json (and any new files). Send those to Vipul, or use Publish.";
-    };
-    $("[data-reset]", body).onclick = async () => {
-      if (!confirm("Clear your draft and reload the live site content?")) return;
-      window.HJ_clearSiteDraft();
-      site = await window.HJ_loadSite();
-      site = JSON.parse(JSON.stringify(site));
-      window.HJ_hydrateSite(site);
-      paint();
-    };
-    const tokenInput = $("[data-token]", body);
-    tokenInput.value = sessionStorage.getItem(TOKEN_KEY) || "";
-    $("[data-publish]", body).onclick = async () => {
-      const token = tokenInput.value.trim();
-      if (!token) {
-        alert("Paste a GitHub token, or use Download and send files to Vipul.");
-        return;
+    const uploads = [
+      ["portfolio", "assets/img/portfolio", (i) => `${slug(i.title)}_${today()}_${slug(i.credit || "photo")}.jpg`, "src"],
+      ["headshots", "assets/img/headshots", (i) => `${slug(i.title || "headshot")}_${today()}.jpg`, "src"],
+      ["upcoming", "assets/img/shows", (i) => `${slug(i.title)}_${today()}.jpg`, "poster"],
+    ];
+    for (const [listKey, folder, nameFn, field] of uploads) {
+      for (const item of site[listKey] || []) {
+        if (String(item[field] || "").startsWith("data:image")) {
+          const p = `${folder}/${nameFn(item)}`;
+          say(`Uploading ${item.title || "photo"}…`);
+          await ghPut(p, b64of(item[field]), token, `Add image ${p}`);
+          item[field] = p;
+        }
       }
-      sessionStorage.setItem(TOKEN_KEY, token);
-      const status = $("[data-status]", body);
-      status.textContent = "Publishing…";
-      try {
-        await publish(token);
-        status.textContent = "Published. GitHub Pages updates in a minute or two.";
-        paint();
-      } catch (err) {
-        console.error(err);
-        status.textContent = "Publish failed: " + err.message;
+    }
+
+    const singles = [
+      [site.home, "heroImage", "hero"],
+      [site.home, "introImage", "intro"],
+      [site.about, "image", "about"],
+      [site.contact, "image", "contact"],
+    ];
+    for (const [obj, key, label] of singles) {
+      if (obj && String(obj[key] || "").startsWith("data:image")) {
+        const p = `assets/img/${label}_${today()}.jpg`;
+        say(`Uploading ${label} photo…`);
+        await ghPut(p, b64of(obj[key]), token, `Update ${label} image`);
+        obj[key] = p;
       }
-    };
+    }
+
+    say("Saving content…");
+    await ghPut("assets/data/site.json", jsonB64(site), token, "Update site content from Studio");
+    await ghPut("assets/data/portfolio.json", jsonB64(site.portfolio || []), token, "Sync portfolio.json");
+
+    window.HJ_clearSiteDraft();
+    dirty = false;
   }
 
-  async function mount() {
-    if ($("#hj-studio")) return;
+  function downloadBlob(blob, filename) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
 
-    const gear = document.createElement("button");
-    gear.className = "studio-gear";
-    gear.type = "button";
-    gear.setAttribute("aria-label", "Open site studio");
-    gear.title = "Edit site content";
-    gear.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7">
+  function exportEverything() {
+    const copy = JSON.parse(JSON.stringify(site));
+    const dl = (dataUrl, filename) => {
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = filename;
+      a.click();
+    };
+    if (String(copy.resume?.pdf || "").startsWith("data:")) {
+      dl(copy.resume.pdf, "Hannah-Jew-Resume.pdf");
+      copy.resume.pdf = "assets/resume/Hannah-Jew-Resume.pdf";
+    }
+    const lists = [
+      ["portfolio", "assets/img/portfolio", (i) => `${slug(i.title)}_${today()}_${slug(i.credit || "photo")}.jpg`, "src"],
+      ["headshots", "assets/img/headshots", (i) => `${slug(i.title || "headshot")}_${today()}.jpg`, "src"],
+      ["upcoming", "assets/img/shows", (i) => `${slug(i.title)}_${today()}.jpg`, "poster"],
+    ];
+    lists.forEach(([key, folder, nameFn, field]) => {
+      (copy[key] || []).forEach((item) => {
+        if (String(item[field] || "").startsWith("data:image")) {
+          const name = nameFn(item);
+          dl(item[field], name);
+          item[field] = `${folder}/${name}`;
+        }
+      });
+    });
+    [
+      [copy.home, "heroImage", "hero"],
+      [copy.home, "introImage", "intro"],
+      [copy.about, "image", "about"],
+      [copy.contact, "image", "contact"],
+    ].forEach(([obj, key, label]) => {
+      if (obj && String(obj[key] || "").startsWith("data:image")) {
+        const name = `${label}_${today()}.jpg`;
+        dl(obj[key], name);
+        obj[key] = `assets/img/${name}`;
+      }
+    });
+    downloadBlob(new Blob([JSON.stringify(copy, null, 2)], { type: "application/json" }), "site.json");
+  }
+
+  // ----- chrome: gear, passcode, edit bar --------------------------------
+  function gearSvg() {
+    return `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7">
       <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
       <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.86l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.08V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.5 19.4a1.7 1.7 0 0 0-1.86.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.08-.4H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.5a1.7 1.7 0 0 0-.34-1.86l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 8.5 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.08V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 .4 1.08 1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.86-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 8.5a1.7 1.7 0 0 0 .6 1 1.7 1.7 0 0 0 1.08.4H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.08.4 1.7 1.7 0 0 0-.43 1.1Z"/>
     </svg>`;
+  }
 
-    const panel = document.createElement("div");
-    panel.id = "hj-studio";
-    panel.className = "studio";
-    panel.hidden = true;
-    panel.innerHTML = `
-      <div class="studio__backdrop" data-close></div>
-      <div class="studio__sheet" role="dialog" aria-modal="true" aria-label="Site studio">
-        <header class="studio__head">
-          <div>
-            <p class="studio__kicker">Site studio</p>
-            <h2>Customize the site</h2>
-          </div>
-          <button type="button" class="studio__x" data-close aria-label="Close">×</button>
-        </header>
-        <div class="studio__body" data-body></div>
-      </div>`;
-
-    document.body.appendChild(gear);
-    document.body.appendChild(panel);
-
-    const close = () => {
-      panel.hidden = true;
-      document.body.classList.remove("studio-open");
-    };
-    const open = async () => {
-      await ensureSite();
-      // pick sensible default tab for current page
-      const path = location.pathname;
-      if (path.includes("about")) tab = "about";
-      else if (path.includes("headshots")) tab = "resume";
-      else if (path.includes("portfolio")) tab = "portfolio";
-      else if (path.includes("upcoming")) tab = "upcoming";
-      else if (path.includes("contact")) tab = "contact";
-      else tab = "home";
-      panel.hidden = false;
-      document.body.classList.add("studio-open");
-      paint();
-    };
-
-    panel.addEventListener("click", (e) => {
-      if (e.target.closest("[data-close]")) close();
+  function buildGear() {
+    const gear = document.createElement("button");
+    gear.type = "button";
+    gear.className = "studio-gear";
+    gear.setAttribute("aria-label", "Edit this site");
+    gear.innerHTML = gearSvg() + "<span>Edit site</span>";
+    gear.addEventListener("click", () => {
+      if (!isUnlocked()) return askPin();
+      startEditing();
     });
-    gear.addEventListener("click", open);
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !panel.hidden) close();
+    document.body.appendChild(gear);
+  }
+
+  function askPin() {
+    const wrap = document.createElement("div");
+    wrap.className = "studio-lock";
+    wrap.innerHTML = `
+      <div class="studio-lock__card" role="dialog" aria-modal="true" aria-label="Passcode">
+        <p class="studio-lock__kicker">Site studio</p>
+        <h2>Edit your website</h2>
+        <p class="studio-lock__help">Enter your passcode, then just click anything on the page to change it.</p>
+        <input type="password" placeholder="Passcode" autocomplete="current-password" />
+        <div class="studio-lock__actions">
+          <button type="button" data-go class="btn btn--red">Start editing</button>
+          <button type="button" data-cancel class="btn">Cancel</button>
+        </div>
+      </div>`;
+    document.body.appendChild(wrap);
+    const input = $("input", wrap);
+    input.focus();
+    const close = () => wrap.remove();
+    const go = () => {
+      if (input.value.trim() === PIN) {
+        sessionStorage.setItem(UNLOCK_KEY, "1");
+        close();
+        startEditing();
+      } else {
+        wrap.classList.add("is-wrong");
+        input.select();
+        setTimeout(() => wrap.classList.remove("is-wrong"), 600);
+      }
+    };
+    $("[data-go]", wrap).onclick = go;
+    $("[data-cancel]", wrap).onclick = close;
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") go();
+      if (e.key === "Escape") close();
     });
   }
 
+  function startEditing() {
+    sessionStorage.setItem(EDITING_KEY, "1");
+    buildBar();
+    armEditing();
+    toast("Edit mode on. Click any words or photo to change it.");
+  }
+
+  function stopEditing() {
+    sessionStorage.removeItem(EDITING_KEY);
+    disarmEditing();
+    const bar = $(".studio-bar");
+    if (bar) bar.remove();
+  }
+
+  function toast(msg) {
+    let t = $(".studio-toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.className = "studio-toast";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add("is-on");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove("is-on"), 3200);
+  }
+
+  function currentPage() {
+    const f = location.pathname.split("/").pop() || "index.html";
+    return f === "" ? "index.html" : f;
+  }
+
+  function buildBar() {
+    if ($(".studio-bar")) return;
+    const here = currentPage();
+    const bar = document.createElement("div");
+    bar.className = "studio-bar";
+    bar.innerHTML = `
+      <div class="studio-bar__pages">
+        ${PAGES.map(
+          ([href, label]) =>
+            `<a href="${href}" class="${href === here ? "is-here" : ""}">${label}</a>`
+        ).join("")}
+      </div>
+      <div class="studio-bar__accent">
+        <span>Accent</span>
+        ${ACCENTS.map(
+          ([hex, name]) => `<button type="button" class="studio-swatch" data-accent="${hex}" title="${name}" style="background:${hex}"></button>`
+        ).join("")}
+        <label class="studio-swatch studio-swatch--custom" title="Custom colour">
+          <input type="color" data-accent-custom />
+        </label>
+      </div>
+      <div class="studio-bar__actions">
+        <span class="studio-bar__state" data-state></span>
+        <button type="button" class="btn btn--red" data-publish>Publish</button>
+        <button type="button" class="btn" data-download>Save file</button>
+        <button type="button" class="btn" data-undo>Undo all</button>
+        <button type="button" class="btn" data-done>Done</button>
+      </div>`;
+    document.body.appendChild(bar);
+
+    $$("[data-accent]", bar).forEach((btn) => {
+      btn.onclick = () => {
+        site.theme = site.theme || {};
+        site.theme.accent = btn.dataset.accent;
+        window.HJ_applyAccent(site);
+        touch();
+      };
+    });
+    const custom = $("[data-accent-custom]", bar);
+    custom.value = (site.theme && site.theme.accent) || "#d7281c";
+    custom.oninput = () => {
+      site.theme = site.theme || {};
+      site.theme.accent = custom.value;
+      window.HJ_applyAccent(site);
+      touch();
+    };
+
+    $("[data-done]", bar).onclick = () => {
+      stopEditing();
+      toast(dirty ? "Saved on this device. Use Publish to put it online." : "Edit mode off.");
+    };
+
+    $("[data-undo]", bar).onclick = async () => {
+      if (!confirm("Undo every change you have made since the last publish?")) return;
+      window.HJ_clearSiteDraft();
+      site = await window.HJ_loadSite();
+      window.HJ_hydrateSite(site);
+      dirty = false;
+      requestAnimationFrame(armEditing);
+      toast("Back to the published version.");
+    };
+
+    $("[data-download]", bar).onclick = () => {
+      exportEverything();
+      toast("Downloaded your content file plus any new photos.");
+    };
+
+    $("[data-publish]", bar).onclick = async () => {
+      let token = sessionStorage.getItem(TOKEN_KEY) || "";
+      if (!token) {
+        token = (prompt("Paste your GitHub token to publish (ask Vipul if you don't have one):", "") || "").trim();
+        if (!token) return;
+        sessionStorage.setItem(TOKEN_KEY, token);
+      }
+      const state = $("[data-state]", bar);
+      const say = (m) => (state.textContent = m);
+      try {
+        await publish(token, say);
+        say("");
+        toast("Published. Your website updates in a minute or two.");
+        updateBar();
+      } catch (err) {
+        console.error(err);
+        say("");
+        sessionStorage.removeItem(TOKEN_KEY);
+        toast("Publish failed. Use Save file and send it to Vipul.");
+      }
+    };
+
+    updateBar();
+  }
+
+  function updateBar() {
+    const state = $(".studio-bar [data-state]");
+    if (state && !state.textContent.endsWith("…")) {
+      state.textContent = dirty ? "Unpublished changes" : "";
+    }
+  }
+
+  // ----- boot -----------------------------------------------------------
+  async function boot() {
+    site = window.HJ_SITE || (await window.HJ_loadSite());
+    dirty = window.HJ_hasDraft();
+    buildGear();
+    if (isUnlocked() && isEditing()) {
+      buildBar();
+      armEditing();
+    }
+  }
+
+  document.addEventListener("hj:site-ready", () => {
+    site = window.HJ_SITE;
+    if (isEditing()) requestAnimationFrame(armEditing);
+  });
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount);
+    document.addEventListener("DOMContentLoaded", boot);
   } else {
-    mount();
+    boot();
   }
 })();
