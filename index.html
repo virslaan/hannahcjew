@@ -45,10 +45,9 @@
   </header>
 
   <main>
-    <!-- HERO -->
     <section class="hero">
       <div class="hero__img">
-        <img src="assets/img/hero-tutu-bw.jpg" alt="Hannah Jew in a tutu and pointe shoes, folded forward in an expressive pose" fetchpriority="high" />
+        <img data-home-hero src="assets/img/hero-tutu-bw.jpg" alt="Hannah Jew in a tutu and pointe shoes, folded forward in an expressive pose" fetchpriority="high" />
       </div>
       <div class="hero__content">
         <h1 class="hero__name" aria-label="Hannah Jew">
@@ -61,41 +60,36 @@
       </div>
     </section>
 
-    <!-- INTRO -->
     <section class="container">
       <div class="intro">
         <div class="will-reveal">
-          <h2>A multi-hyphenate artist moving between <em>ballet, Broadway, and heritage</em>, telling stories that don't fit in one box.</h2>
-          <p>Hannah Jew 周健倫 is a New York City-based dancer, choreographer, and educator. From the national tour of <i>The King and I</i> to world premieres at the Smithsonian, from pointe shoes to traditional Chinese ribbons and fans, her work lives where classical rigor meets cultural storytelling.</p>
+          <h2 data-home-headline>A multi-hyphenate artist moving between <em>ballet, Broadway, and heritage</em>, telling stories that don't fit in one box.</h2>
+          <p data-home-body>Hannah Jew is a New York City-based dancer, choreographer, and educator. From the national tour of <i>The King and I</i> to world premieres at the Smithsonian, from pointe shoes to traditional Chinese ribbons and fans, her work lives where classical rigor meets cultural storytelling.</p>
           <a class="btn" href="about.html">More about Hannah <span aria-hidden="true">→</span></a>
         </div>
         <figure class="intro__img will-reveal">
-          <img src="assets/img/green-leotard.jpg" alt="Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape" loading="lazy" />
+          <img data-home-intro-img src="assets/img/green-leotard.jpg" alt="Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape" loading="lazy" />
         </figure>
       </div>
     </section>
 
-    <!-- NEXT SHOW -->
     <section class="next-show">
       <div class="container will-reveal">
         <div>
-          <p class="kicker">Next on stage</p>
-          <h2><em>CATS</em> · Victoria</h2>
+          <p class="kicker" data-home-next-kicker>Next on stage</p>
+          <h2 data-home-next-title><em>CATS</em> · Victoria</h2>
         </div>
-        <p class="meta">Beef &amp; Boards Dinner Theatre · Indianapolis, IN</p>
-        <a class="btn" href="upcoming.html">All upcoming <span aria-hidden="true">→</span></a>
+        <p class="meta" data-home-next-venue>Beef &amp; Boards Dinner Theatre · Indianapolis, IN</p>
+        <a class="btn" data-home-next-link href="upcoming.html">All upcoming <span aria-hidden="true">→</span></a>
       </div>
     </section>
 
-    <!-- INSTAGRAM: her latest posts, self-hosted (see assets/img/insta/) -->
     <section class="insta">
       <div class="container container--wide">
         <div class="page-head will-reveal">
           <p class="kicker">On Instagram</p>
           <h1 style="font-size:clamp(1.6rem,3.2vw,2.4rem);">Latest from <em>@hannahjew</em></h1>
         </div>
-        <!-- these six images refresh automatically from her latest posts
-             (see .github/workflows/refresh-instagram.yml) -->
         <div class="insta-grid" data-stagger>
           <a href="https://www.instagram.com/hannahjew" target="_blank" rel="noopener"><img src="assets/img/insta/insta-1.jpg" alt="Recent Instagram post from @hannahjew" loading="lazy" /></a>
           <a href="https://www.instagram.com/hannahjew" target="_blank" rel="noopener"><img src="assets/img/insta/insta-2.jpg" alt="Recent Instagram post from @hannahjew" loading="lazy" /></a>
@@ -131,6 +125,7 @@
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/studio.js"></script>
 </body>
 </html>

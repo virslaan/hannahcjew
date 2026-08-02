@@ -1,0 +1,178 @@
+{
+  "home": {
+    "heroImage": "assets/img/hero-tutu-bw.jpg",
+    "introHeadline": "A multi-hyphenate artist moving between ballet, Broadway, and heritage, telling stories that don't fit in one box.",
+    "introHeadlineEm": "ballet, Broadway, and heritage",
+    "introBody": "Hannah Jew is a New York City-based dancer, choreographer, and educator. From the national tour of The King and I to world premieres at the Smithsonian, from pointe shoes to traditional Chinese ribbons and fans, her work lives where classical rigor meets cultural storytelling.",
+    "introImage": "assets/img/green-leotard.jpg",
+    "introImageAlt": "Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape",
+    "nextShow": {
+      "kicker": "Next on stage",
+      "title": "CATS",
+      "role": "Victoria",
+      "venue": "Beef & Boards Dinner Theatre \u00b7 Indianapolis, IN",
+      "link": "upcoming.html",
+      "linkLabel": "All upcoming"
+    }
+  },
+  "about": {
+    "image": "assets/img/pointe-studio-bw.jpg",
+    "imageAlt": "Hannah Jew resting in a dance studio, pointe shoe en pointe, papers in hand",
+    "imageCaption": "In the studio",
+    "paragraphs": [
+      "Hannah Jew is a New York City-based dancer, choreographer, and educator: a multi-hyphenate artist whose work bridges classical ballet, musical theatre, and traditional Chinese dance.",
+      "Trained at The University of Oklahoma (BFA, Ballet Performance) and shaped by intensives with Complexions Contemporary Ballet, the Joffrey Ballet, American Ballet Theatre, and San Francisco Ballet, Hannah has danced professionally with Nai-Ni Chen Dance Company, Ballet Hisp\u00e1nico (BHdos), Dayton Ballet, and Oklahoma City Ballet.",
+      "On stage, she has toured nationally with The King and I (dir. Bartlett Sher, chor. Christopher Gattelli), performed with the New York City Opera, danced at New York Fashion Week, and appeared in a world premiere at the Smithsonian's National Museum of Asian Art, as both dancer and choreographer.",
+      "Her choreographic and stage-direction work centers stories from the Asian-American experience, with projects at the Museum of Chinese in America, China Institute, National Asian Artists Project, and New York Theatre Workshop. As an educator, she teaches dance to all ages and experience levels, including individuals with disabilities.",
+      "She is a proud member of Actors' Equity Association and is represented by Clear Talent Group."
+    ],
+    "highlights": [
+      "The King and I \u00b7 National Tour (Swing)",
+      "New York City Opera",
+      "Smithsonian world premiere",
+      "New York Fashion Week",
+      "Adidas Original \u00b7 Milan",
+      "Indianapolis Symphony Orchestra"
+    ],
+    "skills": [
+      "Pointe",
+      "Partnering",
+      "Contemporary",
+      "Modern",
+      "Improvisation",
+      "Traditional Chinese Dance \u00b7 Ribbons, Fans, Lion & Dragon",
+      "Jazz",
+      "Tap",
+      "Flamenco",
+      "Mandarin"
+    ]
+  },
+  "resume": {
+    "pdf": "assets/resume/Hannah-Jew-Resume.pdf",
+    "blurb": "Resume as a PDF, plus headshots. New shots are fresh from the studio, being retouched now."
+  },
+  "headshots": [
+    {
+      "id": "portrait-black",
+      "src": "assets/img/portrait-black-top.jpg",
+      "title": "Hannah Jew",
+      "credit": "",
+      "alt": "Portrait headshot of Hannah Jew wearing black, hair in motion"
+    }
+  ],
+  "portfolio": [
+    {
+      "id": "tutu-pointe",
+      "src": "assets/img/hero-tutu-bw.jpg",
+      "title": "Studio: tutu & pointe",
+      "credit": "",
+      "category": "performer",
+      "alt": "Hannah in a tutu and pointe shoes folded forward in an expressive black and white pose"
+    },
+    {
+      "id": "blue-silk",
+      "src": "assets/img/blue-dress-flow.jpg",
+      "title": "Blue silk in motion",
+      "credit": "",
+      "category": "performer",
+      "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
+    },
+    {
+      "id": "duet-lift",
+      "src": "assets/img/duet-lift.jpg",
+      "title": "Duet in rehearsal",
+      "credit": "",
+      "category": "choreographer",
+      "alt": "A partnered lift in rehearsal, Hannah balanced upside down mid-air"
+    },
+    {
+      "id": "pointe-shoes",
+      "src": "assets/img/pointe-shoes-bw.jpg",
+      "title": "In the studio",
+      "credit": "",
+      "category": "educator",
+      "alt": "Close-up of pointe shoes stepping through a studio, black and white"
+    },
+    {
+      "id": "green-leotard",
+      "src": "assets/img/green-leotard.jpg",
+      "title": "Sculptural in green",
+      "credit": "",
+      "category": "photoshoots",
+      "alt": "Hannah in a green leotard with arms curved in a sculptural shape"
+    },
+    {
+      "id": "meatpacking",
+      "src": "assets/img/street-mirror.jpg",
+      "title": "Meatpacking, NYC",
+      "credit": "",
+      "category": "photoshoots",
+      "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street"
+    },
+    {
+      "id": "studio-duet",
+      "src": "assets/img/insta/insta-1.jpg",
+      "title": "Studio duet: the reach",
+      "credit": "",
+      "category": "choreographer",
+      "alt": "Hannah and a partner reaching toward each other in a studio, black and white"
+    },
+    {
+      "id": "mid-turn",
+      "src": "assets/img/insta/insta-2.jpg",
+      "title": "Rehearsal, mid-turn",
+      "credit": "",
+      "category": "performer",
+      "alt": "Hannah mid-turn in rehearsal with one leg raised"
+    },
+    {
+      "id": "at-barre",
+      "src": "assets/img/insta/insta-4.jpg",
+      "title": "At the barre",
+      "credit": "",
+      "category": "educator",
+      "alt": "Hannah stretching in pointe shoes at a mirror"
+    },
+    {
+      "id": "chinatown",
+      "src": "assets/img/insta/insta-6.jpg",
+      "title": "Chinatown, under the neon",
+      "credit": "",
+      "category": "photoshoots",
+      "alt": "Hannah in a qipao beneath a neon chop suey sign"
+    }
+  ],
+  "upcoming": [
+    {
+      "id": "cats-2026",
+      "title": "CATS",
+      "role": "as Victoria, the White Cat",
+      "venue": "Beef & Boards Dinner Theatre \u00b7 Indianapolis, IN",
+      "month": "TBA",
+      "year": "2026",
+      "onsale": "Tickets on sale soon",
+      "tickets": "https://beefandboards.com",
+      "poster": "assets/img/cats-poster.jpg",
+      "posterAlt": "CATS poster: glowing golden cat eyes with dancer silhouettes leaping inside the pupils",
+      "featured": true
+    }
+  ],
+  "upcomingNote": "More announcements coming soon. Follow along on Instagram for the latest.",
+  "contact": {
+    "headline": "Let's make something",
+    "headlineEm": "something",
+    "sub": "For performance, choreography, teaching, and collaboration inquiries.",
+    "email": "hannahjew@att.net",
+    "agency": "Clear Talent Group",
+    "address": "352 7th Avenue #600, New York, NY 10001",
+    "phone": "212 840-4100",
+    "fax": "212 967-4567",
+    "instagram": "https://www.instagram.com/hannahjew",
+    "instagramHandle": "@hannahjew",
+    "linkedin": "https://www.linkedin.com/in/hannah-c-jew/",
+    "linkedinLabel": "hannah-c-jew",
+    "image": "assets/img/street-mirror.jpg",
+    "imageAlt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
+    "imageCaption": "New York City"
+  }
+}

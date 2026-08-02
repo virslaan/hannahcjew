@@ -44,11 +44,12 @@ window.SITE_CONFIG = {
 
   /* ----------------------------------------------------------
      STUDIO (gear button, bottom-right)
-     Friend-friendly editor for portfolio photos + credits.
-     pin: passcode to unlock the panel on the live site.
-     github: used only if she (or you) pastes a token in-browser
-             to publish straight to the repo. Token is never
-             stored in this file.
+     Friend-friendly editor for the WHOLE site: Home, About,
+     Resume PDF, Headshots, Portfolio (+ photographer credits),
+     Upcoming shows, and Contact. Add / reorder / remove items.
+     Content lives in assets/data/site.json.
+     pin: passcode to unlock the panel.
+     github: optional publish via a token pasted in-browser only.
      ---------------------------------------------------------- */
   studio: {
     pin: "hannah",

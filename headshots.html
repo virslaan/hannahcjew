@@ -44,7 +44,7 @@
   <main>
     <section class="nfx-billboard">
       <div class="nfx-billboard__img" aria-hidden="true">
-        <img src="assets/img/portrait-black-top.jpg" alt="" fetchpriority="high" />
+        <img data-headshots-hero src="assets/img/portrait-black-top.jpg" alt="" fetchpriority="high" />
       </div>
       <div class="nfx-billboard__content">
         <p class="kicker">Headshots &amp; Resume</p>
@@ -53,10 +53,10 @@
           <span class="line"><em class="split" aria-hidden="true">Jew</em></span>
         </h1>
         <div class="nfx-rule" aria-hidden="true"></div>
-        <p class="sub">Resume as a PDF, plus headshots. New shots are fresh from the studio, being retouched now.</p>
+        <p class="sub" data-resume-blurb>Resume as a PDF, plus headshots. New shots are fresh from the studio, being retouched now.</p>
         <div class="actions">
-          <a class="btn btn--play" href="assets/resume/Hannah-Jew-Resume.pdf" download><span aria-hidden="true">↓</span> Download resume</a>
-          <a class="btn btn--ghost" href="assets/resume/Hannah-Jew-Resume.pdf" target="_blank" rel="noopener">View in browser</a>
+          <a class="btn btn--play" data-resume-pdf href="assets/resume/Hannah-Jew-Resume.pdf" download><span aria-hidden="true">↓</span> Download resume</a>
+          <a class="btn btn--ghost" data-resume-pdf href="assets/resume/Hannah-Jew-Resume.pdf" target="_blank" rel="noopener">View in browser</a>
         </div>
       </div>
     </section>
@@ -65,10 +65,8 @@
       <div class="nfx-row__head">
         <h2 class="nfx-row__title">Headshots</h2>
       </div>
-      <div class="nfx-row__track">
-        <figure class="nfx-card" data-lightbox data-title="Hannah Jew" data-credit="">
-          <img src="assets/img/portrait-black-top.jpg" alt="Portrait headshot of Hannah Jew wearing black, hair in motion" loading="lazy" />
-        </figure>
+      <div class="nfx-row__track" data-headshots-track>
+        <!-- filled by content.js -->
       </div>
     </section>
   </main>
@@ -102,6 +100,7 @@
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/studio.js"></script>
 </body>
 </html>

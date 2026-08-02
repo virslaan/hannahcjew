@@ -1744,7 +1744,7 @@ body.studio-open { overflow: hidden; }
   right: 0;
   top: 0;
   bottom: 0;
-  width: min(440px, 100%);
+  width: min(520px, 100%);
   background: var(--paper);
   color: var(--ink);
   display: flex;
@@ -1891,6 +1891,87 @@ body.studio-open { overflow: hidden; }
   font-size: 0.82rem;
   color: var(--ink-soft);
   min-height: 1.2em;
+}
+.studio__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1.1rem;
+}
+.studio__tab {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.45em 0.7em;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  background: #fff;
+}
+.studio__tab.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.studio__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin: 1rem 0 0.7rem;
+}
+.studio__section-head h3,
+.studio__h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.studio__field textarea {
+  font: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.92rem;
+  resize: vertical;
+  min-height: 4.5rem;
+}
+.studio__footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.studio__row-actions {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+.studio__row-actions button {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  padding: 0.25em 0.5em;
+}
+.studio__check {
+  display: flex !important;
+  align-items: center;
+  gap: 0.45rem;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  font-size: 0.85rem !important;
+  color: var(--ink) !important;
+}
+.studio__card-ph {
+  width: 72px;
+  height: 96px;
+  background: var(--paper-dim);
+  border: 1px dashed var(--line);
 }
 @media (max-width: 640px) {
   .studio-gear { right: 0.85rem; bottom: 0.85rem; width: 42px; height: 42px; opacity: 0.7; }

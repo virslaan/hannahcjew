@@ -49,41 +49,12 @@
         <p class="sub">Where to see Hannah live. Dates and ticket links are added as they're announced.</p>
       </div>
 
-      <!--
-        ══════════════════════════════════════════════════════════════
-        HOW TO ADD A SHOW (for Hannah / future editing):
-        Copy the <article class="show"> block below and update the
-        month/year, title, role, venue, and the ticket link.
-        Remove the block when a show has passed (or keep for archive).
-        ══════════════════════════════════════════════════════════════
-      -->
-      <div class="show-list">
+      <div class="show-list" data-upcoming-list></div>
 
-        <article class="show show--featured will-reveal">
-          <figure class="show__poster" data-lightbox data-title="CATS · Beef &amp; Boards Dinner Theatre · 2026" data-credit="">
-            <img src="assets/img/cats-poster.jpg" alt="CATS poster: glowing golden cat eyes with dancer silhouettes leaping inside the pupils" loading="lazy" />
-            <span class="shine" aria-hidden="true"></span>
-          </figure>
-          <div class="show__body">
-            <div class="show__date">
-              <span class="month">TBA</span>
-              <span class="year">2026</span>
-            </div>
-            <h2><em>CATS</em></h2>
-            <p class="role">as Victoria, the White Cat</p>
-            <p class="venue">Beef &amp; Boards Dinner Theatre · Indianapolis, IN</p>
-            <p class="onsale"><i aria-hidden="true"></i> Tickets on sale soon</p>
-            <a class="btn btn--red" href="https://beefandboards.com" target="_blank" rel="noopener">Tickets <span aria-hidden="true">→</span></a>
-          </div>
-        </article>
-
-      </div>
-
-      <p class="upcoming-note will-reveal">More announcements coming soon. Follow along on <a href="https://www.instagram.com/hannahjew" target="_blank" rel="noopener" style="border-bottom:1.5px solid var(--red);">Instagram</a> for the latest.</p>
+      <p class="upcoming-note will-reveal" data-upcoming-note>More announcements coming soon. Follow along on Instagram for the latest.</p>
     </div>
   </main>
 
-  <!-- lightbox -->
   <div class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
     <button class="lightbox__close" aria-label="Close">×</button>
     <div class="lightbox__inner">
@@ -113,6 +84,7 @@
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/content.js"></script>
   <script src="assets/js/studio.js"></script>
 </body>
 </html>
