@@ -187,6 +187,26 @@
 
   function hydrateAbout(site) {
     const a = site.about || {};
+
+    const cover = document.querySelector("[data-about-cover]");
+    if (cover) {
+      if (a.cover) cover.src = a.cover;
+      cover.alt = a.coverAlt || "";
+      cover.setAttribute("data-edit-img", "about.cover");
+    }
+    const coverCredit = document.querySelector("[data-about-cover-credit]");
+    if (coverCredit) {
+      coverCredit.textContent = creditLine(a.coverCredit);
+      coverCredit.setAttribute("data-edit", "about.coverCredit");
+      coverCredit.setAttribute("data-edit-label", "Photographer");
+    }
+
+    const lead = document.querySelector("[data-about-lead]");
+    if (lead) {
+      lead.textContent = a.lead || "";
+      lead.setAttribute("data-edit", "about.lead");
+    }
+
     const img = document.querySelector("[data-about-img]");
     if (img) {
       if (a.image) img.src = a.image;
@@ -198,42 +218,25 @@
       cap.textContent = a.imageCaption || "";
       cap.setAttribute("data-edit", "about.imageCaption");
     }
+    const credit = document.querySelector("[data-about-credit]");
+    if (credit) {
+      credit.textContent = creditLine(a.imageCredit);
+      credit.setAttribute("data-edit", "about.imageCredit");
+      credit.setAttribute("data-edit-label", "Photographer");
+    }
 
     const copy = document.querySelector("[data-about-copy]");
     if (!copy) return;
 
     // the item wrapper stays outside the editable span so the move/remove
     // controls can never end up inside the text she is typing
-    const paras = (a.paragraphs || [])
+    copy.setAttribute("data-edit-list", "about.paragraphs");
+    copy.innerHTML = (a.paragraphs || [])
       .map(
         (p, i) =>
           `<p data-edit-item="about.paragraphs" data-index="${i}"><span${ed("about.paragraphs." + i)}>${esc(p)}</span></p>`
       )
       .join("");
-
-    const chipList = (arr, path) =>
-      (arr || [])
-        .map(
-          (x, i) =>
-            `<li data-edit-item="${path}" data-index="${i}"><span${ed(path + "." + i)}>${esc(x)}</span></li>`
-        )
-        .join("");
-
-    const highlights = a.highlights || [];
-    const skills = a.skills || [];
-
-    copy.innerHTML =
-      paras +
-      `<div data-edit-list="about.paragraphs" hidden></div>` +
-      (highlights.length || 1
-        ? `<h3>Selected highlights</h3>
-           <ul class="skill-tags is-visible" data-edit-list="about.highlights">${chipList(highlights, "about.highlights")}</ul>`
-        : "") +
-      (skills.length || 1
-        ? `<h3>Movement languages</h3>
-           <ul class="skill-tags is-visible" data-edit-list="about.skills">${chipList(skills, "about.skills")}</ul>`
-        : "") +
-      '<a class="btn btn--red" href="headshots.html" style="margin-top:2.2rem;">Headshots &amp; resume <span aria-hidden="true">→</span></a>';
   }
 
   function hydrateHeadshots(site) {

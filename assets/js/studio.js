@@ -299,8 +299,6 @@
 
   const LIST_ADD = {
     "about.paragraphs": { label: "+ Add paragraph", make: () => "New paragraph. Click to write." },
-    "about.highlights": { label: "+ Add highlight", make: () => "New highlight" },
-    "about.skills": { label: "+ Add skill", make: () => "New skill" },
     portfolio: {
       label: "+ Add photos",
       photo: true,

@@ -41,21 +41,37 @@
     </nav>
   </header>
 
-  <main class="page">
-    <div class="container">
-      <div class="page-head will-reveal">
+  <main>
+    <section class="about-cover">
+      <div class="about-cover__img">
+        <img data-about-cover src="assets/img/blue-dress-flow.jpg" alt="Hannah Jew mid-turn, a pale blue dress sweeping around her" fetchpriority="high" />
+      </div>
+      <div class="about-cover__head">
         <p class="kicker">About</p>
         <h1>Hannah Jew</h1>
+        <p class="about-cover__credit" data-about-cover-credit></p>
+      </div>
+    </section>
+
+    <div class="container">
+      <p class="about-lead will-reveal" data-about-lead></p>
+
+      <div class="about-feature">
+        <figure class="about-portrait will-reveal">
+          <img data-about-img src="assets/img/green-leotard.jpg" alt="Hannah Jew in a green leotard" loading="lazy" />
+          <figcaption>
+            <span data-about-caption></span>
+            <span class="credit" data-about-credit></span>
+          </figcaption>
+        </figure>
+        <div class="about-body will-reveal" data-about-copy>
+          <!-- paragraphs come from site.json -->
+        </div>
       </div>
 
-      <div class="about-grid">
-        <figure class="will-reveal">
-          <img data-about-img src="assets/img/pointe-studio-bw.jpg" alt="Hannah Jew resting in a dance studio" />
-          <figcaption data-about-caption>In the studio</figcaption>
-        </figure>
-        <div class="about-copy will-reveal" data-about-copy>
-          <!-- filled by content.js from site.json -->
-        </div>
+      <div class="about-cta will-reveal">
+        <a class="btn btn--red" href="headshots.html">Headshots &amp; resume <span aria-hidden="true">→</span></a>
+        <a class="btn" href="portfolio.html">See the portfolio <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </main>

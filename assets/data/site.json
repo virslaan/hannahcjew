@@ -16,36 +16,20 @@
     }
   },
   "about": {
-    "image": "assets/img/green-leotard.jpg",
-    "imageAlt": "Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape",
-    "imageCaption": "Studio session",
+    "cover": "assets/img/blue-dress-flow.jpg",
+    "coverAlt": "Hannah Jew mid-turn, a pale blue dress sweeping around her",
+    "coverCredit": "",
+    "lead": "Hannah Jew is a New York City-based dancer, choreographer, and educator: a multi-hyphenate artist whose work bridges classical ballet, musical theatre, and traditional Chinese dance.",
     "paragraphs": [
-      "Hannah Jew is a New York City-based dancer, choreographer, and educator: a multi-hyphenate artist whose work bridges classical ballet, musical theatre, and traditional Chinese dance.",
       "Trained at The University of Oklahoma (BFA, Ballet Performance) and shaped by intensives with Complexions Contemporary Ballet, the Joffrey Ballet, American Ballet Theatre, and San Francisco Ballet, Hannah has danced professionally with Nai-Ni Chen Dance Company, Ballet Hisp\u00e1nico (BHdos), Dayton Ballet, and Oklahoma City Ballet.",
       "On stage, she has toured nationally with The King and I (dir. Bartlett Sher, chor. Christopher Gattelli), performed with the New York City Opera, danced at New York Fashion Week, and appeared in a world premiere at the Smithsonian's National Museum of Asian Art, as both dancer and choreographer.",
       "Her choreographic and stage-direction work centers stories from the Asian-American experience, with projects at the Museum of Chinese in America, China Institute, National Asian Artists Project, and New York Theatre Workshop. As an educator, she teaches dance to all ages and experience levels, including individuals with disabilities.",
       "She is a proud member of Actors' Equity Association and is represented by Clear Talent Group."
     ],
-    "highlights": [
-      "The King and I \u00b7 National Tour (Swing)",
-      "New York City Opera",
-      "Smithsonian world premiere",
-      "New York Fashion Week",
-      "Adidas Original \u00b7 Milan",
-      "Indianapolis Symphony Orchestra"
-    ],
-    "skills": [
-      "Pointe",
-      "Partnering",
-      "Contemporary",
-      "Modern",
-      "Improvisation",
-      "Traditional Chinese Dance \u00b7 Ribbons, Fans, Lion & Dragon",
-      "Jazz",
-      "Tap",
-      "Flamenco",
-      "Mandarin"
-    ]
+    "image": "assets/img/green-leotard.jpg",
+    "imageAlt": "Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape",
+    "imageCaption": "Studio session",
+    "imageCredit": ""
   },
   "resume": {
     "pdf": "assets/resume/Hannah-Jew-Resume.pdf",
