@@ -155,8 +155,8 @@ document.querySelectorAll("[data-stagger]").forEach((group) => {
   [...group.children].forEach((child, i) => child.style.setProperty("--d", i));
 });
 
-const revealEls = document.querySelectorAll(".will-reveal, [data-stagger]");
-if ("IntersectionObserver" in window && revealEls.length) {
+const REVEAL_SELECTOR = ".will-reveal, [data-stagger]";
+if ("IntersectionObserver" in window) {
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((e) => {
@@ -168,10 +168,19 @@ if ("IntersectionObserver" in window && revealEls.length) {
     },
     { threshold: 0.12 }
   );
-  revealEls.forEach((el) => io.observe(el));
+  // content.js calls this again after it draws a page from site.json
+  window.HJ_observeReveals = (root) => {
+    (root || document).querySelectorAll(REVEAL_SELECTOR).forEach((el) => {
+      if (el.classList.contains("is-visible")) return;
+      io.observe(el);
+    });
+  };
 } else {
-  revealEls.forEach((el) => el.classList.add("is-visible"));
+  window.HJ_observeReveals = (root) => {
+    (root || document).querySelectorAll(REVEAL_SELECTOR).forEach((el) => el.classList.add("is-visible"));
+  };
 }
+window.HJ_observeReveals();
 
 // ----- portfolio filters -----
 const filterBtns = document.querySelectorAll(".filters button");

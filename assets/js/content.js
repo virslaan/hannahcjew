@@ -272,7 +272,7 @@
     track.innerHTML = shots
       .map((s, i) => {
         const credit = creditLine(s.credit);
-        return `<figure class="shot will-reveal is-visible" data-lightbox data-edit-item="headshots" data-index="${i}"
+        return `<figure class="shot will-reveal" data-lightbox data-edit-item="headshots" data-index="${i}"
                  data-title="${esc(s.title || "Hannah Jew")}" data-credit="${esc(credit)}">
           <img src="${esc(s.src)}" alt="${esc(s.alt || s.title || "")}" loading="lazy" data-edit-img="headshots.${i}.src" />
           <figcaption class="shot-credit"${ed("headshots." + i + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</figcaption>
@@ -297,7 +297,7 @@
     grid.innerHTML = items
       .map((item, i) => {
         const credit = creditLine(item.credit);
-        return `<figure class="work will-reveal is-visible" data-category="${esc(item.category)}" data-lightbox
+        return `<figure class="work will-reveal" data-category="${esc(item.category)}" data-lightbox
                  data-edit-item="portfolio" data-index="${i}"
                  data-title="${esc(item.title)}" data-credit="${esc(credit)}">
           <span class="tag"${ed("portfolio." + i + ".category", 'data-edit-choice="performer|choreographer|educator|photoshoots"')}>${esc(
@@ -334,7 +334,7 @@
         const tickets = s.tickets
           ? `<a class="btn btn--red" href="${esc(s.tickets)}" target="_blank" rel="noopener" data-edit-href="${p}tickets">Tickets <span aria-hidden="true">→</span></a>`
           : "";
-        return `<article class="show${s.featured ? " show--featured" : ""} will-reveal is-visible" data-edit-item="upcoming" data-index="${i}">
+        return `<article class="show${s.featured ? " show--featured" : ""} will-reveal" data-edit-item="upcoming" data-index="${i}">
           ${poster}
           <div class="show__body">
             <div class="show__date">
@@ -445,6 +445,7 @@
     hydratePortfolio(site);
     hydrateUpcoming(site);
     hydrateContact(site);
+    if (typeof window.HJ_observeReveals === "function") window.HJ_observeReveals();
     document.dispatchEvent(new CustomEvent("hj:rendered", { detail: site }));
   }
 
