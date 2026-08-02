@@ -254,7 +254,17 @@
 
     const shots = site.headshots || [];
     const hero = document.querySelector("[data-headshots-hero]");
-    if (hero && shots[0] && shots[0].src) hero.src = shots[0].src;
+    if (hero) {
+      const src = resume.cover || (shots[0] && shots[0].src);
+      if (src) hero.src = src;
+      hero.setAttribute("data-edit-img", "resume.cover");
+    }
+    const heroCredit = document.querySelector("[data-headshots-cover-credit]");
+    if (heroCredit) {
+      heroCredit.textContent = creditLine(resume.coverCredit);
+      heroCredit.setAttribute("data-edit", "resume.coverCredit");
+      heroCredit.setAttribute("data-edit-label", "Photographer");
+    }
 
     const track = document.querySelector("[data-headshots-track]");
     if (!track) return;
@@ -262,7 +272,7 @@
     track.innerHTML = shots
       .map((s, i) => {
         const credit = creditLine(s.credit);
-        return `<figure class="nfx-card" data-lightbox data-edit-item="headshots" data-index="${i}"
+        return `<figure class="shot will-reveal is-visible" data-lightbox data-edit-item="headshots" data-index="${i}"
                  data-title="${esc(s.title || "Hannah Jew")}" data-credit="${esc(credit)}">
           <img src="${esc(s.src)}" alt="${esc(s.alt || s.title || "")}" loading="lazy" data-edit-img="headshots.${i}.src" />
           <figcaption class="shot-credit"${ed("headshots." + i + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</figcaption>

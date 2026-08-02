@@ -13,7 +13,7 @@
   <link rel="icon" href="favicon-512.png" type="image/png" sizes="512x512" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 </head>
-<body class="page-dark page-netflix">
+<body class="page-plate">
 
   <header class="nav is-scrolled">
     <a class="nav__brand" href="index.html">
@@ -42,33 +42,34 @@
   </header>
 
   <main>
-    <section class="nfx-billboard">
-      <div class="nfx-billboard__img" aria-hidden="true">
-        <img data-headshots-hero src="assets/img/portrait-black-top.jpg" alt="" fetchpriority="high" />
+    <section class="cover">
+      <div class="cover__img">
+        <img data-headshots-hero src="assets/img/portrait-black-top.jpg" alt="Headshot of Hannah Jew" fetchpriority="high" />
       </div>
-      <div class="nfx-billboard__content">
+      <div class="cover__head">
         <p class="kicker">Headshots &amp; Resume</p>
-        <h1 class="nfx-title" aria-label="Hannah Jew">
-          <span class="line"><span class="split" aria-hidden="true">Hannah</span></span>
-          <span class="line"><em class="split" aria-hidden="true">Jew</em></span>
-        </h1>
-        <div class="nfx-rule" aria-hidden="true"></div>
-        <p class="sub" data-resume-blurb>Resume as a PDF, plus headshots. New shots are fresh from the studio, being retouched now.</p>
-        <div class="actions">
-          <a class="btn btn--play" data-resume-pdf href="assets/resume/Hannah-Jew-Resume.pdf" download><span aria-hidden="true">↓</span> Download resume</a>
-          <a class="btn btn--ghost" data-resume-pdf href="assets/resume/Hannah-Jew-Resume.pdf" target="_blank" rel="noopener">View in browser</a>
-        </div>
+        <h1>Hannah Jew</h1>
+        <p class="cover__credit" data-headshots-cover-credit></p>
       </div>
     </section>
 
-    <section class="nfx-row">
-      <div class="nfx-row__head">
-        <h2 class="nfx-row__title">Headshots</h2>
+    <div class="container">
+      <div class="resume-panel will-reveal">
+        <p data-resume-blurb></p>
+        <div class="resume-actions">
+          <a class="btn btn--red" data-resume-pdf href="assets/resume/Hannah-Jew-Resume.pdf" download>Download resume <span aria-hidden="true">↓</span></a>
+          <a class="btn" data-resume-pdf href="assets/resume/Hannah-Jew-Resume.pdf" target="_blank" rel="noopener">View in browser</a>
+        </div>
       </div>
-      <div class="nfx-row__track" data-headshots-track>
+
+      <div class="shots-head will-reveal">
+        <h2>Headshots</h2>
+        <p class="note">Click any photo to view full size</p>
+      </div>
+      <div class="shots-grid" data-headshots-track>
         <!-- filled by content.js -->
       </div>
-    </section>
+    </div>
   </main>
 
   <div class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">

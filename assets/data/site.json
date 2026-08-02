@@ -33,6 +33,8 @@
   },
   "resume": {
     "pdf": "assets/resume/Hannah-Jew-Resume.pdf",
+    "cover": "assets/img/portrait-black-top.jpg",
+    "coverCredit": "",
     "blurb": "Resume as a PDF, plus headshots. New shots are fresh from the studio, being retouched now."
   },
   "headshots": [

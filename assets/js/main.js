@@ -89,7 +89,7 @@ if (toggle && links) {
 }
 
 // ----- display names: letter-stagger reveal -----
-document.querySelectorAll(".hero__name .split, .nfx-title .split").forEach((el) => {
+document.querySelectorAll(".hero__name .split").forEach((el) => {
   const text = el.textContent;
   el.textContent = "";
   [...text].forEach((ch, i) => {
@@ -193,26 +193,6 @@ if (hashFilter) {
   const btn = document.querySelector(`.filters button[data-filter="${hashFilter}"]`);
   if (btn) btn.click();
 }
-
-// ----- shelf row arrows (headshots page) -----
-document.querySelectorAll(".nfx-row").forEach((row) => {
-  const track = row.querySelector(".nfx-row__track");
-  const prev = row.querySelector(".nfx-row__nav .prev");
-  const next = row.querySelector(".nfx-row__nav .next");
-  if (!track || !prev || !next) return;
-
-  const page = () => Math.max(track.clientWidth * 0.8, 300);
-  prev.addEventListener("click", () => track.scrollBy({ left: -page(), behavior: "smooth" }));
-  next.addEventListener("click", () => track.scrollBy({ left: page(), behavior: "smooth" }));
-
-  const update = () => {
-    prev.disabled = track.scrollLeft <= 4;
-    next.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 4;
-  };
-  track.addEventListener("scroll", update, { passive: true });
-  window.addEventListener("resize", update);
-  update();
-});
 
 // ----- lightbox -----
 const lightbox = document.querySelector(".lightbox");

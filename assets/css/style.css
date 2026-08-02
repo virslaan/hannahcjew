@@ -454,8 +454,7 @@ body::after {
   font-weight: 500;
   color: inherit;
 }
-.hero__name .char,
-.nfx-title .char {
+.hero__name .char {
   display: inline-block;
   transform: translateY(118%) rotate(5deg);
   transform-origin: 0 100%;
@@ -709,15 +708,15 @@ main {
 }
 .next-show .btn:hover { background: none; color: var(--red); }
 
-/* ---------- about: a cover, then a feature story ---------- */
-.about-cover {
+/* ---------- page cover: a full-bleed photo with the title over it ---------- */
+.cover {
   position: relative;
   margin-top: var(--nav-h);
   height: clamp(380px, 72vh, 640px);
   overflow: hidden;
 }
-.about-cover__img { position: absolute; inset: 0; }
-.about-cover__img img {
+.cover__img { position: absolute; inset: 0; }
+.cover__img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -729,7 +728,7 @@ main {
   from { transform: scale(1.12); }
   to { transform: scale(1); }
 }
-.about-cover__img::after {
+.cover__img::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -742,28 +741,28 @@ main {
     transparent 78%
   );
 }
-.about-cover__head {
+.cover__head {
   position: absolute;
   left: var(--pad);
   right: var(--pad);
   bottom: clamp(1.4rem, 4vh, 2.6rem);
   animation: riseIn 1s 0.25s var(--ease-out) both;
 }
-.about-cover__head .kicker {
+.cover__head .kicker {
   font-size: 0.7rem;
   letter-spacing: 0.34em;
   text-transform: uppercase;
   color: var(--red);
   margin-bottom: 0.7rem;
 }
-.about-cover__head h1 {
+.cover__head h1 {
   font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(2.8rem, 9vw, 6.4rem);
   line-height: 0.95;
   letter-spacing: 0.005em;
 }
-.about-cover__credit {
+.cover__credit {
   margin-top: 0.5rem;
   font-family: var(--sans);
   font-size: 0.66rem;
@@ -771,7 +770,7 @@ main {
   text-transform: uppercase;
   color: var(--grey);
 }
-.about-cover__credit:empty { display: none; }
+.cover__credit:empty { display: none; }
 
 .about-lead {
   max-width: 30ch;
@@ -816,24 +815,12 @@ main {
 }
 
 @media (max-width: 820px) {
-  .about-cover { height: clamp(340px, 58vh, 460px); }
+  .cover { height: clamp(340px, 58vh, 460px); }
   .about-lead { max-width: none; }
   .about-feature { grid-template-columns: 1fr; }
   .about-portrait { position: static; max-width: 380px; }
 }
 
-.resume-actions {
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  margin-bottom: 2.2rem;
-}
-.headshot-note {
-  margin-top: 2.2rem;
-  font-size: 0.85rem !important;
-  font-style: italic;
-  color: var(--grey) !important;
-}
 .about-body p {
   margin-bottom: 1.5rem;
   font-size: 1.02rem;
@@ -861,245 +848,77 @@ main {
    about     · a magazine spread (drop cap, oversized lede)
    ============================================================ */
 
-/* ---------- headshots: the screening room ---------- */
-body.page-dark {
-  --ink: #f5f2ec;
-  --ink-rgb: 245 242 236;
-  --ink-soft: #c7c2b9;
-  --paper: #0b0b0e;
-  --paper-rgb: 11 11 14;
-  --paper-dim: #17171d;
-  --grey: #8a877f;
-  --line: rgb(var(--ink-rgb) / 0.16);
+/* ---------- headshots & resume ---------- */
+/* a headshot is framed tight, so keep the face high in the crop */
+body.page-plate .cover__img img { object-position: 50% 18%; }
+
+.resume-panel {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(1.2rem, 4vw, 3rem);
+  align-items: end;
+  margin: clamp(2.6rem, 8vh, 5rem) 0 clamp(2rem, 6vh, 3.4rem);
+  padding-bottom: clamp(1.6rem, 4vh, 2.4rem);
+  border-bottom: 1px solid var(--line);
+}
+.resume-panel p {
+  max-width: 46ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.6vw, 1.8rem);
+  line-height: 1.35;
+  color: var(--ink);
+}
+.resume-actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+@media (max-width: 720px) {
+  .resume-panel { grid-template-columns: 1fr; align-items: start; }
 }
 
-.nfx-billboard {
-  position: relative;
-  min-height: min(88svh, 780px);
+.shots-head {
   display: flex;
-  align-items: flex-end;
-  overflow: hidden;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: clamp(1.2rem, 3vh, 2rem);
 }
-.nfx-billboard__img {
-  position: absolute;
-  inset: 0 38% 0 0;
-  overflow: hidden;
-  animation: billboardIn 1.6s var(--ease-out) both;
-}
-@keyframes billboardIn {
-  from { opacity: 0; clip-path: inset(0 30% 0 0); }
-  to { opacity: 1; clip-path: inset(0 0 0 0); }
-}
-.nfx-billboard__img img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center 20%;
-  filter: grayscale(1) contrast(1.1) brightness(0.9);
-  animation: kenBurns 26s ease-in-out infinite alternate;
-}
-.nfx-billboard__img::after {
-  content: "";
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(to left, var(--paper) 0%, rgb(var(--paper-rgb) / 0.55) 38%, rgb(var(--paper-rgb) / 0) 72%),
-    linear-gradient(to top, var(--paper) 2%, rgb(var(--paper-rgb) / 0) 46%);
-}
-.nfx-billboard__content {
-  position: relative;
-  z-index: 2;
-  margin-left: auto; /* text block lives on the right, image on the left */
-  padding: calc(var(--nav-h) + 2rem) var(--pad) clamp(2.5rem, 7vh, 4.5rem);
-  width: 100%;
-  max-width: 620px;
-  min-width: 0; /* let the flex item shrink on small screens */
-}
-.nfx-billboard__content .kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-  color: var(--red);
-  margin-bottom: 1rem;
-}
-/* the billboard enters like a title sequence: kicker, then the
-   name letter by letter, a red rule drawing across, spec chips
-   flipping in one by one, and finally the copy and buttons */
-@keyframes riseIn {
-  from { opacity: 0; transform: translateY(22px); }
-  to { opacity: 1; transform: none; }
-}
-.nfx-billboard__content .kicker {
-  animation: riseIn 0.7s 0.1s var(--ease-out) both;
-}
-.nfx-title {
+.shots-head h2 {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(3.2rem, 8vw, 6.8rem);
-  line-height: 0.95;
-  letter-spacing: -0.01em;
+  font-size: clamp(1.4rem, 3vw, 2.1rem);
 }
-.nfx-title .line {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-}
-.nfx-title em { font-style: normal; color: inherit; }
-.nfx-rule {
-  width: 72px;
-  height: 3px;
-  background: var(--red);
-  margin-top: 1.6rem;
-  transform-origin: left;
-  animation: ruleDraw 0.9s 1s var(--ease-out) both;
-}
-@keyframes ruleDraw {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-.nfx-billboard__content .sub {
-  margin-top: 1.2rem;
-  color: var(--ink-soft);
-  max-width: 46ch;
-  animation: riseIn 0.7s 1.15s var(--ease-out) both;
-}
-.nfx-billboard__content .actions {
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-  margin-top: 1.8rem;
-  animation: riseIn 0.7s 1.3s var(--ease-out) both;
-}
-.btn--play {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
-}
-.btn--play:hover { background: var(--red-deep); border-color: var(--red-deep); color: #fff; }
-.btn--ghost {
-  border-color: rgb(var(--ink-rgb) / 0.4);
-  background: rgb(var(--ink-rgb) / 0.08);
+.shots-head .note {
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
 }
 
-.nfx-row {
-  padding: clamp(1.5rem, 4vh, 2.6rem) 0;
-}
-.nfx-row__head {
+.shots-grid {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 1rem;
-  padding: 0 var(--pad);
-  margin-bottom: 0.4rem;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
+  margin-bottom: clamp(3rem, 9vh, 6rem);
 }
-.nfx-row__head .nfx-row__title {
-  grid-column: 2;
-  text-align: center;
-}
-.nfx-row__head .nfx-row__nav {
-  grid-column: 3;
-  justify-self: end;
-}
-/* a small centered rule under the heading, gallery-plaque style */
-.nfx-row__title::after {
-  content: "";
-  display: block;
-  width: 2.4rem;
-  height: 1.5px;
-  background: var(--red);
-  margin: 0.55rem auto 0;
-}
-.nfx-row__nav {
-  display: flex;
-  gap: 0.5rem;
-}
-.nfx-row__nav button {
-  width: 2.6rem; height: 2.6rem;
-  border-radius: 50%;
-  border: 1.5px solid rgb(var(--ink-rgb) / 0.35);
-  background: transparent;
-  color: var(--ink);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s var(--ease-out);
-}
-.nfx-row__nav button:hover:not(:disabled) {
-  background: var(--red);
-  border-color: var(--red);
-  color: #fff;
-  transform: scale(1.08);
-}
-.nfx-row__nav button:disabled { opacity: 0.25; cursor: default; }
-.nfx-row__title {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(1.4rem, 3vw, 2.1rem);
-  margin-bottom: 0;
-}
-.nfx-row__track {
-  display: flex;
-  gap: clamp(1.4rem, 2.5vw, 2.2rem);
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: var(--pad);
-  scroll-behavior: smooth;
-  overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
-  padding: 1.5rem var(--pad);
-  scrollbar-width: none;
-  mask-image: linear-gradient(to right, transparent, #000 var(--pad), #000 calc(100% - 2.5rem), transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--pad), #000 calc(100% - 2.5rem), transparent);
-}
-.nfx-row__track::-webkit-scrollbar { display: none; }
-/* center the row while it fits on screen; auto margins collapse
-   to zero once there are enough cards to overflow and scroll */
-.nfx-row__track > :first-child { margin-left: auto; }
-.nfx-row__track > :last-child { margin-right: auto; }
-.nfx-card {
+.shot {
+  margin: 0;
   position: relative;
-  flex: 0 0 clamp(200px, 24vw, 290px);
-  aspect-ratio: 2 / 3;
-  scroll-snap-align: start;
-  border-radius: 6px;
-  overflow: visible;
   cursor: zoom-in;
-  transition: transform 0.45s var(--ease-out);
 }
-.nfx-card img {
-  width: 100%; height: 100%;
+.shot img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
   object-fit: cover;
-  border-radius: 6px;
-  filter: grayscale(1) contrast(1.05);
-  box-shadow: 0 18px 45px -18px rgb(0 0 0 / 0.65);
-  transition: filter 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  display: block;
+  filter: grayscale(1);
+  transition: filter 0.6s var(--ease-out), transform 0.6s var(--ease-out);
 }
-.nfx-card:hover { transform: scale(1.07) translateY(-6px); z-index: 3; }
-.nfx-card:hover img { filter: grayscale(0); box-shadow: 0 30px 60px -18px rgb(0 0 0 / 0.8); }
-@media (max-width: 700px) {
-  .nfx-billboard { min-height: 92svh; }
-  .nfx-billboard__img { inset: 0; }
-  .nfx-billboard__img::after {
-    background:
-      linear-gradient(to top, var(--paper) 6%, rgb(var(--paper-rgb) / 0.5) 50%, rgb(var(--paper-rgb) / 0.2) 100%);
-  }
-}
-.nfx-card--pending {
-  border: 1.5px dashed var(--line);
-  border-radius: 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  color: var(--grey);
-  text-align: center;
-  padding: 1rem;
-  cursor: default;
-}
-.nfx-card--pending p { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.shot:hover img { filter: grayscale(0); transform: scale(1.015); }
+
+
 /* ---------- portfolio: the gallery wall ---------- */
 body.page-gallery .work-grid {
   display: block;
@@ -1973,7 +1792,7 @@ body.hj-edit .shot-credit:empty { display: inline-block; }
 body.hj-edit [data-edit-img] { position: relative; }
 body.hj-edit figure:has([data-edit-img])::after,
 body.hj-edit .intro__img:has([data-edit-img])::after,
-body.hj-edit .about-cover:has([data-edit-img])::after,
+body.hj-edit .cover:has([data-edit-img])::after,
 body.hj-edit .hero:has([data-edit-img])::after {
   content: "Click photo to replace";
   position: absolute;
@@ -1994,7 +1813,7 @@ body.hj-edit .hero:has([data-edit-img])::after {
 }
 body.hj-edit figure:has([data-edit-img]):hover::after,
 body.hj-edit .intro__img:has([data-edit-img]):hover::after,
-body.hj-edit .about-cover:has([data-edit-img]):hover::after,
+body.hj-edit .cover:has([data-edit-img]):hover::after,
 body.hj-edit .hero:has([data-edit-img]):hover::after { opacity: 0.92; }
 
 .show__poster--empty {
