@@ -1359,12 +1359,14 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
   font-weight: 500;
 }
 .work figcaption .credit {
+  display: block;
+  margin-top: 0.25rem;
   font-size: 0.74rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--grey);
-  margin-top: 0.15rem;
 }
+.work figcaption .credit:empty { display: none; }
 .work .tag {
   position: absolute;
   top: 0.8rem; left: 0.8rem;
