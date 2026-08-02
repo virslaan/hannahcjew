@@ -46,10 +46,9 @@
       <div class="page-head will-reveal">
         <p class="kicker">Portfolio</p>
         <h1>The <em>work</em></h1>
-        <p class="sub">Selected photos and videos across performance, choreography, teaching, and photoshoots. Click any image to view full size.</p>
+        <p class="sub">Selected photos and videos across performance, choreography, teaching, and photoshoots. Photographer credits appear under each image. Click any image to view full size.</p>
       </div>
 
-      <!-- Filters -->
       <div class="filters" role="group" aria-label="Filter portfolio by category">
         <button class="is-active" data-filter="all">All</button>
         <button data-filter="performer">Performer</button>
@@ -58,130 +57,12 @@
         <button data-filter="photoshoots">Photoshoots</button>
       </div>
 
-      <!--
-        ══════════════════════════════════════════════════════════════
-        HOW TO ADD A NEW PORTFOLIO IMAGE (for Hannah / future editing):
-        1. Rename the file like: ProjectName_YYYY-MM-DD_PhotographerName.jpg
-           Example: CatsVictoria_2026-03-12_JaneSmith.jpg
-        2. Put it in assets/img/
-        3. Copy one of the <figure> blocks below and update:
-           - data-category:  performer | choreographer | educator | photoshoots
-           - data-title:     the project or show name
-           - data-credit:    "Photo: photographer name"
-           - img src:        assets/img/your-file.jpg
-           - img alt:        a short description of the photo
-           - <span class="title"> and <span class="credit"> text
-             (credit appears under the photo; leave empty if unknown)
-        ══════════════════════════════════════════════════════════════
-      -->
-      <div class="work-grid">
-
-        <figure class="work will-reveal" data-category="performer" data-lightbox
-                data-title="Studio: tutu &amp; pointe" data-credit="">
-          <span class="tag">Performer</span>
-          <img src="assets/img/hero-tutu-bw.jpg" alt="Hannah in a tutu and pointe shoes folded forward in an expressive black and white pose" loading="lazy" />
-          <figcaption>
-            <span class="title">Studio: tutu &amp; pointe</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="performer" data-lightbox
-                data-title="Blue silk in motion" data-credit="">
-          <span class="tag">Performer</span>
-          <img src="assets/img/blue-dress-flow.jpg" alt="Hannah mid-movement in a pale blue dress, fabric sweeping around her" loading="lazy" />
-          <figcaption>
-            <span class="title">Blue silk in motion</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="choreographer" data-lightbox
-                data-title="Duet in rehearsal" data-credit="">
-          <span class="tag">Choreographer</span>
-          <img src="assets/img/duet-lift.jpg" alt="A partnered lift in rehearsal, Hannah balanced upside down mid-air" loading="lazy" />
-          <figcaption>
-            <span class="title">Duet in rehearsal</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="educator" data-lightbox
-                data-title="In the studio" data-credit="">
-          <span class="tag">Educator</span>
-          <img src="assets/img/pointe-shoes-bw.jpg" alt="Close-up of pointe shoes stepping through a studio, black and white" loading="lazy" />
-          <figcaption>
-            <span class="title">In the studio</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="photoshoots" data-lightbox
-                data-title="Sculptural in green" data-credit="">
-          <span class="tag">Photoshoots</span>
-          <img src="assets/img/green-leotard.jpg" alt="Hannah in a green leotard with arms curved in a sculptural shape" loading="lazy" />
-          <figcaption>
-            <span class="title">Sculptural in green</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="photoshoots" data-lightbox
-                data-title="Meatpacking, NYC" data-credit="">
-          <span class="tag">Photoshoots</span>
-          <img src="assets/img/street-mirror.jpg" alt="Hannah in sunglasses reflected in a mirrored wall on a New York street" loading="lazy" />
-          <figcaption>
-            <span class="title">Meatpacking, NYC</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="choreographer" data-lightbox
-                data-title="Studio duet: the reach" data-credit="">
-          <span class="tag">Choreographer</span>
-          <img src="assets/img/insta/insta-1.jpg" alt="Hannah and a partner reaching toward each other in a studio, black and white" loading="lazy" />
-          <figcaption>
-            <span class="title">Studio duet: the reach</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="performer" data-lightbox
-                data-title="Rehearsal, mid-turn" data-credit="">
-          <span class="tag">Performer</span>
-          <img src="assets/img/insta/insta-2.jpg" alt="Hannah mid-turn in rehearsal with one leg raised" loading="lazy" />
-          <figcaption>
-            <span class="title">Rehearsal, mid-turn</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="educator" data-lightbox
-                data-title="At the barre" data-credit="">
-          <span class="tag">Educator</span>
-          <img src="assets/img/insta/insta-4.jpg" alt="Hannah stretching in pointe shoes at a mirror" loading="lazy" />
-          <figcaption>
-            <span class="title">At the barre</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-        <figure class="work will-reveal" data-category="photoshoots" data-lightbox
-                data-title="Chinatown, under the neon" data-credit="">
-          <span class="tag">Photoshoots</span>
-          <img src="assets/img/insta/insta-6.jpg" alt="Hannah in a qipao beneath a neon chop suey sign" loading="lazy" />
-          <figcaption>
-            <span class="title">Chinatown, under the neon</span>
-            <span class="credit"></span>
-          </figcaption>
-        </figure>
-
-      </div>
-
+      <!-- Filled by assets/js/portfolio.js from assets/data/portfolio.json
+           (or a local Studio draft). Use the gear button to edit. -->
+      <div class="work-grid" data-portfolio></div>
     </div>
   </main>
 
-  <!-- lightbox -->
   <div class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
     <button class="lightbox__close" aria-label="Close">×</button>
     <div class="lightbox__inner">
@@ -211,5 +92,7 @@
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/portfolio.js"></script>
+  <script src="assets/js/studio.js"></script>
 </body>
 </html>

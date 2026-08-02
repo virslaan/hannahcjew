@@ -1,0 +1,82 @@
+[
+  {
+    "id": "tutu-pointe",
+    "src": "assets/img/hero-tutu-bw.jpg",
+    "title": "Studio: tutu & pointe",
+    "credit": "",
+    "category": "performer",
+    "alt": "Hannah in a tutu and pointe shoes folded forward in an expressive black and white pose"
+  },
+  {
+    "id": "blue-silk",
+    "src": "assets/img/blue-dress-flow.jpg",
+    "title": "Blue silk in motion",
+    "credit": "",
+    "category": "performer",
+    "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
+  },
+  {
+    "id": "duet-lift",
+    "src": "assets/img/duet-lift.jpg",
+    "title": "Duet in rehearsal",
+    "credit": "",
+    "category": "choreographer",
+    "alt": "A partnered lift in rehearsal, Hannah balanced upside down mid-air"
+  },
+  {
+    "id": "pointe-shoes",
+    "src": "assets/img/pointe-shoes-bw.jpg",
+    "title": "In the studio",
+    "credit": "",
+    "category": "educator",
+    "alt": "Close-up of pointe shoes stepping through a studio, black and white"
+  },
+  {
+    "id": "green-leotard",
+    "src": "assets/img/green-leotard.jpg",
+    "title": "Sculptural in green",
+    "credit": "",
+    "category": "photoshoots",
+    "alt": "Hannah in a green leotard with arms curved in a sculptural shape"
+  },
+  {
+    "id": "meatpacking",
+    "src": "assets/img/street-mirror.jpg",
+    "title": "Meatpacking, NYC",
+    "credit": "",
+    "category": "photoshoots",
+    "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street"
+  },
+  {
+    "id": "studio-duet",
+    "src": "assets/img/insta/insta-1.jpg",
+    "title": "Studio duet: the reach",
+    "credit": "",
+    "category": "choreographer",
+    "alt": "Hannah and a partner reaching toward each other in a studio, black and white"
+  },
+  {
+    "id": "mid-turn",
+    "src": "assets/img/insta/insta-2.jpg",
+    "title": "Rehearsal, mid-turn",
+    "credit": "",
+    "category": "performer",
+    "alt": "Hannah mid-turn in rehearsal with one leg raised"
+  },
+  {
+    "id": "at-barre",
+    "src": "assets/img/insta/insta-4.jpg",
+    "title": "At the barre",
+    "credit": "",
+    "category": "educator",
+    "alt": "Hannah stretching in pointe shoes at a mirror"
+  },
+  {
+    "id": "chinatown",
+    "src": "assets/img/insta/insta-6.jpg",
+    "title": "Chinatown, under the neon",
+    "credit": "",
+    "category": "photoshoots",
+    "alt": "Hannah in a qipao beneath a neon chop suey sign"
+  }
+]

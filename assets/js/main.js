@@ -175,13 +175,12 @@ if ("IntersectionObserver" in window && revealEls.length) {
 
 // ----- portfolio filters -----
 const filterBtns = document.querySelectorAll(".filters button");
-const works = document.querySelectorAll(".work");
 filterBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
     filterBtns.forEach((b) => b.classList.remove("is-active"));
     btn.classList.add("is-active");
     const f = btn.dataset.filter;
-    works.forEach((w) => {
+    document.querySelectorAll(".work").forEach((w) => {
       const show = f === "all" || w.dataset.category === f;
       w.classList.toggle("is-hidden", !show);
     });
@@ -223,19 +222,6 @@ if (lightbox) {
   const lbCredit = lightbox.querySelector(".lightbox__caption .credit");
   const lbDownload = lightbox.querySelector(".lightbox__download");
 
-  document.querySelectorAll("[data-lightbox]").forEach((fig) => {
-    fig.addEventListener("click", () => {
-      const img = fig.querySelector("img");
-      lbImg.src = img.dataset.full || img.src;
-      lbImg.alt = img.alt;
-      lbTitle.textContent = fig.dataset.title || "";
-      lbCredit.textContent = fig.dataset.credit || "";
-      if (lbDownload) lbDownload.href = img.dataset.full || img.src;
-      lightbox.classList.add("is-open");
-      document.body.style.overflow = "hidden";
-    });
-  });
-
   const close = () => {
     lightbox.classList.remove("is-open");
     document.body.style.overflow = "";
@@ -247,6 +233,24 @@ if (lightbox) {
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") close();
   });
+
+  window.bindLightbox = function bindLightbox() {
+    document.querySelectorAll("[data-lightbox]").forEach((fig) => {
+      if (fig.dataset.lbBound) return;
+      fig.dataset.lbBound = "1";
+      fig.addEventListener("click", () => {
+        const img = fig.querySelector("img");
+        lbImg.src = img.dataset.full || img.src;
+        lbImg.alt = img.alt;
+        lbTitle.textContent = fig.dataset.title || "";
+        lbCredit.textContent = fig.dataset.credit || "";
+        if (lbDownload) lbDownload.href = img.dataset.full || img.src;
+        lightbox.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      });
+    });
+  };
+  window.bindLightbox();
 }
 
 // ----- footer year -----

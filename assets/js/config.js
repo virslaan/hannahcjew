@@ -41,4 +41,21 @@ window.SITE_CONFIG = {
     username: "hannahjew",
     posts: [],
   },
+
+  /* ----------------------------------------------------------
+     STUDIO (gear button, bottom-right)
+     Friend-friendly editor for portfolio photos + credits.
+     pin: passcode to unlock the panel on the live site.
+     github: used only if she (or you) pastes a token in-browser
+             to publish straight to the repo. Token is never
+             stored in this file.
+     ---------------------------------------------------------- */
+  studio: {
+    pin: "hannah",
+    github: {
+      owner: "virslaan",
+      repo: "hannahcjew",
+      branch: "main",
+    },
+  },
 };
