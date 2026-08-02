@@ -500,17 +500,20 @@
     </svg>`;
   }
 
+  // the gear tucks into the footer bar, quiet enough that visitors slide past it
   function buildGear() {
+    if ($(".studio-gear")) return;
     const gear = document.createElement("button");
     gear.type = "button";
     gear.className = "studio-gear";
+    gear.title = "Edit this site";
     gear.setAttribute("aria-label", "Edit this site");
-    gear.innerHTML = gearSvg() + "<span>Edit site</span>";
+    gear.innerHTML = gearSvg();
     gear.addEventListener("click", () => {
       if (!isUnlocked()) return askPin();
       startEditing();
     });
-    document.body.appendChild(gear);
+    ($(".footer__bottom") || $(".footer") || document.body).appendChild(gear);
   }
 
   function askPin() {

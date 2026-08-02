@@ -1570,6 +1570,7 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
   letter-spacing: 0.1em;
   color: rgb(var(--paper-rgb) / 0.45);
 }
+.footer__bottom > span:first-child { margin-right: auto; }
 
 /* ---------- theme dropdown ---------- */
 .theme-picker {
@@ -1709,32 +1710,27 @@ body.page-magazine .about-grid figure:hover img { filter: grayscale(0); }
    STUDIO · editing the real page in place
    ============================================================ */
 
-/* the gear lives at the very bottom, under the footer */
+/* the gear sits quietly inside the footer bar */
 .studio-gear {
-  position: relative;
-  z-index: 5;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.9rem 1rem calc(0.9rem + env(safe-area-inset-bottom));
+  padding: 0.35rem;
+  margin-left: 0.4rem;
   border: 0;
-  border-top: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--grey);
-  font-family: var(--sans);
-  font-size: 0.66rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  background: none;
+  color: currentColor;
   cursor: pointer;
-  opacity: 0.45;
-  transition: opacity 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  opacity: 0.4;
+  transition: opacity 0.3s var(--ease-out), rotate 0.6s var(--ease-out);
 }
 .studio-gear:hover,
-.studio-gear:focus-visible { opacity: 1; color: var(--ink); }
-.studio-gear svg { transition: rotate 0.6s var(--ease-out); }
-.studio-gear:hover svg { rotate: 90deg; }
+.studio-gear:focus-visible { opacity: 1; rotate: 90deg; }
+.studio-gear svg { width: 15px; height: 15px; }
+@media (max-width: 640px) {
+  /* the footer stacks on phones, so the gear rides up to the right edge */
+  .studio-gear { align-self: flex-end; margin-top: -1.5rem; }
+}
 
 /* passcode */
 .studio-lock {
