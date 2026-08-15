@@ -464,7 +464,7 @@ body::after {
   align-items: flex-end;
   gap: 1rem;
   margin-left: auto;
-  translate: 0.6rem 0;
+  translate: 1.15rem 0;
 }
 .fade-in {
   opacity: 0;
@@ -1400,15 +1400,15 @@ body:not(.hj-edit) .contact-block.is-empty { display: none; }
    These are downloaded copies of her public Instagram photos,
    self-hosted in assets/img/insta/. Clicking any tile opens her profile. */
 .insta {
-  padding-block: clamp(2rem, 5vh, 3.2rem);
+  padding-block: clamp(1.6rem, 4vh, 2.6rem);
 }
-.insta .page-head { margin-bottom: 0.85rem; }
-.insta .page-head h1 { font-size: clamp(1.05rem, 2vw, 1.4rem); }
+.insta .page-head { margin-bottom: 0.7rem; }
+.insta .page-head h1 { font-size: clamp(0.95rem, 1.8vw, 1.2rem); }
 .insta-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 0.4rem;
-  max-width: 640px;
+  gap: 0.3rem;
+  max-width: 480px;
   margin-inline: auto;
 }
 .insta-grid a {
