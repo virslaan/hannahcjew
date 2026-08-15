@@ -9,7 +9,7 @@
     "nextShow": {
       "kicker": "Next on stage",
       "title": "Dallas Indie Dance Festival",
-      "role": "Dancing in \"Nightmare Screen (Choreographed by: Alexandra Light)",
+      "role": "Dancing in \"Nightmare Screen\" (Choreographed by: Alexandra Light)",
       "venue": "Dallas, TX",
       "link": "upcoming.html",
       "linkLabel": "All upcoming"
@@ -111,7 +111,7 @@
       "id": "blue-silk",
       "src": "assets/img/blue-dress-flow.jpg",
       "title": "",
-      "credit": "",
+      "credit": "Photo by Chester",
       "category": "performer",
       "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
     },
