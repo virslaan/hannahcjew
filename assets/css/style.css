@@ -1361,46 +1361,55 @@ body.hj-edit .hj-ticket-placeholder { display: inline-flex; }
 }
 .footer__bottom > span:first-child { margin-right: auto; }
 
-/* ---------- instagram: a real wall of her latest posts ----------
+/* ---------- instagram: a slow, even carousel of her latest posts ----------
    These are downloaded copies of her public Instagram photos,
    self-hosted in assets/img/insta/ (hotlinked IG URLs expire).
    To refresh, replace the six insta-N.jpg files with new ones. */
 .insta {
   padding-block: clamp(2.4rem, 6vh, 4rem);
+  overflow: hidden;
 }
-.insta .page-head { margin-bottom: 1rem; }
+.insta .page-head { margin-bottom: 1.1rem; }
 .insta .page-head h1 { font-size: clamp(1.15rem, 2.2vw, 1.55rem); }
-.insta-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 0.45rem;
-  max-width: 720px;
-  margin-inline: auto;
+.insta-rail {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
 }
-.insta-grid a {
-  position: relative;
+.insta-track {
+  display: flex;
+  width: max-content;
+  animation: instaFlow 42s linear infinite;
+}
+.insta-track:hover { animation-play-state: paused; }
+.insta-set {
+  display: flex;
+  gap: 0.5rem;
+  padding-right: 0.5rem;
+}
+.insta-set a {
+  flex: 0 0 auto;
+  width: clamp(108px, 13vw, 148px);
   display: block;
   overflow: hidden;
 }
-.insta-grid img {
+.insta-set img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
+  object-position: center 20%;
   display: block;
 }
-.insta-grid a:hover img,
-.insta-grid a:focus-visible img {
-  transform: scale(1.04);
-  transition: transform 0.5s var(--ease-out);
+@keyframes instaFlow {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
-.insta-grid a::after { display: none; }
 .insta-follow {
   text-align: center;
   margin-top: 1.2rem;
 }
 .insta-follow .btn { font-size: 0.68rem; padding: 0.65em 1.3em; }
 @media (max-width: 640px) {
-  .insta-grid { grid-template-columns: repeat(3, 1fr); max-width: none; }
+  .insta-set a { width: 118px; }
 }
 
 /* ---------- mobile: quieter, tighter, more air ---------- */
@@ -1797,4 +1806,7 @@ body.hj-edit .hj-edit-hint { display: block; }
   }
   html { scroll-behavior: auto; }
   .will-reveal { filter: none; }
+  .insta-track { animation: none !important; }
+  .insta-set[aria-hidden="true"] { display: none; }
+  .insta-rail { overflow-x: auto; }
 }
