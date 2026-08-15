@@ -20,12 +20,13 @@ window.SITE_CONFIG = {
 
   /* ----------------------------------------------------------
      INSTAGRAM
-     username: the handle shown in follow links.
-     posts:    paste full post URLs here (up to 8 look best).
-               When this list has links, the home page renders
-               each post as a real Instagram embed.
-               When it is empty, the site shows the profile
-               grid embed instead, with a follow-button fallback.
+     username: the handle shown in follow links and the official
+               Instagram feed on the home page.
+     posts:    optional list of post URLs. If you paste them, each
+               one renders as Instagram's own card (carousel posts
+               keep Instagram's swipe). Leave the list empty to
+               show Instagram's profile embed, which is the most
+               posts they will serve without a login (about 12).
 
      Example:
        posts: [

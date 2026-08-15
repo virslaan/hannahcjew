@@ -1361,56 +1361,45 @@ body.hj-edit .hj-ticket-placeholder { display: inline-flex; }
 }
 .footer__bottom > span:first-child { margin-right: auto; }
 
-/* ---------- instagram: a slow, even carousel of her latest posts ----------
-   These are downloaded copies of her public Instagram photos,
-   self-hosted in assets/img/insta/ (hotlinked IG URLs expire).
-   To refresh, replace the six insta-N.jpg files with new ones. */
+/* ---------- instagram: Instagram's own feed widget ----------
+   Official embed, so carousel posts keep Instagram's swipe UI.
+   The public widget shows the newest posts Instagram will serve
+   without a login (usually twelve). Optional post URLs in
+   config.js render as individual official cards instead. */
 .insta {
   padding-block: clamp(2.4rem, 6vh, 4rem);
-  overflow: hidden;
 }
 .insta .page-head { margin-bottom: 1.1rem; }
 .insta .page-head h1 { font-size: clamp(1.15rem, 2.2vw, 1.55rem); }
-.insta-rail {
-  overflow: hidden;
-  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+.insta-feed {
+  width: min(540px, 100%);
+  margin-inline: auto;
+  background: var(--paper);
 }
-.insta-track {
-  display: flex;
-  width: max-content;
-  animation: instaFlow 42s linear infinite;
-}
-.insta-track:hover { animation-play-state: paused; }
-.insta-set {
-  display: flex;
-  gap: 0.5rem;
-  padding-right: 0.5rem;
-}
-.insta-set a {
-  flex: 0 0 auto;
-  width: clamp(108px, 13vw, 148px);
+.insta-feed iframe {
   display: block;
-  overflow: hidden;
-}
-.insta-set img {
   width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  object-position: center 20%;
-  display: block;
+  height: 1180px;
+  border: 0;
 }
-@keyframes instaFlow {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+.insta-feed--posts {
+  width: min(1120px, 100%);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.2rem;
+  justify-items: center;
+}
+.insta-feed--posts blockquote {
+  margin: 0;
+  min-width: 0;
+  width: 100%;
+  max-width: 540px;
 }
 .insta-follow {
   text-align: center;
   margin-top: 1.2rem;
 }
 .insta-follow .btn { font-size: 0.68rem; padding: 0.65em 1.3em; }
-@media (max-width: 640px) {
-  .insta-set a { width: 118px; }
-}
 
 /* ---------- mobile: quieter, tighter, more air ---------- */
 @media (max-width: 640px) {
@@ -1806,7 +1795,4 @@ body.hj-edit .hj-edit-hint { display: block; }
   }
   html { scroll-behavior: auto; }
   .will-reveal { filter: none; }
-  .insta-track { animation: none !important; }
-  .insta-set[aria-hidden="true"] { display: none; }
-  .insta-rail { overflow-x: auto; }
 }
