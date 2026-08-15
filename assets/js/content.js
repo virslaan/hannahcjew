@@ -254,7 +254,7 @@
       blurb.textContent = resume.blurb || "";
       blurb.setAttribute("data-edit", "resume.blurb");
     }
-    document.querySelectorAll("[data-resume-pdf]").forEach((el) => {
+    document.querySelectorAll("[data-resume-pdf], [data-resume-open]").forEach((el) => {
       el.href = pdf;
     });
 
@@ -336,10 +336,10 @@
               <span class="shine" aria-hidden="true"></span>
             </figure>`
           : `<figure class="show__poster show__poster--empty" data-edit-empty-img="${p}poster"></figure>`;
-        const onsale = s.onsale ? `<p class="onsale"${ed(p + "onsale")}>${esc(s.onsale)}</p>` : "";
+        const onsale = `<p class="onsale"${ed(p + "onsale")}>${esc(s.onsale || "")}</p>`;
         const tickets = s.tickets
           ? `<a class="btn btn--red" href="${esc(s.tickets)}" target="_blank" rel="noopener" data-edit-href="${p}tickets">Tickets <span aria-hidden="true">→</span></a>`
-          : "";
+          : `<button type="button" class="btn hj-ticket-placeholder" data-edit-href="${p}tickets">Add ticket link</button>`;
         return `<article class="show${s.featured ? " show--featured" : ""} will-reveal" data-edit-item="upcoming" data-index="${i}">
           ${poster}
           <div class="show__body">

@@ -217,7 +217,7 @@
         if (!isEditing()) return;
         e.preventDefault();
         const path = el.dataset.editHref;
-        const next = prompt("Ticket link", get(path) || "");
+        const next = prompt("Paste the ticket webpage link. Leave it blank if tickets are not up yet.", get(path) || "");
         if (next == null) return;
         set(path, next.trim());
         rerender();
@@ -333,7 +333,7 @@
       make: (src) => ({ id: uid("hs"), src, title: "Hannah Jew", credit: "", alt: "Headshot of Hannah Jew" }),
     },
     upcoming: {
-      label: "+ Add show",
+      label: "+ Add another show",
       make: () => ({
         id: uid("show"),
         title: "New show",
@@ -378,6 +378,13 @@
         rerender();
       });
       listEl.insertAdjacentElement("afterend", btn);
+      if (path === "upcoming") {
+        const hint = document.createElement("p");
+        hint.className = "hj-edit-hint";
+        hint.textContent =
+          "That button adds a new show. Click any words to type. Click Add ticket link to paste a URL. Use the arrows to reorder, the X to remove.";
+        btn.insertAdjacentElement("afterend", hint);
+      }
     });
   }
 
@@ -529,7 +536,7 @@
       <div class="studio-lock__card" role="dialog" aria-modal="true" aria-label="Passcode">
         <p class="studio-lock__kicker">Site studio</p>
         <h2>Edit your website</h2>
-        <p class="studio-lock__help">Enter your passcode, then just click anything on the page to change it.</p>
+        <p class="studio-lock__help">Enter your passcode, then click anything on the page to change it. When you are done, tap Download for Vipul and send him the file. He will put it on the live website.</p>
         <input type="password" placeholder="Passcode" autocomplete="current-password" />
         <div class="studio-lock__actions">
           <button type="button" data-go class="btn btn--red">Start editing</button>
@@ -620,8 +627,8 @@
       </div>
       <div class="studio-bar__actions">
         <span class="studio-bar__state" data-state></span>
-        <button type="button" class="btn btn--red" data-publish>Publish</button>
-        <button type="button" class="btn" data-download>Save file</button>
+        ${cfg.canPublish ? `<button type="button" class="btn btn--red" data-publish>Publish</button>` : ""}
+        <button type="button" class="btn btn--red" data-download>Download for Vipul</button>
         <button type="button" class="btn" data-undo>Undo all</button>
         <button type="button" class="btn" data-done>Done</button>
       </div>`;
@@ -655,7 +662,7 @@
 
     $("[data-done]", bar).onclick = () => {
       stopEditing();
-      toast(dirty ? "Saved on this device. Use Publish to put it online." : "Edit mode off.");
+      toast(dirty ? "Saved on this device. Download for Vipul when you want it live." : "Edit mode off.");
     };
 
     $("[data-undo]", bar).onclick = async () => {
@@ -670,10 +677,11 @@
 
     $("[data-download]", bar).onclick = () => {
       exportEverything();
-      toast("Downloaded your content file plus any new photos.");
+      toast("Downloaded. Email that file to Vipul and he will put it on the live site.");
     };
 
-    $("[data-publish]", bar).onclick = async () => {
+    const publishBtn = $("[data-publish]", bar);
+    if (publishBtn) publishBtn.onclick = async () => {
       let token = sessionStorage.getItem(TOKEN_KEY) || "";
       if (!token) {
         token = (prompt("Paste your GitHub token to publish (ask Vipul if you don't have one):", "") || "").trim();
@@ -701,7 +709,7 @@
   function updateBar() {
     const state = $(".studio-bar [data-state]");
     if (state && !state.textContent.endsWith("…")) {
-      state.textContent = dirty ? "Unpublished changes" : "";
+      state.textContent = dirty ? "Not live yet" : "";
     }
   }
 
