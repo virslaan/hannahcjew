@@ -100,6 +100,14 @@
   ],
   "portfolio": [
     {
+      "id": "p-msuxucqc-z87c",
+      "src": "assets/img/portfolio/dsc04124_2026-08-15_photo.jpg",
+      "title": "DSC04124",
+      "credit": "",
+      "category": "performer",
+      "alt": "DSC04124"
+    },
+    {
       "id": "p-msiatih6-37l8",
       "src": "assets/img/portfolio/aes-indiana-yuletide-celebration_2026-08-15_shotwell-photography.jpg",
       "title": "AES Indiana Yuletide Celebration",
@@ -111,7 +119,7 @@
       "id": "blue-silk",
       "src": "assets/img/blue-dress-flow.jpg",
       "title": "",
-      "credit": "Photo by Chester",
+      "credit": "Photo by Linda l'anson",
       "category": "performer",
       "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
     },
