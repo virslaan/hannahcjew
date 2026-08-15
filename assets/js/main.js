@@ -247,39 +247,3 @@ if (lightbox) {
 // ----- footer year -----
 const yearEl = document.querySelector("[data-year]");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-// ----- Instagram: official embeds so carousel posts stay Instagram's UI -----
-(function () {
-  const mount = document.querySelector("[data-insta-feed]");
-  if (!mount) return;
-  const ig = (cfg && cfg.instagram) || {};
-  const user = ig.username || "hannahjew";
-  const posts = (ig.posts || []).map((u) => String(u || "").trim()).filter(Boolean);
-
-  function loadEmbedScript() {
-    if (window.instgrm && window.instgrm.Embeds) {
-      window.instgrm.Embeds.process();
-      return;
-    }
-    const existing = document.querySelector('script[src*="instagram.com/embed.js"]');
-    if (existing) return;
-    const s = document.createElement("script");
-    s.async = true;
-    s.src = "https://www.instagram.com/embed.js";
-    document.body.appendChild(s);
-  }
-
-  if (!posts.length) {
-    mount.innerHTML = `<iframe src="https://www.instagram.com/${encodeURIComponent(user)}/embed/?cr=1&v=14&wp=540" title="Instagram feed from @${user}" loading="lazy" allowtransparency="true" allow="encrypted-media"></iframe>`;
-    return;
-  }
-
-  mount.classList.add("insta-feed--posts");
-  mount.innerHTML = posts
-    .map(
-      (url) =>
-        `<blockquote class="instagram-media" data-instgrm-permalink="${url.replace(/"/g, "")}" data-instgrm-version="14"></blockquote>`
-    )
-    .join("");
-  loadEmbedScript();
-})();

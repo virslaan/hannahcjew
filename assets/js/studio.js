@@ -242,7 +242,7 @@
       site.resume = site.resume || {};
       site.resume.pdf = await readAsDataUrl(files[0]);
       rerender();
-      toast("New resume loaded. Publish to put it online.");
+      toast("New resume loaded. It will go live in about a minute.");
     });
     anchor.insertAdjacentElement("afterend", btn);
   }
