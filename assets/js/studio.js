@@ -115,17 +115,15 @@
     dirty = true;
     localStorage.setItem("hj-site-draft", JSON.stringify(site));
     updateBar();
+    scheduleLive();
   }
 
   function rerender() {
-    localStorage.setItem("hj-site-draft", JSON.stringify(site));
     window.HJ_SITE = site;
     window.HJ_hydrateSite(site);
-    dirty = true;
-    // re-arm editing on the fresh DOM
+    touch();
     requestAnimationFrame(() => {
       if (isEditing()) armEditing();
-      updateBar();
     });
   }
 
@@ -145,8 +143,7 @@
 
       el.addEventListener("input", () => {
         set(el.dataset.edit, el.textContent.trim());
-        dirty = true;
-        updateBar();
+        touch();
       });
       el.addEventListener("blur", () => {
         set(el.dataset.edit, el.textContent.trim());
@@ -404,9 +401,80 @@
       headers,
       body: JSON.stringify({ message, content: b64, branch: gh.branch || "main", ...(sha ? { sha } : {}) }),
     });
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      const text = await res.text();
+      if (res.status === 409) {
+        const again = await fetch(`${api}?ref=${gh.branch || "main"}`, { headers });
+        if (again.ok) sha = (await again.json()).sha;
+        const retry = await fetch(api, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ message, content: b64, branch: gh.branch || "main", ...(sha ? { sha } : {}) }),
+        });
+        if (!retry.ok) throw new Error(await retry.text());
+        return;
+      }
+      throw new Error(text);
+    }
   }
 
+  function liveToken() {
+    const t = (gh.token || "").trim();
+    if (t && t !== "__STUDIO_TOKEN__") return t;
+    try {
+      const saved = localStorage.getItem(TOKEN_KEY) || "";
+      if (saved) return saved;
+    } catch (e) {}
+    return (sessionStorage.getItem(TOKEN_KEY) || "").trim();
+  }
+
+  let liveTimer = null;
+  let liveBusy = false;
+  let liveAgain = false;
+
+  function scheduleLive() {
+    clearTimeout(liveTimer);
+    liveTimer = setTimeout(() => pushLive(), 1600);
+    updateBar();
+  }
+
+  async function pushLive() {
+    const token = liveToken();
+    if (!token) {
+      updateBar();
+      return;
+    }
+    if (liveBusy) {
+      liveAgain = true;
+      return;
+    }
+    liveBusy = true;
+    const say = (m) => {
+      const state = $(".studio-bar [data-state]");
+      if (state) state.textContent = m;
+    };
+    try {
+      say("Saving…");
+      await publish(token, say);
+      say("Live");
+      toast("Saved. The live site updates in about a minute.");
+      setTimeout(() => {
+        const state = $(".studio-bar [data-state]");
+        if (state && state.textContent === "Live") state.textContent = "";
+      }, 4000);
+    } catch (err) {
+      console.error(err);
+      say("Could not save");
+      toast("Could not save to the live site. Try once more.");
+    } finally {
+      liveBusy = false;
+      updateBar();
+      if (liveAgain) {
+        liveAgain = false;
+        scheduleLive();
+      }
+    }
+  }
   const b64of = (dataUrl) => dataUrl.split(",")[1];
   const jsonB64 = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2))));
 
@@ -436,7 +504,9 @@
     const singles = [
       [site.home, "heroImage", "hero"],
       [site.home, "introImage", "intro"],
+      [site.about, "cover", "about-cover"],
       [site.about, "image", "about"],
+      [site.resume, "cover", "headshots-cover"],
       [site.contact, "image", "contact"],
     ];
     for (const [obj, key, label] of singles) {
@@ -493,7 +563,9 @@
     [
       [copy.home, "heroImage", "hero"],
       [copy.home, "introImage", "intro"],
+      [copy.about, "cover", "about-cover"],
       [copy.about, "image", "about"],
+      [copy.resume, "cover", "headshots-cover"],
       [copy.contact, "image", "contact"],
     ].forEach(([obj, key, label]) => {
       if (obj && String(obj[key] || "").startsWith("data:image")) {
@@ -536,7 +608,7 @@
       <div class="studio-lock__card" role="dialog" aria-modal="true" aria-label="Passcode">
         <p class="studio-lock__kicker">Site studio</p>
         <h2>Edit your website</h2>
-        <p class="studio-lock__help">Enter your passcode, then click anything on the page to change it. When you are done, tap Download for Vipul and send him the file. He will put it on the live website.</p>
+        <p class="studio-lock__help">Enter your passcode, then click anything on the page to change it. It saves by itself and goes live in about a minute.</p>
         <input type="password" placeholder="Passcode" autocomplete="current-password" />
         <div class="studio-lock__actions">
           <button type="button" data-go class="btn btn--red">Start editing</button>
@@ -570,7 +642,7 @@
     sessionStorage.setItem(EDITING_KEY, "1");
     buildBar();
     armEditing();
-    toast("Edit mode on. Click any words or photo to change it.");
+    toast("Edit mode on. Click any words or photo to change it. It saves by itself.");
   }
 
   function stopEditing() {
@@ -627,8 +699,6 @@
       </div>
       <div class="studio-bar__actions">
         <span class="studio-bar__state" data-state></span>
-        ${cfg.canPublish ? `<button type="button" class="btn btn--red" data-publish>Publish</button>` : ""}
-        <button type="button" class="btn btn--red" data-download>Download for Vipul</button>
         <button type="button" class="btn" data-undo>Undo all</button>
         <button type="button" class="btn" data-done>Done</button>
       </div>`;
@@ -662,45 +732,23 @@
 
     $("[data-done]", bar).onclick = () => {
       stopEditing();
-      toast(dirty ? "Saved on this device. Download for Vipul when you want it live." : "Edit mode off.");
+      if (dirty) {
+        clearTimeout(liveTimer);
+        pushLive();
+        toast("Saving. The live site updates in about a minute.");
+      } else {
+        toast("Edit mode off.");
+      }
     };
 
     $("[data-undo]", bar).onclick = async () => {
-      if (!confirm("Undo every change you have made since the last publish?")) return;
+      if (!confirm("Undo every change since the last save to the live site?")) return;
       window.HJ_clearSiteDraft();
       site = await window.HJ_loadSite();
       window.HJ_hydrateSite(site);
       dirty = false;
       requestAnimationFrame(armEditing);
-      toast("Back to the published version.");
-    };
-
-    $("[data-download]", bar).onclick = () => {
-      exportEverything();
-      toast("Downloaded. Email that file to Vipul and he will put it on the live site.");
-    };
-
-    const publishBtn = $("[data-publish]", bar);
-    if (publishBtn) publishBtn.onclick = async () => {
-      let token = sessionStorage.getItem(TOKEN_KEY) || "";
-      if (!token) {
-        token = (prompt("Paste your GitHub token to publish (ask Vipul if you don't have one):", "") || "").trim();
-        if (!token) return;
-        sessionStorage.setItem(TOKEN_KEY, token);
-      }
-      const state = $("[data-state]", bar);
-      const say = (m) => (state.textContent = m);
-      try {
-        await publish(token, say);
-        say("");
-        toast("Published. Your website updates in a minute or two.");
-        updateBar();
-      } catch (err) {
-        console.error(err);
-        say("");
-        sessionStorage.removeItem(TOKEN_KEY);
-        toast("Publish failed. Use Save file and send it to Vipul.");
-      }
+      toast("Back to the live version.");
     };
 
     updateBar();
@@ -708,9 +756,17 @@
 
   function updateBar() {
     const state = $(".studio-bar [data-state]");
-    if (state && !state.textContent.endsWith("…")) {
-      state.textContent = dirty ? "Not live yet" : "";
+    if (!state) return;
+    if (liveBusy) {
+      if (!state.textContent || state.textContent === "Saving…") state.textContent = "Saving…";
+      return;
     }
+    if (liveTimer) {
+      state.textContent = "Saving…";
+      return;
+    }
+    if (dirty) state.textContent = "Saving…";
+    else if (state.textContent === "Saving…") state.textContent = "";
   }
 
   // ----- boot -----------------------------------------------------------

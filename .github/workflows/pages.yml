@@ -1,0 +1,61 @@
+name: Deploy site
+
+# Builds GitHub Pages and slips Hannah's save-key into the live site
+# so her edits go online by themselves. The key lives in the
+# STUDIO_TOKEN repo secret, not in git.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare Pages folder
+        env:
+          STUDIO_TOKEN: ${{ secrets.STUDIO_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import os, pathlib, shutil
+          root = pathlib.Path(".")
+          dest = pathlib.Path("_site")
+          if dest.exists():
+              shutil.rmtree(dest)
+          dest.mkdir()
+          skip = {".git", ".github", "_site", "websitematerials", "node_modules", ".gitignore"}
+          for item in root.iterdir():
+              if item.name in skip:
+                  continue
+              target = dest / item.name
+              if item.is_dir():
+                  shutil.copytree(item, target, ignore=shutil.ignore_patterns(".DS_Store"))
+              else:
+                  shutil.copy2(item, target)
+          cfg = dest / "assets/js/config.js"
+          token = os.environ.get("STUDIO_TOKEN") or ""
+          text = cfg.read_text()
+          cfg.write_text(text.replace("__STUDIO_TOKEN__", token))
+          PY
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

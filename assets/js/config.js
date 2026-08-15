@@ -45,18 +45,16 @@ window.SITE_CONFIG = {
      Upcoming shows, and Contact. Add / reorder / remove items.
      Content lives in assets/data/site.json.
      pin: passcode to unlock the panel.
-     canPublish: leave false so Hannah downloads a file and
-                 emails it to Vipul. He puts it live. Set true
-                 only if a GitHub token will be used in-browser.
-     github: used only when canPublish is true.
+     github.token is filled in when the site is deployed, so
+     Hannah's edits can save themselves to the live site.
      ---------------------------------------------------------- */
   studio: {
     pin: "hannah",
-    canPublish: false,
     github: {
       owner: "virslaan",
       repo: "hannahcjew",
       branch: "main",
+      token: "__STUDIO_TOKEN__",
     },
   },
 };
