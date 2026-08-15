@@ -67,6 +67,12 @@
       "alt": "Portrait headshot of Hannah Jew wearing black, hair in motion"
     }
   ],
+  "portfolioCategories": [
+    { "id": "performer", "label": "Performer" },
+    { "id": "choreographer", "label": "Choreographer" },
+    { "id": "educator", "label": "Educator" },
+    { "id": "photoshoots", "label": "Photoshoots" }
+  ],
   "portfolio": [
     {
       "id": "tutu-pointe",
@@ -172,7 +178,8 @@
     "email": "hannahjew@att.net",
     "agency": "Clear Talent Group",
     "address": "352 7th Avenue #600, New York, NY 10001",
-    "phone": "212 840-4100",
+    "agentName": "",
+    "agentEmail": "",
     "fax": "212 967-4567",
     "instagram": "https://www.instagram.com/hannahjew",
     "instagramHandle": "@hannahjew",

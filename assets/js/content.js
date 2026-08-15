@@ -101,6 +101,7 @@
       site.headshots = draft.headshots || base.headshots;
       site.upcoming = draft.upcoming || base.upcoming;
       site.portfolio = draft.portfolio || base.portfolio;
+      site.portfolioCategories = draft.portfolioCategories || base.portfolioCategories;
       site.upcomingNote = draft.upcomingNote ?? base.upcomingNote;
     }
     // one-time migration from the older portfolio-only draft
@@ -288,27 +289,61 @@
     if (typeof window.bindLightbox === "function") window.bindLightbox();
   }
 
+  function defaultCategories() {
+    return [
+      { id: "performer", label: "Performer" },
+      { id: "choreographer", label: "Choreographer" },
+      { id: "educator", label: "Educator" },
+      { id: "photoshoots", label: "Photoshoots" },
+    ];
+  }
+
+  function catList(site) {
+    const list = site.portfolioCategories;
+    if (Array.isArray(list) && list.length) return list;
+    return defaultCategories();
+  }
+
+  function catLabel(site, id) {
+    const hit = catList(site).find((c) => c.id === id);
+    return (hit && hit.label) || id || "";
+  }
+
   function hydratePortfolio(site) {
     const grid = document.querySelector(".work-grid[data-portfolio]");
     if (!grid) return;
-    const CAT = {
-      performer: "Performer",
-      choreographer: "Choreographer",
-      educator: "Educator",
-      photoshoots: "Photoshoots",
-    };
+    const cats = catList(site);
+    site.portfolioCategories = cats;
     const items = site.portfolio || [];
     window.HJ_PORTFOLIO = items;
     grid.setAttribute("data-edit-list", "portfolio");
+
+    const bar = document.querySelector("[data-portfolio-filters]");
+    if (bar) {
+      const current = (bar.querySelector(".is-active") || {}).dataset?.filter || cats[0].id;
+      bar.innerHTML = cats
+        .map(
+          (c) =>
+            `<button type="button" data-filter="${esc(c.id)}" class="${c.id === current ? "is-active" : ""}">${esc(c.label)}</button>`
+        )
+        .join("");
+      if (typeof window.HJ_bindPortfolioFilters === "function") window.HJ_bindPortfolioFilters();
+    }
+
     grid.innerHTML = items
       .map((item, i) => {
         const credit = creditLine(item.credit);
-        return `<figure class="work will-reveal" data-category="${esc(item.category)}" data-lightbox
+        const cat = item.category || cats[0].id;
+        const options = cats
+          .map((c) => `<option value="${esc(c.id)}" ${c.id === cat ? "selected" : ""}>${esc(c.label)}</option>`)
+          .join("");
+        return `<figure class="work will-reveal" data-category="${esc(cat)}" data-lightbox
                  data-edit-item="portfolio" data-index="${i}"
                  data-title="${esc(item.title)}" data-credit="${esc(credit)}">
-          <span class="tag"${ed("portfolio." + i + ".category", 'data-edit-choice="performer|choreographer|educator|photoshoots"')}>${esc(
-          CAT[item.category] || item.category
-        )}</span>
+          <span class="tag">${esc(catLabel(site, cat))}</span>
+          <label class="tag-pick">
+            <select data-edit-cat="portfolio.${i}.category" aria-label="Category">${options}</select>
+          </label>
           <img src="${esc(item.src)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
           <figcaption>
             <span class="title"${ed("portfolio." + i + ".title")}>${esc(item.title)}</span>
@@ -318,8 +353,7 @@
       })
       .join("");
     if (typeof window.bindLightbox === "function") window.bindLightbox();
-    const active = document.querySelector(".filters button.is-active");
-    if (active) active.click();
+    if (typeof window.HJ_applyPortfolioFilter === "function") window.HJ_applyPortfolioFilter();
   }
 
   function hydrateUpcoming(site) {
@@ -350,6 +384,7 @@
             <h2><em${ed(p + "title")}>${esc(s.title || "")}</em></h2>
             <p class="role"${ed(p + "role")}>${esc(s.role || "")}</p>
             <p class="venue"${ed(p + "venue")}>${esc(s.venue || "")}</p>
+            <p class="show__info"${ed(p + "info")}>${esc(s.info || "")}</p>
             ${onsale}
             ${tickets}
           </div>
@@ -404,6 +439,19 @@
           ? `<br /><a href="tel:+1${phone.replace(/\D/g, "")}"${ed("contact.phone")}>${esc(phone)}</a> (o)`
           : "") +
         (fax ? ` · <span${ed("contact.fax")}>${esc(fax)}</span> (f)` : "");
+    }
+
+    const agent = document.querySelector("[data-contact-agent]");
+    if (agent) {
+      const name = (c.agentName || "").trim();
+      const mail = (c.agentEmail || "").trim();
+      agent.innerHTML =
+        `<span${ed("contact.agentName", 'data-edit-label="Agent name"')}>${esc(name)}</span><br />` +
+        (mail
+          ? `<a href="mailto:${esc(mail)}"${ed("contact.agentEmail")}>${esc(mail)}</a>`
+          : `<span${ed("contact.agentEmail", 'data-edit-label="Agent email"')}></span>`);
+      const block = agent.closest(".contact-block");
+      if (block) block.classList.toggle("is-empty", !name && !mail);
     }
 
     const social = document.querySelector("[data-contact-social]");

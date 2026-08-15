@@ -57,6 +57,11 @@
   let dirty = false;
 
   const uid = (p) => p + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 6);
+  const currentPortfolioCat = () => {
+    const btn = document.querySelector("[data-portfolio-filters] .is-active");
+    const cats = site.portfolioCategories || [];
+    return (btn && btn.dataset.filter) || (cats[0] && cats[0].id) || "performer";
+  };
   const slug = (s) =>
     String(s || "item").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 48);
   const today = () => {
@@ -186,23 +191,19 @@
       });
     });
 
-    // 3. category chips cycle through the four sections
-    $$("[data-edit-choice]").forEach((el) => {
-      if (el.dataset.armedChoice === "1") return;
-      el.dataset.armedChoice = "1";
-      el.removeAttribute("contenteditable");
-      el.title = "Click to change section";
-      el.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const path = el.dataset.edit;
-        const current = get(path);
-        const next = CATEGORIES[(CATEGORIES.indexOf(current) + 1) % CATEGORIES.length];
-        set(path, next);
-        el.textContent = CAT_LABEL[next];
-        const fig = el.closest("[data-category]");
-        if (fig) fig.dataset.category = next;
+    // 3. category dropdown on each portfolio photo
+    $$("[data-edit-cat]").forEach((sel) => {
+      if (sel.dataset.armedCat === "1") return;
+      sel.dataset.armedCat = "1";
+      sel.addEventListener("change", () => {
+        set(sel.dataset.editCat, sel.value);
+        const fig = sel.closest("[data-category]");
+        if (fig) fig.dataset.category = sel.value;
+        const tag = fig && fig.querySelector(".tag");
+        const opt = sel.selectedOptions[0];
+        if (tag && opt) tag.textContent = opt.textContent;
         touch();
+        if (typeof window.HJ_applyPortfolioFilter === "function") window.HJ_applyPortfolioFilter();
       });
     });
 
@@ -225,6 +226,7 @@
     decorateItems();
     decorateLists();
     decorateResume();
+    decorateCategoryBar();
   }
 
   // the resume PDF gets its own button beside the download link
@@ -245,6 +247,29 @@
       toast("New resume loaded. It will go live in about a minute.");
     });
     anchor.insertAdjacentElement("afterend", btn);
+  }
+
+  function decorateCategoryBar() {
+    const bar = $("[data-portfolio-filters]");
+    if (!bar || $(".hj-add[data-add-cat]")) return;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "hj-add";
+    btn.dataset.addCat = "1";
+    btn.textContent = "+ Add category";
+    btn.addEventListener("click", () => {
+      const label = (prompt("New category name", "") || "").trim();
+      if (!label) return;
+      const id = slug(label);
+      site.portfolioCategories = site.portfolioCategories || [];
+      if (site.portfolioCategories.some((c) => c.id === id)) {
+        toast("That category is already there.");
+        return;
+      }
+      site.portfolioCategories.push({ id, label });
+      rerender();
+    });
+    bar.insertAdjacentElement("afterend", btn);
   }
 
   function disarmEditing() {
@@ -319,7 +344,7 @@
           src,
           title: title.trim() || "New photo",
           credit: credit.trim(),
-          category: "photoshoots",
+          category: currentPortfolioCat(),
           alt: title.trim() || "Portfolio photo",
         };
       },
@@ -339,6 +364,7 @@
         month: "TBA",
         year: String(new Date().getFullYear()),
         onsale: "",
+        info: "",
         tickets: "",
         poster: "",
         posterAlt: "",
@@ -379,7 +405,7 @@
         const hint = document.createElement("p");
         hint.className = "hj-edit-hint";
         hint.textContent =
-          "That button adds a new show. Click any words to type. Click Add ticket link to paste a URL. Use the arrows to reorder, the X to remove.";
+          "Tap + Add another show for a new row. Click any words to type extra info. Tap Add ticket link to paste a URL.";
         btn.insertAdjacentElement("afterend", hint);
       }
     });

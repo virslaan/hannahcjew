@@ -184,25 +184,36 @@ if ("IntersectionObserver" in window) {
 window.HJ_observeReveals();
 
 // ----- portfolio filters -----
-const filterBtns = document.querySelectorAll(".filters button");
-filterBtns.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    filterBtns.forEach((b) => b.classList.remove("is-active"));
-    btn.classList.add("is-active");
-    const f = btn.dataset.filter;
-    document.querySelectorAll(".work").forEach((w) => {
-      const show = f === "all" || w.dataset.category === f;
-      w.classList.toggle("is-hidden", !show);
-    });
+function applyPortfolioFilter(filter) {
+  const bar = document.querySelector("[data-portfolio-filters]");
+  if (!bar) return;
+  const active = bar.querySelector(".is-active");
+  const f = filter || (active && active.dataset.filter);
+  if (!f) return;
+  document.querySelectorAll(".work").forEach((w) => {
+    w.classList.toggle("is-hidden", w.dataset.category !== f);
   });
-});
-
-// If the URL has a hash like #performer, pre-select that filter
-const hashFilter = window.location.hash.replace("#", "");
-if (hashFilter) {
-  const btn = document.querySelector(`.filters button[data-filter="${hashFilter}"]`);
-  if (btn) btn.click();
 }
+
+function bindPortfolioFilters() {
+  const bar = document.querySelector("[data-portfolio-filters]");
+  if (!bar) return;
+  bar.querySelectorAll("button[data-filter]").forEach((btn) => {
+    btn.onclick = () => {
+      bar.querySelectorAll("button").forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      applyPortfolioFilter(btn.dataset.filter);
+    };
+  });
+  const hashFilter = window.location.hash.replace("#", "");
+  const hashed = hashFilter && bar.querySelector(`[data-filter="${hashFilter}"]`);
+  if (hashed) hashed.click();
+  else applyPortfolioFilter();
+}
+
+window.HJ_bindPortfolioFilters = bindPortfolioFilters;
+window.HJ_applyPortfolioFilter = applyPortfolioFilter;
+bindPortfolioFilters();
 
 // ----- lightbox -----
 const lightbox = document.querySelector(".lightbox");
