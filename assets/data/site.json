@@ -180,8 +180,8 @@
       "venue": "Dallas,TX",
       "month": "August 22-23",
       "year": "2026",
-      "onsale": "",
-      "tickets": "",
+      "onsale": "ticket on sale!",
+      "tickets": "https://www.zeffy.com/en-US/ticketing/dallas-indie-dance-fest-didf-2",
       "poster": "",
       "posterAlt": "",
       "featured": false
