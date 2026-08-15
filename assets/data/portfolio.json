@@ -24,20 +24,20 @@
     "alt": "A partnered lift in rehearsal, Hannah balanced upside down mid-air"
   },
   {
-    "id": "pointe-shoes",
-    "src": "assets/img/pointe-shoes-bw.jpg",
-    "title": "In the studio",
-    "credit": "",
-    "category": "educator",
-    "alt": "Close-up of pointe shoes stepping through a studio, black and white"
-  },
-  {
     "id": "green-leotard",
     "src": "assets/img/green-leotard.jpg",
     "title": "Sculptural in green",
     "credit": "",
     "category": "photoshoots",
     "alt": "Hannah in a green leotard with arms curved in a sculptural shape"
+  },
+  {
+    "id": "pointe-shoes",
+    "src": "assets/img/pointe-shoes-bw.jpg",
+    "title": "In the studio",
+    "credit": "",
+    "category": "educator",
+    "alt": "Close-up of pointe shoes stepping through a studio, black and white"
   },
   {
     "id": "meatpacking",
