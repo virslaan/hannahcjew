@@ -64,6 +64,20 @@
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
       "alt": "Headshot of Hannah Jew"
+    },
+    {
+      "id": "hs-mssfqeuw-gtly",
+      "src": "assets/img/headshots/hannah-jew_2026-08-15.jpg",
+      "title": "Hannah Jew",
+      "credit": "Billy B Photography",
+      "alt": "Headshot of Hannah Jew"
+    },
+    {
+      "id": "portrait-black",
+      "src": "assets/img/headshots/hannah-jew_2026-08-15.jpg",
+      "title": "Hannah Jew",
+      "credit": "Billy B Photography",
+      "alt": "Portrait headshot of Hannah Jew wearing black, hair in motion"
     }
   ],
   "portfolioCategories": [
@@ -88,8 +102,8 @@
     {
       "id": "p-msuxucqc-z87c",
       "src": "assets/img/portfolio/dsc04124_2026-08-15_photo.jpg",
-      "title": "DSC04124",
-      "credit": "",
+      "title": "AES Yuletide Celebration",
+      "credit": "Shotwell Photography",
       "category": "performer",
       "alt": "DSC04124"
     },
@@ -106,7 +120,7 @@
       "src": "assets/img/blue-dress-flow.jpg",
       "title": "",
       "credit": "Photo by Linda l'anson",
-      "category": "performer",
+      "category": "photoshoots",
       "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
     },
     {
