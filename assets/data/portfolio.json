@@ -1,9 +1,17 @@
 [
   {
+    "id": "p-msv3w8nd-epeo",
+    "src": "assets/img/portfolio/hannah-2-copy_2026-08-15_photo.jpg",
+    "title": "Hannah 2 copy",
+    "credit": "",
+    "category": "photoshoots",
+    "alt": "Hannah 2 copy"
+  },
+  {
     "id": "p-msv3brdy-m9s1",
     "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
-    "title": "IMG 1107 Enhanced NR",
-    "credit": "",
+    "title": "The King and I",
+    "credit": "Indy Ghostlight",
     "category": "performer",
     "alt": "IMG 1107 Enhanced NR"
   },
