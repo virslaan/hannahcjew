@@ -96,6 +96,10 @@
     {
       "id": "photoshoots",
       "label": "Photoshoots"
+    },
+    {
+      "id": "in-studio-the-process",
+      "label": "in studio/the process"
     }
   ],
   "portfolio": [
@@ -150,9 +154,9 @@
     {
       "id": "mid-turn",
       "src": "assets/img/portfolio/rehearsal-mid-turn_2026-08-15_photo.jpg",
-      "title": "Rehearsal, mid-turn",
+      "title": "Photo by Corey Hayes",
       "credit": "",
-      "category": "performer",
+      "category": "photoshoots",
       "alt": "Hannah mid-turn in rehearsal with one leg raised"
     },
     {
@@ -160,7 +164,7 @@
       "src": "assets/img/insta/insta-4.jpg",
       "title": "At the barre",
       "credit": "",
-      "category": "educator",
+      "category": "performer",
       "alt": "Hannah stretching in pointe shoes at a mirror"
     },
     {
