@@ -1,5 +1,13 @@
 [
   {
+    "id": "p-msv36h3i-aqt1",
+    "src": "assets/img/portfolio/dsc04490_2026-08-15_photo.jpg",
+    "title": "A",
+    "credit": "",
+    "category": "performer",
+    "alt": "DSC04490"
+  },
+  {
     "id": "p-msuxucqc-z87c",
     "src": "assets/img/portfolio/dsc04124_2026-08-15_photo.jpg",
     "title": "AES Yuletide Celebration",
@@ -59,7 +67,7 @@
     "id": "at-barre",
     "src": "assets/img/insta/insta-4.jpg",
     "title": "",
-    "credit": "",
+    "credit": "Photo by Kashif Salahuddin",
     "category": "in-studio-the-process",
     "alt": "Hannah stretching in pointe shoes at a mirror"
   },
