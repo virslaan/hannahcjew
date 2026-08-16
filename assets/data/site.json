@@ -104,10 +104,18 @@
   ],
   "portfolio": [
     {
+      "id": "p-msv3brdy-m9s1",
+      "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
+      "title": "IMG 1107 Enhanced NR",
+      "credit": "",
+      "category": "performer",
+      "alt": "IMG 1107 Enhanced NR"
+    },
+    {
       "id": "p-msv38c2z-6sju",
       "src": "assets/img/portfolio/dsc04485_2026-08-15_photo.jpg",
       "title": "AES Yuletide Celebration",
-      "credit": "Photo by shotwell photography",
+      "credit": "Shotwell Photography",
       "category": "performer",
       "alt": "DSC04485"
     },
