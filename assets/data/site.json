@@ -124,7 +124,7 @@
       "src": "assets/img/pointe-shoes-bw.jpg",
       "title": "In the studio",
       "credit": "",
-      "category": "educator",
+      "category": "in-studio-the-process",
       "alt": "Close-up of pointe shoes stepping through a studio, black and white"
     },
     {
@@ -162,9 +162,9 @@
     {
       "id": "at-barre",
       "src": "assets/img/insta/insta-4.jpg",
-      "title": "At the barre",
+      "title": "",
       "credit": "",
-      "category": "performer",
+      "category": "in-studio-the-process",
       "alt": "Hannah stretching in pointe shoes at a mirror"
     },
     {
