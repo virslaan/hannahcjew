@@ -868,29 +868,19 @@ main {
 /* a headshot is framed tight, so keep the face high in the crop */
 body.page-plate .cover__img img { object-position: 50% 18%; }
 
-.resume-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  align-items: center;
+.resume-block {
   margin: clamp(1rem, 3vh, 1.8rem) 0 clamp(2.5rem, 7vh, 4.5rem);
 }
-.resume-blurb {
-  max-width: 46ch;
-  font-family: var(--font-ui);
-  font-size: var(--text-body);
-  line-height: 1.55;
-  color: var(--ink-soft);
-  margin: 0;
+.resume-block h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-h2);
+  margin: 0 0 0.9rem;
 }
-.resume-blurb:empty { display: none; }
 .resume-actions {
   display: flex;
   gap: 0.7rem;
   flex-wrap: wrap;
-}
-@media (max-width: 720px) {
-  .resume-panel { grid-template-columns: 1fr; align-items: start; }
 }
 
 /* the resume reads on the page itself, so nobody has to open a PDF viewer */
