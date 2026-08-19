@@ -227,19 +227,6 @@
   ],
   "upcoming": [
     {
-      "id": "show-mscsjs12-rcbq",
-      "title": "Dallas Indie Dance Festival",
-      "role": "Nightmare Screen (Choreography by: Alexandra Light)",
-      "venue": "Dallas,TX",
-      "month": "August 22-23",
-      "year": "2026",
-      "onsale": "ticket on sale!",
-      "tickets": "https://www.zeffy.com/en-US/ticketing/dallas-indie-dance-fest-didf-2",
-      "poster": "",
-      "posterAlt": "",
-      "featured": false
-    },
-    {
       "id": "cats-2026",
       "title": "CATS",
       "role": "as Victoria",
