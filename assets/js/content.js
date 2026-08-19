@@ -241,7 +241,7 @@
     copy.innerHTML = (a.paragraphs || [])
       .map(
         (p, i) =>
-          `<p data-edit-item="about.paragraphs" data-index="${i}"><span${ed("about.paragraphs." + i)}>${esc(p)}</span></p>`
+          `<p data-edit-item="about.paragraphs" data-index="${i}"><span${ed("about.paragraphs." + i)}>${esc(p)}</span><button type="button" class="hj-remove" data-remove>Remove</button></p>`
       )
       .join("");
   }
@@ -250,6 +250,11 @@
     const resume = site.resume || {};
     const pdf = resume.pdf || "assets/resume/Hannah-Jew-Resume.pdf";
 
+    const title = document.querySelector("[data-resume-title]");
+    if (title) {
+      title.textContent = resume.title || "Hannah Jew — Resume";
+      title.setAttribute("data-edit", "resume.title");
+    }
     const blurb = document.querySelector("[data-resume-blurb]");
     if (blurb) {
       blurb.textContent = resume.blurb || "";
@@ -283,6 +288,7 @@
                  data-title="${esc(s.title || "Hannah Jew")}" data-credit="${esc(credit)}">
           <img src="${esc(s.src)}" alt="${esc(s.alt || s.title || "")}" loading="lazy" data-edit-img="headshots.${i}.src" />
           <figcaption class="shot-credit"${ed("headshots." + i + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</figcaption>
+          <button type="button" class="hj-remove" data-remove>Remove</button>
         </figure>`;
       })
       .join("");
@@ -317,6 +323,7 @@
     const items = site.portfolio || [];
     window.HJ_PORTFOLIO = items;
     grid.setAttribute("data-edit-list", "portfolio");
+    grid.dataset.cols = String((site.portfolioLayout && site.portfolioLayout.columns) || 3);
 
     const bar = document.querySelector("[data-portfolio-filters]");
     if (bar) {
@@ -334,10 +341,14 @@
       .map((item, i) => {
         const credit = creditLine(item.credit);
         const cat = item.category || cats[0].id;
+        const orient = item.orient || "portrait";
+        const span = item.span || 1;
         const options = cats
           .map((c) => `<option value="${esc(c.id)}" ${c.id === cat ? "selected" : ""}>${esc(c.label)}</option>`)
           .join("");
-        return `<figure class="work will-reveal" data-category="${esc(cat)}" data-lightbox
+        const shapeBtn = (key, val, label) =>
+          `<button type="button" data-${key}="${val}" class="${(key === "orient" ? orient : String(span)) === String(val) ? "is-on" : ""}">${label}</button>`;
+        return `<figure class="work will-reveal" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}" data-lightbox
                  data-edit-item="portfolio" data-index="${i}"
                  data-title="${esc(item.title)}" data-credit="${esc(credit)}">
           <span class="tag">${esc(catLabel(site, cat))}</span>
@@ -348,6 +359,16 @@
           <figcaption>
             <span class="title"${ed("portfolio." + i + ".title")}>${esc(item.title)}</span>
             <span class="credit"${ed("portfolio." + i + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</span>
+            <div class="work-shape">
+              ${shapeBtn("orient", "portrait", "Tall")}
+              ${shapeBtn("orient", "landscape", "Wide")}
+              ${shapeBtn("orient", "square", "Square")}
+              <span></span>
+              ${shapeBtn("span", "1", "1")}
+              ${shapeBtn("span", "2", "2")}
+              ${shapeBtn("span", "3", "3")}
+              <button type="button" data-remove>Remove</button>
+            </div>
           </figcaption>
         </figure>`;
       })
@@ -387,6 +408,7 @@
             <p class="show__info"${ed(p + "info")}>${esc(s.info || "")}</p>
             ${onsale}
             ${tickets}
+            <button type="button" class="hj-remove" data-remove>Remove show</button>
           </div>
         </article>`;
       })

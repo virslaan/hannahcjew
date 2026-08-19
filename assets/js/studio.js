@@ -68,6 +68,13 @@
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
   };
+  const imageFileName = (item, fallback) => {
+    if (!item.id) item.id = uid("img");
+    return `${slug(item.title || fallback)}_${item.id}.jpg`;
+  };
+  const b64of = (dataUrl) => String(dataUrl).split(",")[1] || "";
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  let holdLive = false;
 
   // ----- image handling -------------------------------------------------
   function pickFile(accept, multiple) {
@@ -76,7 +83,14 @@
       input.type = "file";
       input.accept = accept;
       input.multiple = !!multiple;
-      input.onchange = () => resolve([...(input.files || [])]);
+      input.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0;";
+      document.body.appendChild(input);
+      const done = (files) => {
+        input.remove();
+        resolve(files);
+      };
+      input.addEventListener("change", () => done([...(input.files || [])]), { once: true });
+      input.addEventListener("cancel", () => done([]), { once: true });
       input.click();
     });
   }
@@ -90,23 +104,31 @@
     });
   }
 
-  // shrink photos in the browser so the site stays fast
-  async function toWebImage(file, maxEdge = 1600, quality = 0.84) {
+  function canvasJpeg(source, sw, sh, maxEdge, quality) {
+    const scale = Math.min(1, maxEdge / Math.max(sw, sh));
+    const width = Math.max(1, Math.round(sw * scale));
+    const height = Math.max(1, Math.round(sh * scale));
+    const c = document.createElement("canvas");
+    c.width = width;
+    c.height = height;
+    c.getContext("2d").drawImage(source, 0, 0, width, height);
+    return c.toDataURL("image/jpeg", quality);
+  }
+
+  async function toWebImage(file, maxEdge = 1400, quality = 0.8) {
+    try {
+      if (typeof createImageBitmap === "function") {
+        const bmp = await createImageBitmap(file);
+        const out = canvasJpeg(bmp, bmp.width, bmp.height, maxEdge, quality);
+        if (bmp.close) bmp.close();
+        return out;
+      }
+    } catch (_) {}
     const raw = await readAsDataUrl(file);
-    if (!/^image\//.test(file.type)) return raw;
+    if (!/^image\//.test(file.type || "")) return raw;
     return new Promise((resolve) => {
       const img = new Image();
-      img.onload = () => {
-        let { width, height } = img;
-        const scale = Math.min(1, maxEdge / Math.max(width, height));
-        width = Math.round(width * scale);
-        height = Math.round(height * scale);
-        const c = document.createElement("canvas");
-        c.width = width;
-        c.height = height;
-        c.getContext("2d").drawImage(img, 0, 0, width, height);
-        resolve(c.toDataURL("image/jpeg", quality));
-      };
+      img.onload = () => resolve(canvasJpeg(img, img.naturalWidth || img.width, img.naturalHeight || img.height, maxEdge, quality));
       img.onerror = () => resolve(raw);
       img.src = raw;
     });
@@ -116,9 +138,24 @@
   const get = (path) => window.HJ_getPath(site, path);
   const set = (path, value) => window.HJ_setPath(site, path, value);
 
+  function persistDraft() {
+    try {
+      localStorage.setItem("hj-site-draft", JSON.stringify(site));
+    } catch (_) {
+      try {
+        const slim = JSON.parse(
+          JSON.stringify(site, (k, v) => (typeof v === "string" && v.startsWith("data:") ? "" : v))
+        );
+        localStorage.setItem("hj-site-draft", JSON.stringify(slim));
+      } catch (e) {
+        toast("Photos still save to the live site. This phone is too full for a local copy.");
+      }
+    }
+  }
+
   function touch() {
     dirty = true;
-    localStorage.setItem("hj-site-draft", JSON.stringify(site));
+    persistDraft();
     updateBar();
     scheduleLive();
   }
@@ -227,6 +264,9 @@
     decorateLists();
     decorateResume();
     decorateCategoryBar();
+    decoratePortfolioLayout();
+    decorateWorkShape();
+    decorateRemove();
   }
 
   // the resume PDF gets its own button beside the download link
@@ -272,10 +312,76 @@
     bar.insertAdjacentElement("afterend", btn);
   }
 
+  function decoratePortfolioLayout() {
+    const grid = $(".work-grid[data-portfolio]");
+    if (!grid || $(".hj-layout")) return;
+    site.portfolioLayout = site.portfolioLayout || { columns: 3 };
+    const cols = String(site.portfolioLayout.columns || 3);
+    const wrap = document.createElement("div");
+    wrap.className = "hj-layout";
+    wrap.innerHTML = `
+      <span>Columns</span>
+      ${[2, 3, 4].map((n) => `<button type="button" data-cols="${n}" class="${String(n) === cols ? "is-on" : ""}">${n}</button>`).join("")}
+      <span class="hj-layout__hint">Drag ⋮⋮ to reorder. Tall / wide / square and 1–3 on each photo.</span>`;
+    wrap.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-cols]");
+      if (!btn) return;
+      site.portfolioLayout = site.portfolioLayout || {};
+      site.portfolioLayout.columns = +btn.dataset.cols;
+      rerender();
+    });
+    const addCat = $("[data-add-cat]");
+    (addCat || grid).insertAdjacentElement(addCat ? "afterend" : "beforebegin", wrap);
+  }
+
+  function removeListItem(el) {
+    const host = el.closest("[data-edit-item]");
+    if (!host) return;
+    const { list, index } = itemInfo(host);
+    if (list == null || index == null) return;
+    const arr = get(list);
+    if (!Array.isArray(arr) || index < 0 || index >= arr.length) return;
+    arr.splice(index, 1);
+    set(list, arr);
+    rerender();
+  }
+
+  function decorateRemove() {
+    $$("[data-remove]").forEach((btn) => {
+      if (btn.dataset.armedRemove === "1") return;
+      btn.dataset.armedRemove = "1";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        removeListItem(btn);
+      });
+    });
+  }
+
+  function decorateWorkShape() {
+    $$(".work-shape").forEach((row) => {
+      if (row.dataset.armedShape === "1") return;
+      row.dataset.armedShape = "1";
+      row.addEventListener("click", (e) => {
+        const btn = e.target.closest("button");
+        if (!btn || (!btn.dataset.orient && !btn.dataset.span)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const fig = row.closest("[data-edit-item]");
+        const { index } = itemInfo(fig);
+        const item = (site.portfolio || [])[index];
+        if (!item) return;
+        if (btn.dataset.orient) item.orient = btn.dataset.orient;
+        if (btn.dataset.span) item.span = +btn.dataset.span;
+        rerender();
+      });
+    });
+  }
+
   function disarmEditing() {
     document.body.classList.remove("hj-edit");
     $$("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
-    $$(".hj-item-tools, .hj-add").forEach((el) => el.remove());
+    $$(".hj-item-tools, .hj-add, .hj-layout").forEach((el) => el.remove());
   }
 
   function itemInfo(el) {
@@ -289,6 +395,39 @@
     return { list, index: index == null ? null : +index };
   }
 
+  function itemCategory(item) {
+    const cats = site.portfolioCategories || [];
+    return (item && item.category) || (cats[0] && cats[0].id) || "performer";
+  }
+
+  function indexesInCategory(arr, cat) {
+    return arr.map((_, i) => i).filter((i) => itemCategory(arr[i]) === cat);
+  }
+
+  function reorderInCategory(arr, fromIndex, toIndex) {
+    const cat = itemCategory(arr[fromIndex]);
+    if (itemCategory(arr[toIndex]) !== cat) return false;
+    const idxs = indexesInCategory(arr, cat);
+    const fromP = idxs.indexOf(fromIndex);
+    const toP = idxs.indexOf(toIndex);
+    if (fromP < 0 || toP < 0 || fromP === toP) return false;
+    const slice = idxs.map((i) => arr[i]);
+    const [moved] = slice.splice(fromP, 1);
+    slice.splice(toP, 0, moved);
+    idxs.forEach((i, k) => {
+      arr[i] = slice[k];
+    });
+    return true;
+  }
+
+  function nudgeInCategory(arr, index, dir) {
+    const idxs = indexesInCategory(arr, itemCategory(arr[index]));
+    const pos = idxs.indexOf(index);
+    const next = idxs[pos + dir];
+    if (next == null) return false;
+    return reorderInCategory(arr, index, next);
+  }
+
   function decorateItems() {
     $$("[data-edit-item]").forEach((el) => {
       if ($(".hj-item-tools", el)) return;
@@ -298,29 +437,67 @@
       const tools = document.createElement("div");
       tools.className = "hj-item-tools";
       tools.contentEditable = "false";
+      const drag = list === "portfolio" ? `<button type="button" data-grip title="Drag to reorder">⋮⋮</button>` : "";
       tools.innerHTML = `
-        <button type="button" data-move="-1" title="Move up">↑</button>
-        <button type="button" data-move="1" title="Move down">↓</button>
+        ${drag}
+        <button type="button" data-move="-1" title="Move earlier">↑</button>
+        <button type="button" data-move="1" title="Move later">↓</button>
         <button type="button" data-del title="Remove">✕</button>`;
 
       tools.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
-        if (!btn) return;
+        if (!btn || btn.hasAttribute("data-grip")) return;
         e.preventDefault();
         e.stopPropagation();
-        const arr = get(list) || [];
+        const live = itemInfo(el);
+        const arr = get(live.list) || [];
+        const idx = live.index;
         if (btn.hasAttribute("data-del")) {
-          const label = typeof arr[index] === "string" ? arr[index] : arr[index] && arr[index].title;
-          if (!confirm(`Remove “${label || "this item"}”?`)) return;
-          arr.splice(index, 1);
-        } else {
-          const to = index + +btn.dataset.move;
-          if (to < 0 || to >= arr.length) return;
-          [arr[to], arr[index]] = [arr[index], arr[to]];
+          removeListItem(el);
+          return;
         }
-        set(list, arr);
+        const dir = +btn.dataset.move;
+        const ok = live.list === "portfolio" ? nudgeInCategory(arr, idx, dir) : (() => {
+          const to = idx + dir;
+          if (to < 0 || to >= arr.length) return false;
+          [arr[to], arr[idx]] = [arr[idx], arr[to]];
+          return true;
+        })();
+        if (!ok) return;
+        set(live.list, arr);
         rerender();
       });
+
+      if (list === "portfolio") {
+        const grip = $("[data-grip]", tools);
+        grip.draggable = true;
+        grip.addEventListener("dragstart", (e) => {
+          e.stopPropagation();
+          e.dataTransfer.setData("text/plain", String(index));
+          e.dataTransfer.effectAllowed = "move";
+          el.classList.add("is-dragging");
+        });
+        grip.addEventListener("dragend", () => el.classList.remove("is-dragging"));
+        el.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          el.classList.add("is-drop");
+        });
+        el.addEventListener("dragleave", () => el.classList.remove("is-drop"));
+        el.addEventListener("drop", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          el.classList.remove("is-drop");
+          const from = +e.dataTransfer.getData("text/plain");
+          const to = +el.dataset.index;
+          const arr = get("portfolio") || [];
+          if (!reorderInCategory(arr, from, to)) {
+            toast("Drop it on a photo in the same tab.");
+            return;
+          }
+          set("portfolio", arr);
+          rerender();
+        });
+      }
 
       if (getComputedStyle(el).position === "static") el.style.position = "relative";
       el.appendChild(tools);
@@ -332,6 +509,7 @@
     portfolio: {
       label: "+ Add photos",
       photo: true,
+      folder: "assets/img/portfolio",
       make: (src, name) => {
         const parts = String(name || "").replace(/\.[^.]+$/, "").split("_");
         const credit = parts.length >= 3 ? parts[parts.length - 1].replace(/-+/g, " ") : "";
@@ -345,13 +523,16 @@
           title: title.trim() || "New photo",
           credit: credit.trim(),
           category: currentPortfolioCat(),
+          orient: "portrait",
+          span: 1,
           alt: title.trim() || "Portfolio photo",
         };
       },
     },
     headshots: {
-      label: "+ Add headshot",
+      label: "+ Add headshots",
       photo: true,
+      folder: "assets/img/headshots",
       make: (src) => ({ id: uid("hs"), src, title: "Hannah Jew", credit: "", alt: "Headshot of Hannah Jew" }),
     },
     upcoming: {
@@ -373,6 +554,43 @@
     },
   };
 
+  async function addPhotos(path, conf, files) {
+    holdLive = true;
+    const arr = get(path) || [];
+    if (!Array.isArray(site[path])) site[path] = arr;
+    const token = liveToken();
+    const folder = conf.folder || "assets/img";
+    toast(files.length === 1 ? "Adding photo…" : "Adding " + files.length + " photos…");
+    let ok = 0;
+    for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      const state = $(".studio-bar [data-state]");
+      if (state) state.textContent = "Photo " + (i + 1) + " of " + files.length;
+      try {
+        const dataUrl = await toWebImage(f);
+        const item = conf.make(dataUrl, f.name);
+        if (token && String(item.src || "").startsWith("data:")) {
+          const p = folder + "/" + imageFileName(item, path === "headshots" ? "headshot" : "photo");
+          await ghPut(p, b64of(item.src), token, "Add image " + p);
+          item.src = p;
+          await sleep(200);
+        }
+        arr.unshift(item);
+        set(path, arr);
+        window.HJ_SITE = site;
+        window.HJ_hydrateSite(site);
+        if (isEditing()) armEditing();
+        ok += 1;
+      } catch (err) {
+        console.error(err);
+        toast("Skipped " + (f.name || "a photo") + ". The rest will still add.");
+      }
+    }
+    holdLive = false;
+    touch();
+    if (ok) toast(ok === 1 ? "Photo added. Saving…" : ok + " photos added. Saving…");
+  }
+
   function decorateLists() {
     $$("[data-edit-list]").forEach((listEl) => {
       const path = listEl.dataset.editList;
@@ -387,20 +605,24 @@
       btn.textContent = conf.label;
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
-        const arr = get(path) || [];
         if (conf.photo) {
           const files = await pickFile("image/*", true);
           if (!files.length) return;
-          for (const f of files) {
-            arr.unshift(conf.make(await toWebImage(f), f.name));
-          }
-        } else {
-          arr.push(conf.make());
+          await addPhotos(path, conf, files);
+          return;
         }
+        const arr = get(path) || [];
+        arr.push(conf.make());
         set(path, arr);
         rerender();
       });
       listEl.insertAdjacentElement("afterend", btn);
+      if (conf.photo) {
+        const hint = document.createElement("p");
+        hint.className = "hj-edit-hint";
+        hint.textContent = "Tap to add. In the photo picker, select as many pictures as you want at once.";
+        btn.insertAdjacentElement("afterend", hint);
+      }
       if (path === "upcoming") {
         const hint = document.createElement("p");
         hint.className = "hj-edit-hint";
@@ -419,29 +641,22 @@
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     };
-    let sha;
-    const meta = await fetch(`${api}?ref=${gh.branch || "main"}`, { headers });
-    if (meta.ok) sha = (await meta.json()).sha;
-    const res = await fetch(api, {
-      method: "PUT",
-      headers,
-      body: JSON.stringify({ message, content: b64, branch: gh.branch || "main", ...(sha ? { sha } : {}) }),
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      if (res.status === 409) {
-        const again = await fetch(`${api}?ref=${gh.branch || "main"}`, { headers });
-        if (again.ok) sha = (await again.json()).sha;
-        const retry = await fetch(api, {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({ message, content: b64, branch: gh.branch || "main", ...(sha ? { sha } : {}) }),
-        });
-        if (!retry.ok) throw new Error(await retry.text());
-        return;
-      }
-      throw new Error(text);
+    let lastErr = "upload failed";
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (attempt) await sleep(350 * attempt);
+      let sha;
+      const meta = await fetch(`${api}?ref=${gh.branch || "main"}`, { headers });
+      if (meta.ok) sha = (await meta.json()).sha;
+      const res = await fetch(api, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ message, content: b64, branch: gh.branch || "main", ...(sha ? { sha } : {}) }),
+      });
+      if (res.ok) return;
+      lastErr = await res.text();
+      if (res.status !== 409 && res.status !== 429 && res.status !== 502 && res.status !== 503) break;
     }
+    throw new Error(lastErr);
   }
 
   function liveToken() {
@@ -459,6 +674,7 @@
   let liveAgain = false;
 
   function scheduleLive() {
+    if (holdLive) return;
     clearTimeout(liveTimer);
     liveTimer = setTimeout(() => pushLive(), 1600);
     updateBar();
@@ -501,7 +717,6 @@
       }
     }
   }
-  const b64of = (dataUrl) => dataUrl.split(",")[1];
   const jsonB64 = (obj) => btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2))));
 
   async function publish(token, say) {
@@ -512,9 +727,9 @@
     }
 
     const uploads = [
-      ["portfolio", "assets/img/portfolio", (i) => `${slug(i.title)}_${today()}_${slug(i.credit || "photo")}.jpg`, "src"],
-      ["headshots", "assets/img/headshots", (i) => `${slug(i.title || "headshot")}_${today()}.jpg`, "src"],
-      ["upcoming", "assets/img/shows", (i) => `${slug(i.title)}_${today()}.jpg`, "poster"],
+      ["portfolio", "assets/img/portfolio", (i) => imageFileName(i, "photo"), "src"],
+      ["headshots", "assets/img/headshots", (i) => imageFileName(i, "headshot"), "src"],
+      ["upcoming", "assets/img/shows", (i) => imageFileName(i, "show"), "poster"],
     ];
     for (const [listKey, folder, nameFn, field] of uploads) {
       for (const item of site[listKey] || []) {
@@ -537,7 +752,7 @@
     ];
     for (const [obj, key, label] of singles) {
       if (obj && String(obj[key] || "").startsWith("data:image")) {
-        const p = `assets/img/${label}_${today()}.jpg`;
+        const p = `assets/img/${label}_${uid("img")}.jpg`;
         say(`Uploading ${label} photo…`);
         await ghPut(p, b64of(obj[key]), token, `Update ${label} image`);
         obj[key] = p;
@@ -573,9 +788,9 @@
       copy.resume.pdf = "assets/resume/Hannah-Jew-Resume.pdf";
     }
     const lists = [
-      ["portfolio", "assets/img/portfolio", (i) => `${slug(i.title)}_${today()}_${slug(i.credit || "photo")}.jpg`, "src"],
-      ["headshots", "assets/img/headshots", (i) => `${slug(i.title || "headshot")}_${today()}.jpg`, "src"],
-      ["upcoming", "assets/img/shows", (i) => `${slug(i.title)}_${today()}.jpg`, "poster"],
+      ["portfolio", "assets/img/portfolio", (i) => imageFileName(i, "photo"), "src"],
+      ["headshots", "assets/img/headshots", (i) => imageFileName(i, "headshot"), "src"],
+      ["upcoming", "assets/img/shows", (i) => imageFileName(i, "show"), "poster"],
     ];
     lists.forEach(([key, folder, nameFn, field]) => {
       (copy[key] || []).forEach((item) => {
@@ -595,7 +810,7 @@
       [copy.contact, "image", "contact"],
     ].forEach(([obj, key, label]) => {
       if (obj && String(obj[key] || "").startsWith("data:image")) {
-        const name = `${label}_${today()}.jpg`;
+        const name = `${label}_${uid("img")}.jpg`;
         dl(obj[key], name);
         obj[key] = `assets/img/${name}`;
       }
