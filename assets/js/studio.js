@@ -556,24 +556,29 @@
 
   async function addPhotos(path, conf, files) {
     holdLive = true;
-    const arr = get(path) || [];
+    const arr = (get(path) || []).slice();
     if (!Array.isArray(site[path])) site[path] = arr;
     const token = liveToken();
     const folder = conf.folder || "assets/img";
-    toast(files.length === 1 ? "Adding photo…" : "Adding " + files.length + " photos…");
+    const total = files.length;
+    const state = $(".studio-bar [data-state]");
+    const say = (m) => { if (state) state.textContent = m; };
+    toast(total === 1 ? "Adding photo…" : "Adding " + total + " photos…");
+
     let ok = 0;
-    for (let i = 0; i < files.length; i++) {
+    let failed = 0;
+    for (let i = 0; i < total; i++) {
       const f = files[i];
-      const state = $(".studio-bar [data-state]");
-      if (state) state.textContent = "Photo " + (i + 1) + " of " + files.length;
+      say(`Photo ${i + 1} of ${total}…`);
       try {
         const dataUrl = await toWebImage(f);
         const item = conf.make(dataUrl, f.name);
+        if (!item.id) item.id = uid(path === "headshots" ? "hs" : "p");
         if (token && String(item.src || "").startsWith("data:")) {
           const p = folder + "/" + imageFileName(item, path === "headshots" ? "headshot" : "photo");
+          say(`Uploading ${i + 1} of ${total}…`);
           await ghPut(p, b64of(item.src), token, "Add image " + p);
           item.src = p;
-          await sleep(200);
         }
         arr.unshift(item);
         set(path, arr);
@@ -582,13 +587,47 @@
         if (isEditing()) armEditing();
         ok += 1;
       } catch (err) {
-        console.error(err);
-        toast("Skipped " + (f.name || "a photo") + ". The rest will still add.");
+        console.error("upload photo failed", err);
+        failed += 1;
+        toast("Could not upload " + (f.name || "one photo") + ".");
       }
     }
+
     holdLive = false;
-    touch();
-    if (ok) toast(ok === 1 ? "Photo added. Saving…" : ok + " photos added. Saving…");
+    persistDraft();
+    updateBar();
+
+    if (!ok) return;
+
+    if (!token) {
+      toast(ok + " added locally. Sign in to publish to the live site.");
+      dirty = true;
+      updateBar();
+      return;
+    }
+
+    say("Saving list…");
+    try {
+      await ghPut("assets/data/site.json", jsonB64(site), token, "Update site content from Studio");
+      if (path === "portfolio") {
+        await ghPut("assets/data/portfolio.json", jsonB64(site.portfolio || []), token, "Sync portfolio.json");
+      }
+      window.HJ_clearSiteDraft();
+      dirty = false;
+      say("Live");
+      toast(
+        (ok === 1 ? "Photo added." : ok + " photos added.") +
+          (failed ? " " + failed + " could not upload." : "") +
+          " Live in about a minute."
+      );
+      setTimeout(() => { if (state && state.textContent === "Live") state.textContent = ""; }, 4000);
+    } catch (err) {
+      console.error("save list failed", err);
+      say("Not saved");
+      toast("Photos uploaded but the list did not save. It will retry.");
+      dirty = true;
+      scheduleLive();
+    }
   }
 
   function decorateLists() {
@@ -654,7 +693,8 @@
       });
       if (res.ok) return;
       lastErr = await res.text();
-      if (res.status !== 409 && res.status !== 429 && res.status !== 502 && res.status !== 503) break;
+      const retryable = res.status === 409 || res.status === 422 || res.status === 429 || res.status >= 500;
+      if (!retryable) break;
     }
     throw new Error(lastErr);
   }
