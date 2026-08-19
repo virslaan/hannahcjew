@@ -99,7 +99,7 @@
     "id": "studio-duet",
     "src": "assets/img/portfolio/studio-duet-the-reach_studio-duet.jpg",
     "title": "The Nutcracker - \"Ribbon Dance\"",
-    "credit": "The university of oklahoma school of dance - Oklahoma festival ballet",
+    "credit": "the UNiversity of OKlahoma School of dance (oklahoma Festival ballet)",
     "category": "choreographer",
     "alt": "Hannah and a partner reaching toward each other in a studio, black and white"
   },
@@ -110,14 +110,6 @@
     "credit": "",
     "category": "photoshoots",
     "alt": "Hannah mid-turn in rehearsal with one leg raised"
-  },
-  {
-    "id": "at-barre",
-    "src": "assets/img/insta/insta-4.jpg",
-    "title": "",
-    "credit": "Photo by Kashif Salahuddin",
-    "category": "in-studio-the-process",
-    "alt": "Hannah stretching in pointe shoes at a mirror"
   },
   {
     "id": "chinatown",
