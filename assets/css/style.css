@@ -871,33 +871,19 @@ body.page-plate .cover__img img { object-position: 50% 18%; }
 .resume-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: clamp(1.2rem, 4vw, 3rem);
-  align-items: end;
-  margin: 0 0 clamp(2.5rem, 7vh, 4.5rem);
-  padding-top: clamp(1.5rem, 4vh, 2.2rem);
-  border-top: 1px solid var(--line);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: center;
+  margin: clamp(1rem, 3vh, 1.8rem) 0 clamp(2.5rem, 7vh, 4.5rem);
 }
-.resume-copy .kicker {
-  font-size: var(--text-sm);
-  letter-spacing: var(--ls-label);
-  text-transform: uppercase;
-  color: var(--red);
-  margin-bottom: 0.55rem;
-}
-.resume-copy h2 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: var(--text-h1);
-  line-height: 1.15;
-  margin-bottom: 0.55rem;
-}
-.resume-panel .resume-copy p[data-resume-blurb] {
+.resume-blurb {
   max-width: 46ch;
   font-family: var(--font-ui);
   font-size: var(--text-body);
   line-height: 1.55;
   color: var(--ink-soft);
+  margin: 0;
 }
+.resume-blurb:empty { display: none; }
 .resume-actions {
   display: flex;
   gap: 0.7rem;

@@ -252,7 +252,7 @@
 
     const title = document.querySelector("[data-resume-title]");
     if (title) {
-      title.textContent = resume.title || "Hannah Jew — Resume";
+      title.textContent = resume.title || "Resume";
       title.setAttribute("data-edit", "resume.title");
     }
     const blurb = document.querySelector("[data-resume-blurb]");
