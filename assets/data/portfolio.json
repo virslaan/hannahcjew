@@ -1,24 +1,11 @@
 [
   {
-    "id": "v-mt0zyxki-1azz",
-    "video": "https://www.youtube.com/watch?v=f_bKjZeJBBI",
-    "src": "https://img.youtube.com/vi/f_bKjZeJBBI/hqdefault.jpg",
-    "title": "odyssey",
-    "credit": "vipul",
-    "notes": "fd",
-    "category": "choreographer",
-    "orient": "portrait",
-    "span": 3,
-    "alt": "odyssey (video)"
-  },
-  {
     "id": "p-msv6l3ce-d004",
     "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
     "title": "Nightmare Screen",
     "credit": "Kashif salahuddin",
     "category": "in-studio-the-process",
-    "alt": "Kashif Photography",
-    "videos": []
+    "alt": "Kashif Photography"
   },
   {
     "id": "p-msv44voz-qsqh",
@@ -26,8 +13,7 @@
     "title": "Mirage",
     "credit": "Nai-ni chen dance company",
     "category": "performer",
-    "alt": "IMG 3719",
-    "videos": []
+    "alt": "IMG 3719"
   },
   {
     "id": "p-msv43304-f0dq",
@@ -35,8 +21,7 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell photography",
     "category": "performer",
-    "alt": "58362884 B171 46D3 A115 C1D3800065A5",
-    "videos": []
+    "alt": "58362884 B171 46D3 A115 C1D3800065A5"
   },
   {
     "id": "p-msv3w8nd-epeo",
@@ -44,8 +29,7 @@
     "title": "",
     "credit": "Photo by Luther cherry",
     "category": "photoshoots",
-    "alt": "Hannah 2 copy",
-    "videos": []
+    "alt": "Hannah 2 copy"
   },
   {
     "id": "p-msv3brdy-m9s1",
@@ -53,8 +37,7 @@
     "title": "The King and I",
     "credit": "Indy Ghostlight",
     "category": "performer",
-    "alt": "IMG 1107 Enhanced NR",
-    "videos": []
+    "alt": "IMG 1107 Enhanced NR"
   },
   {
     "id": "p-msv38c2z-6sju",
@@ -62,8 +45,7 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell Photography",
     "category": "performer",
-    "alt": "DSC04485",
-    "videos": []
+    "alt": "DSC04485"
   },
   {
     "id": "p-msv36h3i-aqt1",
@@ -71,8 +53,7 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell Photography",
     "category": "performer",
-    "alt": "DSC04490",
-    "videos": []
+    "alt": "DSC04490"
   },
   {
     "id": "p-msuxucqc-z87c",
@@ -80,8 +61,7 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell Photography",
     "category": "performer",
-    "alt": "DSC04124",
-    "videos": []
+    "alt": "DSC04124"
   },
   {
     "id": "blue-silk",
@@ -89,8 +69,7 @@
     "title": "",
     "credit": "Photo by Linda l'anson",
     "category": "photoshoots",
-    "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
-    "videos": []
+    "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
   },
   {
     "id": "pointe-shoes",
@@ -98,8 +77,7 @@
     "title": "",
     "credit": "photo by kashif salahuddin",
     "category": "in-studio-the-process",
-    "alt": "Close-up of pointe shoes stepping through a studio, black and white",
-    "videos": []
+    "alt": "Close-up of pointe shoes stepping through a studio, black and white"
   },
   {
     "id": "green-leotard",
@@ -107,8 +85,7 @@
     "title": "Sculptural in green",
     "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
-    "videos": []
+    "alt": "Hannah in a green leotard with arms curved in a sculptural shape"
   },
   {
     "id": "meatpacking",
@@ -116,8 +93,7 @@
     "title": "Meatpacking, NYC",
     "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
-    "videos": []
+    "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street"
   },
   {
     "id": "studio-duet",
@@ -125,8 +101,7 @@
     "title": "The Nutcracker - \"Ribbon Dance\"",
     "credit": "the UNiversity of OKlahoma School of dance (oklahoma Festival ballet)",
     "category": "choreographer",
-    "alt": "Hannah and a partner reaching toward each other in a studio, black and white",
-    "videos": []
+    "alt": "Hannah and a partner reaching toward each other in a studio, black and white"
   },
   {
     "id": "mid-turn",
@@ -134,8 +109,7 @@
     "title": "Photo by Corey Hayes",
     "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah mid-turn in rehearsal with one leg raised",
-    "videos": []
+    "alt": "Hannah mid-turn in rehearsal with one leg raised"
   },
   {
     "id": "chinatown",
@@ -143,7 +117,6 @@
     "title": "SUFFOLK Pop-Up (NYC)",
     "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah in a qipao beneath a neon chop suey sign",
-    "videos": []
+    "alt": "Hannah in a qipao beneath a neon chop suey sign"
   }
 ]
