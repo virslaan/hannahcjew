@@ -219,12 +219,7 @@
       "credit": "the UNiversity of OKlahoma School of dance (oklahoma Festival ballet)",
       "category": "choreographer",
       "alt": "Hannah and a partner reaching toward each other in a studio, black and white",
-      "videos": [
-        {
-          "url": "https://www.youtube.com/watch?v=f_bKjZeJBBI",
-          "label": "odyseey"
-        }
-      ]
+      "videos": []
     },
     {
       "id": "mid-turn",
@@ -298,6 +293,6 @@
     "accent": "#d7281c"
   },
   "portfolioLayout": {
-    "columns": 3
+    "columns": 4
   }
 }
