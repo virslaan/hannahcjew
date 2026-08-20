@@ -25,20 +25,71 @@
     return /^photo\b/i.test(t) ? t : "Photo: " + t;
   }
 
-  // Portfolio items used to hold a single "video" string. They can now hold
-  // any number of videos, each with an optional friendly label. This upgrades
-  // the older shape in place so the renderer only has to think about one form.
-  function normalizeVideos(item) {
-    if (!Array.isArray(item.videos)) item.videos = [];
-    item.videos = item.videos
-      .map((v) => (typeof v === "string" ? { url: v, label: "" } : { url: (v && v.url) || "", label: (v && v.label) || "" }))
-      .filter((v) => v.url);
-    if (!item.videos.length && item.video) {
-      item.videos = [{ url: String(item.video), label: "" }];
-    }
-    if (item.video) delete item.video;
+  // Grab a still frame URL from a YouTube link so a fresh video tile has
+  // something to show without any extra work. Returns "" for Vimeo etc.
+  function youtubeThumb(url) {
+    if (!url) return "";
+    try {
+      const u = new URL(url);
+      const host = u.hostname.replace(/^www\./, "");
+      let id = "";
+      if (host === "youtu.be") id = u.pathname.slice(1);
+      else if (host.endsWith("youtube.com")) {
+        if (u.pathname.startsWith("/embed/")) id = u.pathname.split("/")[2];
+        else if (u.pathname === "/watch") id = u.searchParams.get("v") || "";
+        else if (u.pathname.startsWith("/shorts/")) id = u.pathname.split("/")[2];
+      }
+      if (id) return "https://img.youtube.com/vi/" + id + "/hqdefault.jpg";
+    } catch (_) {}
+    return "";
   }
-  window.HJ_normalizeVideos = normalizeVideos;
+  window.HJ_youtubeThumb = youtubeThumb;
+
+  // A neutral placeholder for a video tile that doesn't have a cover yet.
+  const VIDEO_PLACEHOLDER =
+    "data:image/svg+xml;utf8," +
+    encodeURIComponent(
+      "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5' preserveAspectRatio='xMidYMid slice'>" +
+        "<rect width='4' height='5' fill='%23161616'/>" +
+        "<text x='2' y='2.75' font-size='0.55' fill='%23888' text-anchor='middle' font-family='Helvetica,Arial,sans-serif' letter-spacing='0.06'>VIDEO</text>" +
+        "</svg>"
+    );
+  window.HJ_VIDEO_PLACEHOLDER = VIDEO_PLACEHOLDER;
+
+  // Older data may still carry a `videos: [...]` array attached to a photo
+  // item (the previous multi-video-per-card design). Split those out into
+  // their own tiles in the grid so photos and videos live side by side.
+  function splitLegacyVideos(items) {
+    let changed = false;
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      if (!it || !Array.isArray(it.videos) || !it.videos.length) continue;
+      const extras = [];
+      for (const v of it.videos) {
+        const url = typeof v === "string" ? v : v && v.url;
+        if (!url) continue;
+        const label = typeof v === "object" && v ? v.label || "" : "";
+        extras.push({
+          id: "v-" + Math.random().toString(36).slice(2, 8),
+          video: String(url),
+          src: youtubeThumb(url) || it.src || VIDEO_PLACEHOLDER,
+          title: label || it.title || "Video",
+          credit: "",
+          notes: "",
+          category: it.category,
+          orient: it.orient || "portrait",
+          span: it.span || 1,
+          alt: (label || it.title || "Video") + " (video)",
+        });
+      }
+      delete it.videos;
+      items.splice(i + 1, 0, ...extras);
+      i += extras.length;
+      changed = true;
+    }
+    return changed;
+  }
+  window.HJ_splitLegacyVideos = splitLegacyVideos;
 
   // ----- read/write values by dotted path, e.g. "home.nextShow.title" -----
   function getPath(obj, path) {
@@ -346,6 +397,7 @@
     const cats = catList(site);
     site.portfolioCategories = cats;
     const items = site.portfolio || [];
+    if (splitLegacyVideos(items)) site.portfolio = items;
     window.HJ_PORTFOLIO = items;
     grid.setAttribute("data-edit-list", "portfolio");
     grid.dataset.cols = String((site.portfolioLayout && site.portfolioLayout.columns) || 3);
@@ -364,36 +416,28 @@
 
     grid.innerHTML = items
       .map((item, i) => {
-        normalizeVideos(item);
         const credit = creditLine(item.credit);
         const cat = item.category || cats[0].id;
         const orient = item.orient || "portrait";
         const span = item.span || 1;
         const notes = (item.notes || "").trim();
-        const vids = item.videos || [];
+        const video = (item.video || "").trim();
+        const isVideo = !!video;
+        // Videos fall back to the YouTube thumbnail, then a neutral placeholder,
+        // so a fresh tile always shows something the moment it's added.
+        const thumb = item.src || (isVideo ? youtubeThumb(video) || VIDEO_PLACEHOLDER : "");
         const options = cats
           .map((c) => `<option value="${esc(c.id)}" ${c.id === cat ? "selected" : ""}>${esc(c.label)}</option>`)
           .join("");
         const shapeBtn = (key, val, label) =>
           `<button type="button" data-${key}="${val}" class="${(key === "orient" ? orient : String(span)) === String(val) ? "is-on" : ""}">${label}</button>`;
         const p = "portfolio." + i;
-        const btnLabel = (v, k) => v.label || (vids.length > 1 ? "Video " + (k + 1) : "Watch video");
-        const playRow = vids.length
-          ? `<div class="work-videos">${vids
-              .map(
-                (v, k) =>
-                  `<button type="button" class="work-video-btn" data-play-video="${esc(v.url)}">▶ ${esc(btnLabel(v, k))}</button>`
-              )
-              .join("")}</div>`
+        const kindClass = isVideo ? " work--video" : "";
+        const videoEditRow = isVideo
+          ? `<div class="work-video-meta hj-edit-only"><a class="work-video-edit" href="${esc(video)}" data-edit-href="${p}.video" data-prompt="Paste the YouTube or Vimeo link for this tile. Leave blank to remove.">✎ Change video link</a></div>`
           : "";
-        const editRow = `<div class="work-videos-edit hj-edit-only">${vids
-          .map(
-            (v, k) =>
-              `<span class="wve-row"><button type="button" class="wve-btn" data-video-edit="${p}.videos.${k}" title="Edit link and label">✎ ${esc(v.label || "Video " + (k + 1))}</button><button type="button" class="wve-x" data-video-remove="${p}.videos.${k}" title="Remove video">×</button></span>`
-          )
-          .join("")}<button type="button" class="wve-add" data-video-add="${p}.videos">+ Add video</button></div>`;
-        return `<figure class="work will-reveal" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}"
-                 ${vids.length ? 'data-has-video="1"' : ""} data-lightbox
+        return `<figure class="work will-reveal${kindClass}" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}"
+                 ${isVideo ? 'data-kind="video"' : ""} data-lightbox
                  data-edit-item="portfolio" data-index="${i}"
                  data-title="${esc(item.title)}" data-credit="${esc(credit)}">
           <span class="tag">${esc(catLabel(site, cat))}</span>
@@ -401,15 +445,14 @@
             <select data-edit-cat="portfolio.${i}.category" aria-label="Category">${options}</select>
           </label>
           <span class="work-media">
-            <img src="${esc(item.src)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
-            ${vids.length ? `<button type="button" class="work-play" data-play-video="${esc(vids[0].url)}" aria-label="Play video">▶</button>` : ""}
+            <img src="${esc(thumb)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
+            ${isVideo ? `<button type="button" class="work-play" data-play-video="${esc(video)}" aria-label="Play video"><span class="work-play__icon">▶</span></button>` : ""}
           </span>
           <figcaption>
             <span class="title"${ed(p + ".title")}>${esc(item.title)}</span>
             <span class="credit"${ed(p + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</span>
             <p class="work-notes"${ed(p + ".notes", 'data-edit-label="Notes: credits, cast, and details"')}>${esc(notes)}</p>
-            ${playRow}
-            ${editRow}
+            ${videoEditRow}
             <div class="work-shape">
               ${shapeBtn("orient", "portrait", "Tall")}
               ${shapeBtn("orient", "landscape", "Wide")}

@@ -270,85 +270,7 @@
     decorateCategoryBar();
     decoratePortfolioLayout();
     decorateWorkShape();
-    decorateVideosEdit();
     decorateRemove();
-  }
-
-  // Add / edit / remove any number of videos on a portfolio piece.
-  // These buttons live inside .work-videos-edit and only show in edit mode.
-  function decorateVideosEdit() {
-    $$("[data-video-add]").forEach((btn) => {
-      if (btn.dataset.armedVadd === "1") return;
-      btn.dataset.armedVadd = "1";
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!isEditing()) return;
-        const path = btn.dataset.videoAdd;
-        const url = prompt("Paste a YouTube or Vimeo link:", "");
-        if (url == null) return;
-        const clean = String(url).trim();
-        if (!clean) return;
-        const label = prompt(
-          "Label for this video? (optional — e.g. 'Full piece', 'Behind the scenes')",
-          ""
-        );
-        if (label == null) return;
-        const arr = (get(path) || []).slice();
-        arr.push({ url: clean, label: String(label).trim() });
-        set(path, arr);
-        rerender();
-      });
-    });
-
-    $$("[data-video-edit]").forEach((btn) => {
-      if (btn.dataset.armedVedit === "1") return;
-      btn.dataset.armedVedit = "1";
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!isEditing()) return;
-        const path = btn.dataset.videoEdit;
-        const cur = get(path) || { url: "", label: "" };
-        const url = prompt("Video link (leave blank to remove this video):", cur.url || "");
-        if (url == null) return;
-        const clean = String(url).trim();
-        const dot = path.lastIndexOf(".");
-        const parent = path.slice(0, dot);
-        const idx = +path.slice(dot + 1);
-        const arr = (get(parent) || []).slice();
-        if (!clean) {
-          arr.splice(idx, 1);
-          set(parent, arr);
-          rerender();
-          return;
-        }
-        const label = prompt("Label for this video? (optional)", cur.label || "");
-        if (label == null) return;
-        arr[idx] = { url: clean, label: String(label).trim() };
-        set(parent, arr);
-        rerender();
-      });
-    });
-
-    $$("[data-video-remove]").forEach((btn) => {
-      if (btn.dataset.armedVrm === "1") return;
-      btn.dataset.armedVrm = "1";
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!isEditing()) return;
-        if (!confirm("Remove this video?")) return;
-        const path = btn.dataset.videoRemove;
-        const dot = path.lastIndexOf(".");
-        const parent = path.slice(0, dot);
-        const idx = +path.slice(dot + 1);
-        const arr = (get(parent) || []).slice();
-        arr.splice(idx, 1);
-        set(parent, arr);
-        rerender();
-      });
-    });
   }
 
   // the resume PDF gets its own button beside the download link
@@ -637,6 +559,73 @@
     },
   };
 
+  // Add a video the same way a photo is added: it becomes its own tile in
+  // the portfolio grid, with a YouTube thumbnail baked in when possible.
+  async function addPortfolioVideo() {
+    const url = prompt("Paste a YouTube or Vimeo link for this video:", "");
+    if (url == null) return;
+    const clean = String(url).trim();
+    if (!clean) return;
+    const title = prompt(
+      "Title for this video? (shown under the thumbnail — e.g. the piece name)",
+      ""
+    );
+    if (title == null) return;
+    const notes = prompt(
+      "Notes? (optional — credits, cast, description. Leave blank to skip.)",
+      ""
+    );
+    if (notes == null) return;
+    const cover =
+      (typeof window.HJ_youtubeThumb === "function" ? window.HJ_youtubeThumb(clean) : "") ||
+      window.HJ_VIDEO_PLACEHOLDER ||
+      "";
+    const item = {
+      id: uid("v"),
+      video: clean,
+      src: cover,
+      title: String(title).trim() || "Video",
+      credit: "",
+      notes: String(notes).trim(),
+      category: currentPortfolioCat(),
+      orient: "portrait",
+      span: 1,
+      alt: (String(title).trim() || "Video") + " (video)",
+    };
+    const arr = (get("portfolio") || []).slice();
+    arr.unshift(item);
+    set("portfolio", arr);
+    window.HJ_SITE = site;
+    window.HJ_hydrateSite(site);
+    if (isEditing()) armEditing();
+    persistDraft();
+    updateBar();
+    toast("Video added. Click ▶ on the tile to play. To swap the cover, click the thumbnail in edit mode.");
+
+    const token = liveToken();
+    if (!token) {
+      dirty = true;
+      updateBar();
+      return;
+    }
+    try {
+      await ghPut("assets/data/site.json", jsonB64(site), token, "Add portfolio video");
+      await ghPut(
+        "assets/data/portfolio.json",
+        jsonB64(site.portfolio || []),
+        token,
+        "Sync portfolio.json"
+      );
+      window.HJ_clearSiteDraft();
+      dirty = false;
+    } catch (err) {
+      console.error("save video failed", err);
+      dirty = true;
+      scheduleLive();
+    }
+    updateBar();
+  }
+
   async function addPhotos(path, conf, files) {
     holdLive = true;
     const arr = (get(path) || []).slice();
@@ -739,10 +728,25 @@
         rerender();
       });
       listEl.insertAdjacentElement("afterend", btn);
+      if (path === "portfolio") {
+        const vbtn = document.createElement("button");
+        vbtn.type = "button";
+        vbtn.className = "hj-add hj-add--video";
+        vbtn.contentEditable = "false";
+        vbtn.textContent = "+ Add video";
+        vbtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          addPortfolioVideo();
+        });
+        btn.insertAdjacentElement("afterend", vbtn);
+      }
       if (conf.photo) {
         const hint = document.createElement("p");
         hint.className = "hj-edit-hint";
-        hint.textContent = "Tap to add. In the photo picker, select as many pictures as you want at once.";
+        hint.textContent =
+          path === "portfolio"
+            ? "Tap + Add photos to upload any number of images at once. Tap + Add video to paste a YouTube or Vimeo link — it becomes its own tile with a thumbnail. Click any thumbnail to swap the cover, or click the ▶ to play."
+            : "Tap to add. In the photo picker, select as many pictures as you want at once.";
         btn.insertAdjacentElement("afterend", hint);
       }
       if (path === "upcoming") {

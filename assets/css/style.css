@@ -1159,26 +1159,32 @@ body.hj-edit .work .tag-pick select {
 .work-notes:not(:empty) { display: block; }
 body.hj-edit .work-notes { display: block; }
 .work-media { position: relative; display: block; }
+/* Full-cover play button on video tiles so tapping anywhere plays it. */
 .work-play {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(56px, 6.5vw, 78px);
-  height: clamp(56px, 6.5vw, 78px);
-  border-radius: 999px;
-  background: rgb(0 0 0 / 0.58);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.18);
   color: #fff;
   border: 0;
   cursor: pointer;
+  transition: background 0.25s var(--ease-out);
+  z-index: 3;
+}
+.work-play__icon {
+  width: clamp(56px, 6.5vw, 78px);
+  height: clamp(56px, 6.5vw, 78px);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.65);
   display: grid;
   place-items: center;
   padding-left: 4px;
   font-size: clamp(1.15rem, 1.7vw, 1.55rem);
   transition: background 0.25s var(--ease-out), transform 0.25s var(--ease-out);
-  z-index: 3;
 }
-.work:hover .work-play { background: var(--red); transform: translate(-50%, -50%) scale(1.05); }
+.work-play:hover { background: rgb(0 0 0 / 0.32); }
+.work-play:hover .work-play__icon { background: var(--red); transform: scale(1.06); }
 .work.is-playing .work-play { display: none; }
 body.hj-edit .work-play { display: none; }
 
@@ -1212,43 +1218,18 @@ body.hj-edit .work-play { display: none; }
 }
 .work-player__close:hover { background: var(--red); }
 
-.work-videos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.6rem 0 0;
-}
-.work-video-btn {
-  padding: 0.4em 0.85em;
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--sans);
-  font-size: var(--text-xs);
-  letter-spacing: var(--ls-label);
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
-}
-.work-video-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
-
 .hj-edit-only { display: none; }
 body.hj-edit .hj-edit-only { display: flex; }
-.work-videos-edit {
+.work-video-meta {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
   margin-top: 0.55rem;
-  padding-top: 0.55rem;
-  border-top: 1px dashed var(--line);
 }
-.work-videos-edit .wve-row { display: inline-flex; gap: 0.2rem; align-items: center; }
-.work-videos-edit .wve-btn,
-.work-videos-edit .wve-add {
+.work-video-edit {
   padding: 0.3rem 0.6rem;
   border: 1px dashed var(--line);
   border-radius: 4px;
-  background: transparent;
   color: var(--ink-soft);
   font-family: var(--sans);
   font-size: var(--text-xs);
@@ -1256,20 +1237,12 @@ body.hj-edit .hj-edit-only { display: flex; }
   text-transform: uppercase;
   cursor: pointer;
 }
-.work-videos-edit .wve-btn:hover,
-.work-videos-edit .wve-add:hover { color: var(--red); border-color: var(--red); }
-.work-videos-edit .wve-x {
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  border: 1px solid var(--red);
+.work-video-edit:hover { color: var(--red); border-color: var(--red); }
+.hj-add--video {
+  margin-left: 0.5rem;
   background: transparent;
-  color: var(--red);
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
+  color: var(--ink);
 }
-.work-videos-edit .wve-x:hover { background: var(--red); color: #fff; }
 .work-shape {
   display: none;
   flex-wrap: wrap;
