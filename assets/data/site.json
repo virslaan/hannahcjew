@@ -105,6 +105,18 @@
   ],
   "portfolio": [
     {
+      "id": "v-mt0zyxki-1azz",
+      "video": "https://www.youtube.com/watch?v=f_bKjZeJBBI",
+      "src": "https://img.youtube.com/vi/f_bKjZeJBBI/hqdefault.jpg",
+      "title": "odyssey",
+      "credit": "vipul",
+      "notes": "fd",
+      "category": "choreographer",
+      "orient": "portrait",
+      "span": 2,
+      "alt": "odyssey (video)"
+    },
+    {
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
