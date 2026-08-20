@@ -603,6 +603,9 @@ main {
 }
 .intro h2 em { font-style: italic; color: var(--red); }
 .intro p { margin-top: 1.3rem; color: var(--ink-soft); max-width: 52ch; }
+.home-body { margin-top: 1.3rem; max-width: 52ch; }
+.home-body p { color: var(--ink-soft); }
+.home-body p + p { margin-top: 1rem; }
 .intro .btn { margin-top: 2rem; }
 .intro__img {
   position: relative;
@@ -1145,6 +1148,49 @@ body.hj-edit .work .tag-pick select {
   text-transform: uppercase;
   padding: 0.35em 0.8em;
 }
+.work-notes {
+  display: none;
+  margin: 0.55rem 0 0;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.work-notes:not(:empty) { display: block; }
+body.hj-edit .work-notes { display: block; }
+.work-media { position: relative; display: block; }
+.work-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(52px, 6.5vw, 74px);
+  height: clamp(52px, 6.5vw, 74px);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+  pointer-events: none;
+  transition: background 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.work:hover .work-play { background: var(--red); transform: translate(-50%, -50%) scale(1.05); }
+.hj-edit-only { display: none; }
+body.hj-edit .hj-edit-only { display: inline-flex; }
+.work-video-edit {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.work-video-edit:hover { color: var(--red); border-color: var(--red); }
 .work-shape {
   display: none;
   flex-wrap: wrap;
@@ -1275,6 +1321,16 @@ body.hj-edit .hj-remove { display: inline-flex; }
   text-transform: uppercase;
 }
 .lightbox__download:hover { background: var(--red); border-color: var(--red); }
+.lightbox__video {
+  width: min(1100px, 100%);
+  aspect-ratio: 16 / 9;
+  max-height: 78vh;
+  border: 0;
+  background: #000;
+  display: block;
+  margin: 0 auto;
+}
+.lightbox.is-video img { display: none; }
 
 /* ---------- upcoming ---------- */
 .show-list { border-top: 1px solid var(--line); }

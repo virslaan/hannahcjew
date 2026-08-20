@@ -244,15 +244,19 @@
       });
     });
 
-    // 4. ticket links
+    // 4. link fields (ticket links, video links, anything else)
     $$("[data-edit-href]").forEach((el) => {
       if (el.dataset.armedHref === "1") return;
       el.dataset.armedHref = "1";
       el.addEventListener("click", (e) => {
         if (!isEditing()) return;
         e.preventDefault();
+        e.stopPropagation();
         const path = el.dataset.editHref;
-        const next = prompt("Paste the ticket webpage link. Leave it blank if tickets are not up yet.", get(path) || "");
+        const promptText =
+          el.dataset.prompt ||
+          "Paste the link. Leave it blank to remove it.";
+        const next = prompt(promptText, get(path) || "");
         if (next == null) return;
         set(path, next.trim());
         rerender();
@@ -506,6 +510,7 @@
 
   const LIST_ADD = {
     "about.paragraphs": { label: "+ Add paragraph", make: () => "New paragraph. Click to write." },
+    "home.paragraphs": { label: "+ Add paragraph", make: () => "New paragraph. Click to write." },
     portfolio: {
       label: "+ Add photos",
       photo: true,

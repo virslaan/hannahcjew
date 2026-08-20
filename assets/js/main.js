@@ -218,14 +218,22 @@ bindPortfolioFilters();
 // ----- lightbox -----
 const lightbox = document.querySelector(".lightbox");
 if (lightbox) {
+  const lbInner = lightbox.querySelector(".lightbox__inner");
   const lbImg = lightbox.querySelector("img");
   const lbTitle = lightbox.querySelector(".lightbox__caption .title");
   const lbCredit = lightbox.querySelector(".lightbox__caption .credit");
   const lbDownload = lightbox.querySelector(".lightbox__download");
+  let videoFrame = null;
 
+  const clearVideo = () => {
+    if (videoFrame && videoFrame.parentNode) videoFrame.parentNode.removeChild(videoFrame);
+    videoFrame = null;
+    lightbox.classList.remove("is-video");
+  };
   const close = () => {
     lightbox.classList.remove("is-open");
     document.body.style.overflow = "";
+    clearVideo();
   };
   lightbox.querySelector(".lightbox__close").addEventListener("click", close);
   lightbox.addEventListener("click", (e) => {
@@ -235,18 +243,61 @@ if (lightbox) {
     if (e.key === "Escape") close();
   });
 
+  // Turn a YouTube or Vimeo URL into an embeddable src. Returns null for anything else.
+  const toEmbed = (url) => {
+    if (!url) return null;
+    try {
+      const u = new URL(url);
+      const host = u.hostname.replace(/^www\./, "");
+      if (host === "youtu.be") return "https://www.youtube.com/embed/" + u.pathname.slice(1);
+      if (host.endsWith("youtube.com")) {
+        if (u.pathname.startsWith("/embed/")) return url;
+        if (u.pathname === "/watch" && u.searchParams.get("v")) return "https://www.youtube.com/embed/" + u.searchParams.get("v");
+        if (u.pathname.startsWith("/shorts/")) return "https://www.youtube.com/embed/" + u.pathname.split("/")[2];
+      }
+      if (host.endsWith("vimeo.com")) {
+        const id = u.pathname.split("/").filter(Boolean).pop();
+        if (id) return "https://player.vimeo.com/video/" + id;
+      }
+    } catch (_) {}
+    return null;
+  };
+
   window.bindLightbox = function bindLightbox() {
     document.querySelectorAll("[data-lightbox]").forEach((fig) => {
       if (fig.dataset.lbBound) return;
       fig.dataset.lbBound = "1";
-      fig.addEventListener("click", () => {
+      fig.addEventListener("click", (e) => {
         if (document.body.classList.contains("hj-edit")) return;
+        // ignore clicks on interactive children (video edit link, etc.)
+        if (e.target.closest("a, button, select, input, textarea")) return;
+        clearVideo();
         const img = fig.querySelector("img");
-        lbImg.src = img.dataset.full || img.src;
-        lbImg.alt = img.alt;
+        const videoUrl = fig.dataset.video;
+        const embed = toEmbed(videoUrl);
+        if (embed) {
+          videoFrame = document.createElement("iframe");
+          videoFrame.className = "lightbox__video";
+          videoFrame.src = embed + (embed.includes("?") ? "&" : "?") + "autoplay=1";
+          videoFrame.setAttribute("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen");
+          videoFrame.setAttribute("allowfullscreen", "");
+          videoFrame.setAttribute("title", fig.dataset.title || "Video");
+          lbInner.insertBefore(videoFrame, lbImg);
+          lightbox.classList.add("is-video");
+        } else {
+          lbImg.src = img.dataset.full || img.src;
+          lbImg.alt = img.alt;
+        }
         lbTitle.textContent = fig.dataset.title || "";
         lbCredit.textContent = fig.dataset.credit || "";
-        if (lbDownload) lbDownload.href = img.dataset.full || img.src;
+        if (lbDownload) {
+          if (embed) {
+            lbDownload.style.display = "none";
+          } else {
+            lbDownload.style.display = "";
+            lbDownload.href = img.dataset.full || img.src;
+          }
+        }
         lightbox.classList.add("is-open");
         document.body.style.overflow = "hidden";
       });

@@ -157,8 +157,18 @@
 
     const body = document.querySelector("[data-home-body]");
     if (body) {
-      body.textContent = h.introBody || "";
-      body.setAttribute("data-edit", "home.introBody");
+      // Migrate the old single-string bio into a paragraphs list so Hannah
+      // can add / split / remove paragraphs from Studio.
+      if (!Array.isArray(h.paragraphs) || !h.paragraphs.length) {
+        h.paragraphs = h.introBody ? [h.introBody] : [];
+      }
+      body.setAttribute("data-edit-list", "home.paragraphs");
+      body.innerHTML = h.paragraphs
+        .map(
+          (p, i) =>
+            `<p data-edit-item="home.paragraphs" data-index="${i}"><span${ed("home.paragraphs." + i)}>${esc(p)}</span><button type="button" class="hj-remove" data-remove>Remove</button></p>`
+        )
+        .join("");
     }
 
     const introImg = document.querySelector("[data-home-intro-img]");
@@ -343,22 +353,34 @@
         const cat = item.category || cats[0].id;
         const orient = item.orient || "portrait";
         const span = item.span || 1;
+        const video = (item.video || "").trim();
+        const notes = (item.notes || "").trim();
         const options = cats
           .map((c) => `<option value="${esc(c.id)}" ${c.id === cat ? "selected" : ""}>${esc(c.label)}</option>`)
           .join("");
         const shapeBtn = (key, val, label) =>
           `<button type="button" data-${key}="${val}" class="${(key === "orient" ? orient : String(span)) === String(val) ? "is-on" : ""}">${label}</button>`;
-        return `<figure class="work will-reveal" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}" data-lightbox
+        const p = "portfolio." + i;
+        return `<figure class="work will-reveal" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}"
+                 ${video ? `data-video="${esc(video)}"` : ""} data-lightbox
                  data-edit-item="portfolio" data-index="${i}"
                  data-title="${esc(item.title)}" data-credit="${esc(credit)}">
           <span class="tag">${esc(catLabel(site, cat))}</span>
           <label class="tag-pick">
             <select data-edit-cat="portfolio.${i}.category" aria-label="Category">${options}</select>
           </label>
-          <img src="${esc(item.src)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
+          <span class="work-media">
+            <img src="${esc(item.src)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
+            ${video ? `<span class="work-play" aria-hidden="true">▶</span>` : ""}
+          </span>
           <figcaption>
-            <span class="title"${ed("portfolio." + i + ".title")}>${esc(item.title)}</span>
-            <span class="credit"${ed("portfolio." + i + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</span>
+            <span class="title"${ed(p + ".title")}>${esc(item.title)}</span>
+            <span class="credit"${ed(p + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</span>
+            <p class="work-notes"${ed(p + ".notes", 'data-edit-label="Notes: credits, cast, and details"')}>${esc(notes)}</p>
+            <a class="work-video-edit hj-edit-only"
+               href="${esc(video || "#")}"
+               data-edit-href="${p}.video"
+               data-prompt="Paste a YouTube (or Vimeo) link for this work. Leave blank to remove it.">${video ? "Change video link" : "+ Add video link"}</a>
             <div class="work-shape">
               ${shapeBtn("orient", "portrait", "Tall")}
               ${shapeBtn("orient", "landscape", "Wide")}
