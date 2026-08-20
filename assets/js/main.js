@@ -215,25 +215,17 @@ window.HJ_bindPortfolioFilters = bindPortfolioFilters;
 window.HJ_applyPortfolioFilter = applyPortfolioFilter;
 bindPortfolioFilters();
 
-// ----- lightbox -----
+// ----- lightbox (still images only; videos play inline in the card) -----
 const lightbox = document.querySelector(".lightbox");
 if (lightbox) {
-  const lbInner = lightbox.querySelector(".lightbox__inner");
   const lbImg = lightbox.querySelector("img");
   const lbTitle = lightbox.querySelector(".lightbox__caption .title");
   const lbCredit = lightbox.querySelector(".lightbox__caption .credit");
   const lbDownload = lightbox.querySelector(".lightbox__download");
-  let videoFrame = null;
 
-  const clearVideo = () => {
-    if (videoFrame && videoFrame.parentNode) videoFrame.parentNode.removeChild(videoFrame);
-    videoFrame = null;
-    lightbox.classList.remove("is-video");
-  };
   const close = () => {
     lightbox.classList.remove("is-open");
     document.body.style.overflow = "";
-    clearVideo();
   };
   lightbox.querySelector(".lightbox__close").addEventListener("click", close);
   lightbox.addEventListener("click", (e) => {
@@ -243,61 +235,22 @@ if (lightbox) {
     if (e.key === "Escape") close();
   });
 
-  // Turn a YouTube or Vimeo URL into an embeddable src. Returns null for anything else.
-  const toEmbed = (url) => {
-    if (!url) return null;
-    try {
-      const u = new URL(url);
-      const host = u.hostname.replace(/^www\./, "");
-      if (host === "youtu.be") return "https://www.youtube.com/embed/" + u.pathname.slice(1);
-      if (host.endsWith("youtube.com")) {
-        if (u.pathname.startsWith("/embed/")) return url;
-        if (u.pathname === "/watch" && u.searchParams.get("v")) return "https://www.youtube.com/embed/" + u.searchParams.get("v");
-        if (u.pathname.startsWith("/shorts/")) return "https://www.youtube.com/embed/" + u.pathname.split("/")[2];
-      }
-      if (host.endsWith("vimeo.com")) {
-        const id = u.pathname.split("/").filter(Boolean).pop();
-        if (id) return "https://player.vimeo.com/video/" + id;
-      }
-    } catch (_) {}
-    return null;
-  };
-
   window.bindLightbox = function bindLightbox() {
     document.querySelectorAll("[data-lightbox]").forEach((fig) => {
       if (fig.dataset.lbBound) return;
       fig.dataset.lbBound = "1";
       fig.addEventListener("click", (e) => {
         if (document.body.classList.contains("hj-edit")) return;
-        // ignore clicks on interactive children (video edit link, etc.)
+        // ignore clicks on interactive children (play buttons, edit inputs, etc.)
         if (e.target.closest("a, button, select, input, textarea")) return;
-        clearVideo();
+        // if a video is currently playing in this card, don't hijack it
+        if (fig.classList.contains("is-playing")) return;
         const img = fig.querySelector("img");
-        const videoUrl = fig.dataset.video;
-        const embed = toEmbed(videoUrl);
-        if (embed) {
-          videoFrame = document.createElement("iframe");
-          videoFrame.className = "lightbox__video";
-          videoFrame.src = embed + (embed.includes("?") ? "&" : "?") + "autoplay=1";
-          videoFrame.setAttribute("allow", "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen");
-          videoFrame.setAttribute("allowfullscreen", "");
-          videoFrame.setAttribute("title", fig.dataset.title || "Video");
-          lbInner.insertBefore(videoFrame, lbImg);
-          lightbox.classList.add("is-video");
-        } else {
-          lbImg.src = img.dataset.full || img.src;
-          lbImg.alt = img.alt;
-        }
+        lbImg.src = img.dataset.full || img.src;
+        lbImg.alt = img.alt;
         lbTitle.textContent = fig.dataset.title || "";
         lbCredit.textContent = fig.dataset.credit || "";
-        if (lbDownload) {
-          if (embed) {
-            lbDownload.style.display = "none";
-          } else {
-            lbDownload.style.display = "";
-            lbDownload.href = img.dataset.full || img.src;
-          }
-        }
+        if (lbDownload) lbDownload.href = img.dataset.full || img.src;
         lightbox.classList.add("is-open");
         document.body.style.overflow = "hidden";
       });
@@ -305,6 +258,82 @@ if (lightbox) {
   };
   window.bindLightbox();
 }
+
+// ----- inline video player on portfolio cards ---------------------------
+// Turns any YouTube or Vimeo URL into an embeddable src. Returns null for
+// links we don't recognise (we'll just open those in a new tab as a fallback).
+function hjToEmbed(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    const host = u.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") return "https://www.youtube.com/embed/" + u.pathname.slice(1);
+    if (host.endsWith("youtube.com")) {
+      if (u.pathname.startsWith("/embed/")) return url;
+      if (u.pathname === "/watch" && u.searchParams.get("v")) return "https://www.youtube.com/embed/" + u.searchParams.get("v");
+      if (u.pathname.startsWith("/shorts/")) return "https://www.youtube.com/embed/" + u.pathname.split("/")[2];
+    }
+    if (host.endsWith("vimeo.com")) {
+      const id = u.pathname.split("/").filter(Boolean).pop();
+      if (id) return "https://player.vimeo.com/video/" + id;
+    }
+  } catch (_) {}
+  return null;
+}
+
+function hjClosePlayer(fig) {
+  if (!fig) return;
+  const media = fig.querySelector(".work-media");
+  if (!media) return;
+  const existing = media.querySelector(".work-player");
+  if (existing) existing.remove();
+  fig.classList.remove("is-playing");
+}
+
+function hjPlayInline(fig, url) {
+  if (!fig || !url) return;
+  const media = fig.querySelector(".work-media");
+  if (!media) return;
+  const embed = hjToEmbed(url);
+  if (!embed) {
+    // Not a YouTube/Vimeo link — open in a new tab so it still works.
+    window.open(url, "_blank", "noopener");
+    return;
+  }
+  const old = media.querySelector(".work-player");
+  if (old) old.remove();
+  const wrap = document.createElement("div");
+  wrap.className = "work-player";
+  const separator = embed.includes("?") ? "&" : "?";
+  wrap.innerHTML =
+    '<iframe src="' + embed + separator + 'autoplay=1&rel=0"' +
+    ' allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"' +
+    ' allowfullscreen loading="lazy" title="Video"></iframe>' +
+    '<button type="button" class="work-player__close" aria-label="Close video">×</button>';
+  media.appendChild(wrap);
+  fig.classList.add("is-playing");
+}
+
+document.addEventListener("click", (e) => {
+  const play = e.target.closest("[data-play-video]");
+  if (play) {
+    // In Studio edit mode, the ▶ badge should not swallow the underlying
+    // image click (Hannah is probably trying to swap the photo). Video pill
+    // buttons under the caption still play normally in either mode.
+    if (document.body.classList.contains("hj-edit") && play.classList.contains("work-play")) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const fig = play.closest(".work");
+    hjPlayInline(fig, play.dataset.playVideo);
+    return;
+  }
+  const closeBtn = e.target.closest(".work-player__close");
+  if (closeBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    hjClosePlayer(closeBtn.closest(".work"));
+  }
+});
 
 // ----- footer year -----
 const yearEl = document.querySelector("[data-year]");

@@ -270,7 +270,85 @@
     decorateCategoryBar();
     decoratePortfolioLayout();
     decorateWorkShape();
+    decorateVideosEdit();
     decorateRemove();
+  }
+
+  // Add / edit / remove any number of videos on a portfolio piece.
+  // These buttons live inside .work-videos-edit and only show in edit mode.
+  function decorateVideosEdit() {
+    $$("[data-video-add]").forEach((btn) => {
+      if (btn.dataset.armedVadd === "1") return;
+      btn.dataset.armedVadd = "1";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isEditing()) return;
+        const path = btn.dataset.videoAdd;
+        const url = prompt("Paste a YouTube or Vimeo link:", "");
+        if (url == null) return;
+        const clean = String(url).trim();
+        if (!clean) return;
+        const label = prompt(
+          "Label for this video? (optional — e.g. 'Full piece', 'Behind the scenes')",
+          ""
+        );
+        if (label == null) return;
+        const arr = (get(path) || []).slice();
+        arr.push({ url: clean, label: String(label).trim() });
+        set(path, arr);
+        rerender();
+      });
+    });
+
+    $$("[data-video-edit]").forEach((btn) => {
+      if (btn.dataset.armedVedit === "1") return;
+      btn.dataset.armedVedit = "1";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isEditing()) return;
+        const path = btn.dataset.videoEdit;
+        const cur = get(path) || { url: "", label: "" };
+        const url = prompt("Video link (leave blank to remove this video):", cur.url || "");
+        if (url == null) return;
+        const clean = String(url).trim();
+        const dot = path.lastIndexOf(".");
+        const parent = path.slice(0, dot);
+        const idx = +path.slice(dot + 1);
+        const arr = (get(parent) || []).slice();
+        if (!clean) {
+          arr.splice(idx, 1);
+          set(parent, arr);
+          rerender();
+          return;
+        }
+        const label = prompt("Label for this video? (optional)", cur.label || "");
+        if (label == null) return;
+        arr[idx] = { url: clean, label: String(label).trim() };
+        set(parent, arr);
+        rerender();
+      });
+    });
+
+    $$("[data-video-remove]").forEach((btn) => {
+      if (btn.dataset.armedVrm === "1") return;
+      btn.dataset.armedVrm = "1";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isEditing()) return;
+        if (!confirm("Remove this video?")) return;
+        const path = btn.dataset.videoRemove;
+        const dot = path.lastIndexOf(".");
+        const parent = path.slice(0, dot);
+        const idx = +path.slice(dot + 1);
+        const arr = (get(parent) || []).slice();
+        arr.splice(idx, 1);
+        set(parent, arr);
+        rerender();
+      });
+    });
   }
 
   // the resume PDF gets its own button beside the download link

@@ -1164,33 +1164,112 @@ body.hj-edit .work-notes { display: block; }
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: clamp(52px, 6.5vw, 74px);
-  height: clamp(52px, 6.5vw, 74px);
+  width: clamp(56px, 6.5vw, 78px);
+  height: clamp(56px, 6.5vw, 78px);
   border-radius: 999px;
-  background: rgb(0 0 0 / 0.55);
+  background: rgb(0 0 0 / 0.58);
   color: #fff;
+  border: 0;
+  cursor: pointer;
   display: grid;
   place-items: center;
-  font-size: clamp(1.1rem, 1.6vw, 1.5rem);
-  pointer-events: none;
+  padding-left: 4px;
+  font-size: clamp(1.15rem, 1.7vw, 1.55rem);
   transition: background 0.25s var(--ease-out), transform 0.25s var(--ease-out);
+  z-index: 3;
 }
 .work:hover .work-play { background: var(--red); transform: translate(-50%, -50%) scale(1.05); }
+.work.is-playing .work-play { display: none; }
+body.hj-edit .work-play { display: none; }
+
+.work-player {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 4;
+}
+.work-player iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+.work-player__close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.65);
+  color: #fff;
+  border: 0;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.2s var(--ease-out);
+}
+.work-player__close:hover { background: var(--red); }
+
+.work-videos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.6rem 0 0;
+}
+.work-video-btn {
+  padding: 0.4em 0.85em;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: var(--text-xs);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+.work-video-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+
 .hj-edit-only { display: none; }
-body.hj-edit .hj-edit-only { display: inline-flex; }
-.work-video-edit {
-  align-self: flex-start;
-  margin-top: 0.5rem;
+body.hj-edit .hj-edit-only { display: flex; }
+.work-videos-edit {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px dashed var(--line);
+}
+.work-videos-edit .wve-row { display: inline-flex; gap: 0.2rem; align-items: center; }
+.work-videos-edit .wve-btn,
+.work-videos-edit .wve-add {
   padding: 0.3rem 0.6rem;
   border: 1px dashed var(--line);
   border-radius: 4px;
+  background: transparent;
   color: var(--ink-soft);
+  font-family: var(--sans);
   font-size: var(--text-xs);
   letter-spacing: var(--ls-label);
   text-transform: uppercase;
   cursor: pointer;
 }
-.work-video-edit:hover { color: var(--red); border-color: var(--red); }
+.work-videos-edit .wve-btn:hover,
+.work-videos-edit .wve-add:hover { color: var(--red); border-color: var(--red); }
+.work-videos-edit .wve-x {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid var(--red);
+  background: transparent;
+  color: var(--red);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.work-videos-edit .wve-x:hover { background: var(--red); color: #fff; }
 .work-shape {
   display: none;
   flex-wrap: wrap;

@@ -25,6 +25,21 @@
     return /^photo\b/i.test(t) ? t : "Photo: " + t;
   }
 
+  // Portfolio items used to hold a single "video" string. They can now hold
+  // any number of videos, each with an optional friendly label. This upgrades
+  // the older shape in place so the renderer only has to think about one form.
+  function normalizeVideos(item) {
+    if (!Array.isArray(item.videos)) item.videos = [];
+    item.videos = item.videos
+      .map((v) => (typeof v === "string" ? { url: v, label: "" } : { url: (v && v.url) || "", label: (v && v.label) || "" }))
+      .filter((v) => v.url);
+    if (!item.videos.length && item.video) {
+      item.videos = [{ url: String(item.video), label: "" }];
+    }
+    if (item.video) delete item.video;
+  }
+  window.HJ_normalizeVideos = normalizeVideos;
+
   // ----- read/write values by dotted path, e.g. "home.nextShow.title" -----
   function getPath(obj, path) {
     return path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
@@ -349,20 +364,36 @@
 
     grid.innerHTML = items
       .map((item, i) => {
+        normalizeVideos(item);
         const credit = creditLine(item.credit);
         const cat = item.category || cats[0].id;
         const orient = item.orient || "portrait";
         const span = item.span || 1;
-        const video = (item.video || "").trim();
         const notes = (item.notes || "").trim();
+        const vids = item.videos || [];
         const options = cats
           .map((c) => `<option value="${esc(c.id)}" ${c.id === cat ? "selected" : ""}>${esc(c.label)}</option>`)
           .join("");
         const shapeBtn = (key, val, label) =>
           `<button type="button" data-${key}="${val}" class="${(key === "orient" ? orient : String(span)) === String(val) ? "is-on" : ""}">${label}</button>`;
         const p = "portfolio." + i;
+        const btnLabel = (v, k) => v.label || (vids.length > 1 ? "Video " + (k + 1) : "Watch video");
+        const playRow = vids.length
+          ? `<div class="work-videos">${vids
+              .map(
+                (v, k) =>
+                  `<button type="button" class="work-video-btn" data-play-video="${esc(v.url)}">▶ ${esc(btnLabel(v, k))}</button>`
+              )
+              .join("")}</div>`
+          : "";
+        const editRow = `<div class="work-videos-edit hj-edit-only">${vids
+          .map(
+            (v, k) =>
+              `<span class="wve-row"><button type="button" class="wve-btn" data-video-edit="${p}.videos.${k}" title="Edit link and label">✎ ${esc(v.label || "Video " + (k + 1))}</button><button type="button" class="wve-x" data-video-remove="${p}.videos.${k}" title="Remove video">×</button></span>`
+          )
+          .join("")}<button type="button" class="wve-add" data-video-add="${p}.videos">+ Add video</button></div>`;
         return `<figure class="work will-reveal" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}"
-                 ${video ? `data-video="${esc(video)}"` : ""} data-lightbox
+                 ${vids.length ? 'data-has-video="1"' : ""} data-lightbox
                  data-edit-item="portfolio" data-index="${i}"
                  data-title="${esc(item.title)}" data-credit="${esc(credit)}">
           <span class="tag">${esc(catLabel(site, cat))}</span>
@@ -371,16 +402,14 @@
           </label>
           <span class="work-media">
             <img src="${esc(item.src)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
-            ${video ? `<span class="work-play" aria-hidden="true">▶</span>` : ""}
+            ${vids.length ? `<button type="button" class="work-play" data-play-video="${esc(vids[0].url)}" aria-label="Play video">▶</button>` : ""}
           </span>
           <figcaption>
             <span class="title"${ed(p + ".title")}>${esc(item.title)}</span>
             <span class="credit"${ed(p + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</span>
             <p class="work-notes"${ed(p + ".notes", 'data-edit-label="Notes: credits, cast, and details"')}>${esc(notes)}</p>
-            <a class="work-video-edit hj-edit-only"
-               href="${esc(video || "#")}"
-               data-edit-href="${p}.video"
-               data-prompt="Paste a YouTube (or Vimeo) link for this work. Leave blank to remove it.">${video ? "Change video link" : "+ Add video link"}</a>
+            ${playRow}
+            ${editRow}
             <div class="work-shape">
               ${shapeBtn("orient", "portrait", "Tall")}
               ${shapeBtn("orient", "landscape", "Wide")}
