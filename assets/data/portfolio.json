@@ -1,5 +1,15 @@
 [
   {
+    "id": "p-mt3bttij-l3e0",
+    "src": "assets/img/portfolio/dsc04937_p-mt3bttij-l3e0.jpg",
+    "title": "DSC04937",
+    "credit": "",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "DSC04937"
+  },
+  {
     "id": "v-mt1qlt92-ai7k",
     "video": "https://www.youtube.com/watch?v=q4DU7X9UCXM&list=RDq4DU7X9UCXM&start_radio=1",
     "src": "https://img.youtube.com/vi/q4DU7X9UCXM/hqdefault.jpg",
@@ -98,14 +108,6 @@
     "credit": "",
     "category": "photoshoots",
     "alt": "Hannah in a green leotard with arms curved in a sculptural shape"
-  },
-  {
-    "id": "meatpacking",
-    "src": "assets/img/street-mirror.jpg",
-    "title": "Meatpacking, NYC",
-    "credit": "",
-    "category": "photoshoots",
-    "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street"
   },
   {
     "id": "studio-duet",
