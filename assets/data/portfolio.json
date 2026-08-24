@@ -25,7 +25,8 @@
     "title": "Mirage",
     "credit": "Nai-ni chen dance company",
     "category": "performer",
-    "alt": "IMG 3719"
+    "alt": "IMG 3719",
+    "orient": "landscape"
   },
   {
     "id": "p-msv43304-f0dq",
@@ -33,7 +34,8 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell photography",
     "category": "performer",
-    "alt": "58362884 B171 46D3 A115 C1D3800065A5"
+    "alt": "58362884 B171 46D3 A115 C1D3800065A5",
+    "orient": "portrait"
   },
   {
     "id": "p-msv3w8nd-epeo",
