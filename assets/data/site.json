@@ -3,12 +3,12 @@
     "heroImage": "assets/img/hero-tutu-bw.jpg",
     "introHeadline": "\"I grew up under Oklahoma skies and grew into myself under New York Lights.\"",
     "introHeadlineEm": "ballet, Broadway, and heritage",
-    "introBody": "Hi y'all! My name is Hannah Jew. A multi-hyphenate artist based in New York City and telling stories that don't fit in one box. It all started back in my hometown of Oklahoma, separation anxiety almost got the best of me and I'm not quite sure why it was that random day, but after several attempts to stay in the studio without crying, I did and have not looked back ever since. I think it was meant to be that I was going to be a dancer/artist. I love everything about the arts: the process, what happens behind the scenes and the magic onstage. I'm always excited to meet new people and experience new things. As I continue to evolve as a person and artist, I'm so excited to see all the unexpected and beautiful experiences that are yet to come. Maybe you'll be a stepping stone in my journey too! Click below to learn more about me and thank you for the support!",
+    "introBody": "Hi y'all! My name is Hannah Jew. A multi-hyphenate artist based in New York City and telling stories that don't fit in one box. It all started back in my hometown of Oklahoma, separation anxiety almost got the best of me and I'm not quite sure why it was that random day, but after several attempts to stay in the studio without crying, I did and have not looked back ever since. I think it was meant to be that I was going to be a dancer/artist. I love everything about the arts: the process, what happens behind the scenes and the magic onstage. I'm always excited to meet new people and experience new things. As I continue to evolve as a person and artist, I'm so excited to see all the unexpected and beautiful experiences that are yet to come. Maybe you'll be a stepping stone in my journey too! And I'm grateful to have so many people that are Click below to learn more about me and thank you for the support!",
     "introImage": "assets/img/intro_2026-08-15.jpg",
     "introImageAlt": "Hannah Jew seated in a studio, one foot en pointe, notes in hand",
     "nextShow": {
       "kicker": "Next on stage",
-      "title": "CATS",
+      "title": "Victoria in CATS",
       "role": "Beef & Boards Dinner Theatre",
       "venue": "Indianapolis, IN",
       "link": "upcoming.html",
@@ -19,7 +19,7 @@
     ]
   },
   "about": {
-    "cover": "assets/img/about-cover_img-mt3jbwzh-ym3q.jpg",
+    "cover": "assets/img/blue-dress-flow.jpg",
     "coverAlt": "Hannah Jew mid-turn, a pale blue dress sweeping around her",
     "coverCredit": "",
     "lead": "Hannah Jew (周健倫) is a New York City based multi-hyphenate artist, educator and frequent collaborator with other creative disciplines.",
@@ -63,8 +63,8 @@
   },
   "headshots": [
     {
-      "id": "hs-mtf0gkg9-42uz",
-      "src": "assets/img/headshots/hannah-jew_hs-mtf0gkg9-42uz.jpg",
+      "id": "hs-msuvcvvz-pmpj",
+      "src": "assets/img/headshots/hannah-jew_2026-08-17.jpg",
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
       "alt": "Headshot of Hannah Jew"
@@ -108,24 +108,13 @@
   ],
   "portfolio": [
     {
-      "id": "v-mt1qlt92-ai7k",
-      "video": "https://www.youtube.com/watch?v=q4DU7X9UCXM&list=RDq4DU7X9UCXM&start_radio=1",
-      "src": "https://img.youtube.com/vi/q4DU7X9UCXM/hqdefault.jpg",
-      "title": "Mountain of Echoing Halls",
-      "credit": "*world premiere",
-      "notes": "Composer/Yangqin: Chengjin Koh, Musicians: Verona Quartet, Choreographer/Dancer: Hannah Jew,",
-      "category": "choreographer",
-      "orient": "landscape",
-      "span": 1,
-      "alt": "Mountain of Echoing Halls (video)"
-    },
-    {
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
       "credit": "Kashif salahuddin",
       "category": "in-studio-the-process",
-      "alt": "Kashif Photography"
+      "alt": "Kashif Photography",
+      "videos": []
     },
     {
       "id": "p-msv44voz-qsqh",
@@ -134,7 +123,7 @@
       "credit": "Nai-ni chen dance company",
       "category": "performer",
       "alt": "IMG 3719",
-      "orient": "landscape"
+      "videos": []
     },
     {
       "id": "p-msv43304-f0dq",
@@ -143,15 +132,16 @@
       "credit": "Shotwell photography",
       "category": "performer",
       "alt": "58362884 B171 46D3 A115 C1D3800065A5",
-      "orient": "portrait"
+      "videos": []
     },
     {
       "id": "p-msv3w8nd-epeo",
-      "src": "assets/img/portfolio/photo_p-msv3w8nd-epeo.jpg",
+      "src": "assets/img/portfolio/hannah-2-copy_2026-08-15_photo.jpg",
       "title": "",
       "credit": "Photo by Luther cherry",
       "category": "photoshoots",
-      "alt": "Hannah 2 copy"
+      "alt": "Hannah 2 copy",
+      "videos": []
     },
     {
       "id": "p-msv3brdy-m9s1",
@@ -159,7 +149,8 @@
       "title": "The King and I",
       "credit": "Indy Ghostlight",
       "category": "performer",
-      "alt": "IMG 1107 Enhanced NR"
+      "alt": "IMG 1107 Enhanced NR",
+      "videos": []
     },
     {
       "id": "p-msv38c2z-6sju",
@@ -167,7 +158,8 @@
       "title": "AES Yuletide Celebration",
       "credit": "Shotwell Photography",
       "category": "performer",
-      "alt": "DSC04485"
+      "alt": "DSC04485",
+      "videos": []
     },
     {
       "id": "p-msv36h3i-aqt1",
@@ -175,7 +167,8 @@
       "title": "AES Yuletide Celebration",
       "credit": "Shotwell Photography",
       "category": "performer",
-      "alt": "DSC04490"
+      "alt": "DSC04490",
+      "videos": []
     },
     {
       "id": "p-msuxucqc-z87c",
@@ -183,7 +176,8 @@
       "title": "AES Yuletide Celebration",
       "credit": "Shotwell Photography",
       "category": "performer",
-      "alt": "DSC04124"
+      "alt": "DSC04124",
+      "videos": []
     },
     {
       "id": "blue-silk",
@@ -191,7 +185,8 @@
       "title": "",
       "credit": "Photo by Linda l'anson",
       "category": "photoshoots",
-      "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
+      "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
+      "videos": []
     },
     {
       "id": "pointe-shoes",
@@ -199,7 +194,8 @@
       "title": "",
       "credit": "photo by kashif salahuddin",
       "category": "in-studio-the-process",
-      "alt": "Close-up of pointe shoes stepping through a studio, black and white"
+      "alt": "Close-up of pointe shoes stepping through a studio, black and white",
+      "videos": []
     },
     {
       "id": "green-leotard",
@@ -207,15 +203,17 @@
       "title": "Sculptural in green",
       "credit": "",
       "category": "photoshoots",
-      "alt": "Hannah in a green leotard with arms curved in a sculptural shape"
+      "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
+      "videos": []
     },
     {
       "id": "meatpacking",
       "src": "assets/img/street-mirror.jpg",
-      "title": "",
-      "credit": "Jin huang",
+      "title": "Meatpacking, NYC",
+      "credit": "",
       "category": "photoshoots",
-      "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street"
+      "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
+      "videos": []
     },
     {
       "id": "studio-duet",
@@ -223,7 +221,8 @@
       "title": "The Nutcracker - \"Ribbon Dance\"",
       "credit": "the UNiversity of OKlahoma School of dance (oklahoma Festival ballet)",
       "category": "choreographer",
-      "alt": "Hannah and a partner reaching toward each other in a studio, black and white"
+      "alt": "Hannah and a partner reaching toward each other in a studio, black and white",
+      "videos": []
     },
     {
       "id": "mid-turn",
@@ -231,7 +230,8 @@
       "title": "Photo by Corey Hayes",
       "credit": "",
       "category": "photoshoots",
-      "alt": "Hannah mid-turn in rehearsal with one leg raised"
+      "alt": "Hannah mid-turn in rehearsal with one leg raised",
+      "videos": []
     },
     {
       "id": "chinatown",
@@ -239,7 +239,8 @@
       "title": "SUFFOLK Pop-Up (NYC)",
       "credit": "",
       "category": "photoshoots",
-      "alt": "Hannah in a qipao beneath a neon chop suey sign"
+      "alt": "Hannah in a qipao beneath a neon chop suey sign",
+      "videos": []
     }
   ],
   "upcoming": [
@@ -252,7 +253,7 @@
       "year": "2026",
       "onsale": "tickets on sale now",
       "tickets": "https://beefandboards.com",
-      "poster": "assets/img/shows/cats_cats-2026.jpg",
+      "poster": "assets/img/cats-poster.jpg",
       "posterAlt": "CATS poster: glowing golden cat eyes with dancer silhouettes leaping inside the pupils",
       "featured": true
     },
@@ -296,5 +297,27 @@
   },
   "portfolioLayout": {
     "columns": 4
-  }
+  },
+  "nav": [
+    {
+      "href": "about.html",
+      "label": "About"
+    },
+    {
+      "href": "headshots.html",
+      "label": "Headshots /  Resume"
+    },
+    {
+      "href": "portfolio.html",
+      "label": "Portfolio"
+    },
+    {
+      "href": "upcoming.html",
+      "label": "Upcoming"
+    },
+    {
+      "href": "contact.html",
+      "label": "Contact"
+    }
+  ]
 }
