@@ -423,7 +423,10 @@
 
     const bar = document.querySelector("[data-portfolio-filters]");
     if (bar) {
-      const current = (bar.querySelector(".is-active") || {}).dataset?.filter || cats[0].id;
+      // If the selected tab was just removed, fall back to the first one so
+      // the grid never ends up with nothing selected and everything hidden.
+      const picked = (bar.querySelector(".is-active") || {}).dataset?.filter;
+      const current = cats.some((c) => c.id === picked) ? picked : cats[0].id;
       bar.innerHTML = cats
         .map(
           (c) =>
