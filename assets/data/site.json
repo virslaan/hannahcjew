@@ -100,10 +100,6 @@
     {
       "id": "in-studio-the-process",
       "label": "in studio/the process"
-    },
-    {
-      "id": "test",
-      "label": "test"
     }
   ],
   "portfolio": [
@@ -125,7 +121,8 @@
       "category": "test",
       "orient": "portrait",
       "span": 1,
-      "alt": "dancer"
+      "alt": "dancer",
+      "notes": "test"
     },
     {
       "id": "p-msv6l3ce-d004",
