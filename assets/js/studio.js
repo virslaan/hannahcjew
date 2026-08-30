@@ -81,8 +81,8 @@
     return new Promise((resolve) => {
       const input = document.createElement("input");
       input.type = "file";
-      input.accept = accept;
-      input.multiple = !!multiple;
+      input.accept = accept || "image/*,.heic,.heif";
+      if (multiple) input.multiple = true;
       input.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0;";
       document.body.appendChild(input);
       const done = (files) => {
@@ -180,19 +180,36 @@
     $$("[data-edit]").forEach((el) => {
       if (el.dataset.armed === "1") return;
       el.dataset.armed = "1";
-      el.setAttribute("contenteditable", "plaintext-only");
+      el.setAttribute("contenteditable", "true");
       el.setAttribute("spellcheck", "true");
 
+      const readText = () => {
+        // innerText keeps Return as a real line break in multiline boxes;
+        // textContent would flatten them into one sentence.
+        const raw = el.dataset.editMultiline === "1" ? el.innerText : el.textContent;
+        return String(raw || "").replace(/\r\n?/g, "\n");
+      };
+
       el.addEventListener("input", () => {
-        set(el.dataset.edit, el.textContent.trim());
+        const value = el.dataset.editMultiline === "1" ? readText() : readText().trim();
+        set(el.dataset.edit, value);
         touch();
       });
       el.addEventListener("blur", () => {
-        set(el.dataset.edit, el.textContent.trim());
+        const value = readText().trim();
+        set(el.dataset.edit, value);
+        if (el.dataset.editMultiline === "1") el.innerText = value;
         touch();
       });
+      el.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData("text/plain");
+        document.execCommand("insertText", false, text);
+      });
       el.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
+        // Titles and one-line fields still save on Enter. Credit notes
+        // (Composer / Choreographer / Place) keep Return as a new line.
+        if (e.key === "Enter" && !e.shiftKey && el.dataset.editMultiline !== "1") {
           e.preventDefault();
           el.blur();
         }
@@ -268,9 +285,61 @@
     decorateLists();
     decorateResume();
     decorateCategoryBar();
+    decorateNav();
     decoratePortfolioLayout();
     decorateWorkShape();
     decorateRemove();
+  }
+
+  function decorateNav() {
+    const header = $(".nav__links");
+    if (!header) return;
+    site.nav = Array.isArray(site.nav) && site.nav.length ? site.nav : [
+      { href: "about.html", label: "About" },
+      { href: "headshots.html", label: "Headshots & Resume" },
+      { href: "portfolio.html", label: "Portfolio" },
+      { href: "upcoming.html", label: "Upcoming" },
+      { href: "contact.html", label: "Contact" },
+    ];
+
+    header.querySelectorAll("[data-nav-href]").forEach((a) => {
+      if (a.dataset.armedNav === "1") return;
+      a.dataset.armedNav = "1";
+      a.addEventListener("click", (e) => {
+        if (!isEditing()) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const href = a.dataset.navHref;
+        const item = site.nav.find((n) => n.href === href);
+        if (!item) return;
+        const next = prompt("Rename this tab. The page stays the same — this only changes the label.", item.label || "");
+        if (next == null) return;
+        const label = next.trim();
+        if (!label) return;
+        item.label = label;
+        rerender();
+      });
+    });
+
+    header.querySelectorAll("[data-nav-hide]").forEach((btn) => {
+      if (btn.dataset.armedNavHide === "1") return;
+      btn.dataset.armedNavHide = "1";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isEditing()) return;
+        const href = btn.dataset.navHide;
+        const item = site.nav.find((n) => n.href === href);
+        if (!item) return;
+        const visible = site.nav.filter((n) => !n.hidden);
+        if (!item.hidden && visible.length <= 1) {
+          toast("Keep at least one tab in the menu.");
+          return;
+        }
+        item.hidden = !item.hidden;
+        rerender();
+      });
+    });
   }
 
   // the resume PDF gets its own button beside the download link
@@ -295,19 +364,45 @@
 
   function decorateCategoryBar() {
     const bar = $("[data-portfolio-filters]");
-    if (!bar || $(".hj-add[data-add-cat]")) return;
+    if (!bar) return;
+
+    $$("[data-remove-cat]", bar).forEach((btn) => {
+      if (btn.dataset.armedRmCat === "1") return;
+      btn.dataset.armedRmCat = "1";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = btn.dataset.removeCat;
+        const cats = site.portfolioCategories || [];
+        if (cats.length <= 1) {
+          toast("Keep at least one tab.");
+          return;
+        }
+        const cat = cats.find((c) => c.id === id);
+        if (!cat) return;
+        const n = (site.portfolio || []).filter((p) => (p.category || "") === id).length;
+        const extra = n
+          ? ` ${n} item${n === 1 ? "" : "s"} stay saved and will show again if you add this tab later.`
+          : " You can add it again later.";
+        if (!confirm(`Remove the “${cat.label}” tab?` + extra)) return;
+        site.portfolioCategories = cats.filter((c) => c.id !== id);
+        rerender();
+      });
+    });
+
+    if ($(".hj-add[data-add-cat]")) return;
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "hj-add";
+    btn.className = "hj-add hj-add--copy";
     btn.dataset.addCat = "1";
-    btn.textContent = "+ Add category";
+    btn.textContent = "+ Add tab";
     btn.addEventListener("click", () => {
-      const label = (prompt("New category name", "") || "").trim();
+      const label = (prompt("New tab name", "") || "").trim();
       if (!label) return;
       const id = slug(label);
       site.portfolioCategories = site.portfolioCategories || [];
       if (site.portfolioCategories.some((c) => c.id === id)) {
-        toast("That category is already there.");
+        toast("That tab is already there.");
         return;
       }
       site.portfolioCategories.push({ id, label });
@@ -326,7 +421,7 @@
     wrap.innerHTML = `
       <span>Columns</span>
       ${[2, 3, 4].map((n) => `<button type="button" data-cols="${n}" class="${String(n) === cols ? "is-on" : ""}">${n}</button>`).join("")}
-      <span class="hj-layout__hint">Drag ⋮⋮ to reorder. Tall / wide / square and 1–3 on each photo.</span>`;
+      <span class="hj-layout__hint">Use the arrows to reorder, or drag the grip on a photo. Tall / wide / square and 1–3 on each photo.</span>`;
     wrap.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-cols]");
       if (!btn) return;
@@ -385,7 +480,7 @@
   function disarmEditing() {
     document.body.classList.remove("hj-edit");
     $$("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
-    $$(".hj-item-tools, .hj-add, .hj-layout").forEach((el) => el.remove());
+    $$(".hj-item-tools, .hj-add, .hj-layout, .hj-edit-hint").forEach((el) => el.remove());
   }
 
   function itemInfo(el) {
@@ -438,15 +533,17 @@
       const { list, index } = itemInfo(el);
       if (list == null || index == null) return;
 
+      const isCopy = list === "about.paragraphs" || list === "home.paragraphs";
       const tools = document.createElement("div");
-      tools.className = "hj-item-tools";
+      tools.className = isCopy ? "hj-item-tools hj-item-tools--row" : "hj-item-tools";
       tools.contentEditable = "false";
-      const drag = list === "portfolio" ? `<button type="button" data-grip title="Drag to reorder">⋮⋮</button>` : "";
+      const ic = (name) => (window.HJ_icon ? window.HJ_icon(name, 15) : name);
+      const drag = list === "portfolio" ? `<button type="button" data-grip title="Drag to reorder">${ic("grip")}</button>` : "";
       tools.innerHTML = `
         ${drag}
-        <button type="button" data-move="-1" title="Move earlier">↑</button>
-        <button type="button" data-move="1" title="Move later">↓</button>
-        <button type="button" data-del title="Remove">✕</button>`;
+        <button type="button" data-move="-1" title="Move earlier">${ic("up")}</button>
+        <button type="button" data-move="1" title="Move later">${ic("down")}</button>
+        <button type="button" data-del title="Remove">${ic("close")}</button>`;
 
       tools.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
@@ -503,7 +600,8 @@
         });
       }
 
-      if (getComputedStyle(el).position === "static") el.style.position = "relative";
+      // Paragraphs keep tools under the text so arrows never cover what she is typing.
+      if (!isCopy && getComputedStyle(el).position === "static") el.style.position = "relative";
       el.appendChild(tools);
     });
   }
@@ -707,17 +805,18 @@
       const path = listEl.dataset.editList;
       const conf = LIST_ADD[path];
       if (!conf) return;
-      if (listEl.nextElementSibling && listEl.nextElementSibling.classList.contains("hj-add")) return;
+      if ($(`.hj-add[data-add-list="${path}"]`)) return;
 
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "hj-add";
+      btn.className = conf.photo ? "hj-add" : "hj-add hj-add--copy";
+      btn.dataset.addList = path;
       btn.contentEditable = "false";
       btn.textContent = conf.label;
       btn.addEventListener("click", async (e) => {
         e.preventDefault();
         if (conf.photo) {
-          const files = await pickFile("image/*", true);
+          const files = await pickFile("image/*,.heic,.heif", true);
           if (!files.length) return;
           await addPhotos(path, conf, files);
           return;

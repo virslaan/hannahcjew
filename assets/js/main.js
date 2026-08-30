@@ -200,7 +200,7 @@ function bindPortfolioFilters() {
   if (!bar) return;
   bar.querySelectorAll("button[data-filter]").forEach((btn) => {
     btn.onclick = () => {
-      bar.querySelectorAll("button").forEach((b) => b.classList.remove("is-active"));
+      bar.querySelectorAll("button[data-filter]").forEach((b) => b.classList.remove("is-active"));
       btn.classList.add("is-active");
       applyPortfolioFilter(btn.dataset.filter);
     };
@@ -309,7 +309,9 @@ function hjPlayInline(fig, url) {
     '<iframe src="' + embed + separator + 'autoplay=1&rel=0"' +
     ' allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"' +
     ' allowfullscreen loading="lazy" title="Video"></iframe>' +
-    '<button type="button" class="work-player__close" aria-label="Close video">×</button>';
+    '<button type="button" class="work-player__close" aria-label="Close video">' +
+    (window.HJ_icon ? window.HJ_icon("close", 16) : "Close") +
+    "</button>";
   media.appendChild(wrap);
   fig.classList.add("is-playing");
 }

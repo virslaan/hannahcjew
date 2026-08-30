@@ -314,6 +314,33 @@ body::after {
 .nav__links a:hover::after,
 .nav__links a.is-active::after { transform: scaleX(1); transform-origin: left; }
 .nav__links a.is-active { color: var(--red); }
+.nav-chip {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+.nav-chip.is-nav-hidden { display: none; }
+body.hj-edit .nav-chip.is-nav-hidden { display: inline-flex; }
+body.hj-edit .nav-chip.is-nav-hidden a { opacity: 0.4; }
+.nav-chip__x {
+  display: none;
+  position: absolute;
+  top: -0.55rem;
+  right: -0.7rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+  place-items: center;
+  z-index: 3;
+}
+body.hj-edit .nav-chip__x { display: grid; }
+.nav-chip__x:hover { background: var(--red); border-color: var(--red); color: #fff; }
 
 .nav__toggle {
   display: none;
@@ -373,11 +400,11 @@ body::after {
   }
   .nav__links a::after { height: 2px; bottom: 0.06em; }
   .nav__links.is-open a { opacity: 1; transform: none; }
-  .nav__links.is-open a:nth-child(1) { transition-delay: 0.08s; }
-  .nav__links.is-open a:nth-child(2) { transition-delay: 0.15s; }
-  .nav__links.is-open a:nth-child(3) { transition-delay: 0.22s; }
-  .nav__links.is-open a:nth-child(4) { transition-delay: 0.29s; }
-  .nav__links.is-open a:nth-child(5) { transition-delay: 0.36s; }
+  .nav__links.is-open .nav-chip:nth-child(1) a { transition-delay: 0.08s; }
+  .nav__links.is-open .nav-chip:nth-child(2) a { transition-delay: 0.15s; }
+  .nav__links.is-open .nav-chip:nth-child(3) a { transition-delay: 0.22s; }
+  .nav__links.is-open .nav-chip:nth-child(4) a { transition-delay: 0.29s; }
+  .nav__links.is-open .nav-chip:nth-child(5) a { transition-delay: 0.36s; }
   body.nav-open { overflow: hidden; }
   body.nav-open .nav__toggle { color: var(--paper); }
 }
@@ -585,6 +612,18 @@ main {
 .btn--red:hover { background: var(--red); color: var(--paper); }
 .btn--solid { background: var(--ink); color: var(--paper); }
 .btn--solid:hover { background: var(--red); border-color: var(--red); }
+.i {
+  display: inline-block;
+  flex-shrink: 0;
+  vertical-align: -0.12em;
+}
+.hj-item-tools button .i,
+.filter-chip__x .i,
+.nav-chip__x .i,
+.work-player__close .i,
+.lightbox__close .i {
+  display: block;
+}
 
 /* ---------- home: intro strip ---------- */
 .intro {
@@ -1047,7 +1086,7 @@ body.page-magazine .about-portrait img { transition: transform 0.6s var(--ease-o
   gap: 0.45rem;
   margin-bottom: clamp(1.6rem, 4vh, 2.6rem);
 }
-.filters button {
+.filters button[data-filter] {
   padding: 0.48em 1.05em;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -1060,17 +1099,41 @@ body.page-magazine .about-portrait img { transition: transform 0.6s var(--ease-o
   box-shadow: none;
   transition: color 0.25s var(--ease-out), background 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
 }
-.filters button:hover {
+.filters button[data-filter]:hover {
   color: var(--ink);
   border-color: var(--ink);
 }
-.filters button.is-active {
+.filters button[data-filter].is-active {
   background: var(--ink);
   border-color: var(--ink);
   color: var(--paper);
   box-shadow: none;
 }
-.filters button.is-active::before { content: none; }
+.filters button[data-filter].is-active::before { content: none; }
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+.filter-chip__x {
+  display: none;
+  position: absolute;
+  top: -0.45rem;
+  right: -0.35rem;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  place-items: center;
+  z-index: 2;
+}
+body.hj-edit .filter-chip__x { display: grid; }
+.filter-chip__x:hover { background: var(--red); border-color: var(--red); color: #fff; }
 
 .work-grid {
   display: grid;
@@ -1179,10 +1242,10 @@ body.hj-edit .work-notes { display: block; }
   background: rgb(0 0 0 / 0.65);
   display: grid;
   place-items: center;
-  padding-left: 4px;
-  font-size: clamp(1.15rem, 1.7vw, 1.55rem);
+  padding: 0;
   transition: background 0.25s var(--ease-out), transform 0.25s var(--ease-out);
 }
+.work-play__icon .i { width: 22px; height: 22px; display: block; margin-left: 2px; }
 .work-play:hover { background: rgb(0 0 0 / 0.32); }
 .work-play:hover .work-play__icon { background: var(--red); transform: scale(1.06); }
 .work.is-playing .work-play { display: none; }
@@ -1210,8 +1273,8 @@ body.hj-edit .work-play { display: none; }
   background: rgb(0 0 0 / 0.65);
   color: #fff;
   border: 0;
-  font-size: 1.1rem;
-  line-height: 1;
+  display: grid;
+  place-items: center;
   cursor: pointer;
   z-index: 5;
   transition: background 0.2s var(--ease-out);
@@ -1922,6 +1985,16 @@ body.hj-edit .show__poster--empty::before {
   opacity: 0;
   transition: opacity 0.25s var(--ease-out);
 }
+/* About / Home paragraphs: sit under the copy, never on top of it */
+.hj-item-tools--row {
+  position: static;
+  top: auto;
+  right: auto;
+  display: none;
+  margin: 0.5rem 0 0.15rem;
+  opacity: 1;
+}
+body.hj-edit .hj-item-tools--row { display: flex; }
 [data-edit-item]:hover > .hj-item-tools,
 .hj-item-tools:focus-within,
 body.hj-edit .hj-item-tools { opacity: 1; }
@@ -1975,6 +2048,20 @@ body.hj-edit [data-edit-choice]:hover { cursor: pointer; }
   transition: color 0.25s var(--ease-out);
 }
 .hj-add:hover { background: transparent; color: var(--ink); box-shadow: inset 0 -1px 0 var(--ink); }
+.hj-add--copy {
+  margin: 0.2rem 0 1.4rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px dashed var(--line);
+  box-shadow: none;
+  color: var(--ink-soft);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+}
+.hj-add--copy:hover {
+  color: var(--red);
+  border-color: var(--red);
+  box-shadow: none;
+}
 .hj-edit-hint {
   display: none;
   max-width: 46ch;
@@ -2031,7 +2118,7 @@ body.hj-edit .hj-edit-hint { display: block; }
     --pad: 1.15rem;
   }
   .filters { gap: 0.5rem; }
-  .filters button {
+  .filters button[data-filter] {
     padding: 0.7em 1.15em;
     font-size: 0.95rem;
   }

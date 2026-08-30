@@ -18,11 +18,28 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
-  // "Photo: Jane Smith" — but only once she has actually typed a name
+  function icon(name, size) {
+    const s = size || 16;
+    const box = `class="i" viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"`;
+    const line = `fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"`;
+    const map = {
+      up: `<svg ${box} ${line}><path d="M12 19V5M5 12l7-7 7 7"/></svg>`,
+      down: `<svg ${box} ${line}><path d="M12 5v14M19 12l-7 7-7-7"/></svg>`,
+      close: `<svg ${box} ${line}><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+      plus: `<svg ${box} ${line}><path d="M12 5v14M5 12h14"/></svg>`,
+      grip: `<svg ${box} fill="currentColor"><circle cx="9" cy="7" r="1.5"/><circle cx="15" cy="7" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg>`,
+      play: `<svg ${box} fill="currentColor"><path d="M8 5.2v13.6L19.5 12 8 5.2z"/></svg>`,
+      arrow: `<svg ${box} ${line}><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
+      download: `<svg ${box} ${line}><path d="M12 4v12M7 12l5 5 5-5M5 20h14"/></svg>`,
+      edit: `<svg ${box} ${line}><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>`,
+    };
+    return map[name] || "";
+  }
+  window.HJ_icon = icon;
+
+  // Credits are shown exactly as typed — no automatic "Photo:" prefix.
   function creditLine(credit) {
-    const t = (credit || "").trim();
-    if (!t) return "";
-    return /^photo\b/i.test(t) ? t : "Photo: " + t;
+    return (credit || "").trim();
   }
 
   // Grab a still frame URL from a YouTube link so a fresh video tile has
@@ -168,6 +185,8 @@
       site.upcoming = draft.upcoming || base.upcoming;
       site.portfolio = draft.portfolio || base.portfolio;
       site.portfolioCategories = draft.portfolioCategories || base.portfolioCategories;
+      site.portfolioLayout = draft.portfolioLayout || base.portfolioLayout;
+      site.nav = draft.nav || base.nav;
       site.upcomingNote = draft.upcomingNote ?? base.upcomingNote;
     }
     // one-time migration from the older portfolio-only draft
@@ -225,14 +244,14 @@
     if (body) {
       // Migrate the old single-string bio into a paragraphs list so Hannah
       // can add / split / remove paragraphs from Studio.
-      if (!Array.isArray(h.paragraphs) || !h.paragraphs.length) {
+      if (!Array.isArray(h.paragraphs)) {
         h.paragraphs = h.introBody ? [h.introBody] : [];
       }
       body.setAttribute("data-edit-list", "home.paragraphs");
       body.innerHTML = h.paragraphs
         .map(
           (p, i) =>
-            `<p data-edit-item="home.paragraphs" data-index="${i}"><span${ed("home.paragraphs." + i)}>${esc(p)}</span><button type="button" class="hj-remove" data-remove>Remove</button></p>`
+            `<p data-edit-item="home.paragraphs" data-index="${i}"><span${ed("home.paragraphs." + i)}>${esc(p)}</span></p>`
         )
         .join("");
     }
@@ -264,7 +283,7 @@
     const a = document.querySelector("[data-home-next-link]");
     if (a) {
       a.href = ns.link || "upcoming.html";
-      a.innerHTML = `<span${ed("home.nextShow.linkLabel")}>${esc(ns.linkLabel || "All upcoming")}</span> <span aria-hidden="true">→</span>`;
+      a.innerHTML = `<span${ed("home.nextShow.linkLabel")}>${esc(ns.linkLabel || "All upcoming")}</span> ${icon("arrow", 14)}`;
     }
   }
 
@@ -317,7 +336,7 @@
     copy.innerHTML = (a.paragraphs || [])
       .map(
         (p, i) =>
-          `<p data-edit-item="about.paragraphs" data-index="${i}"><span${ed("about.paragraphs." + i)}>${esc(p)}</span><button type="button" class="hj-remove" data-remove>Remove</button></p>`
+          `<p data-edit-item="about.paragraphs" data-index="${i}"><span${ed("about.paragraphs." + i)}>${esc(p)}</span></p>`
       )
       .join("");
   }
@@ -408,7 +427,7 @@
       bar.innerHTML = cats
         .map(
           (c) =>
-            `<button type="button" data-filter="${esc(c.id)}" class="${c.id === current ? "is-active" : ""}">${esc(c.label)}</button>`
+            `<span class="filter-chip"><button type="button" data-filter="${esc(c.id)}" class="${c.id === current ? "is-active" : ""}">${esc(c.label)}</button><button type="button" class="filter-chip__x" data-remove-cat="${esc(c.id)}" title="Remove tab" aria-label="Remove ${esc(c.label)} tab">${icon("close", 12)}</button></span>`
         )
         .join("");
       if (typeof window.HJ_bindPortfolioFilters === "function") window.HJ_bindPortfolioFilters();
@@ -434,7 +453,7 @@
         const p = "portfolio." + i;
         const kindClass = isVideo ? " work--video" : "";
         const videoEditRow = isVideo
-          ? `<div class="work-video-meta hj-edit-only"><a class="work-video-edit" href="${esc(video)}" data-edit-href="${p}.video" data-prompt="Paste the YouTube or Vimeo link for this tile. Leave blank to remove.">✎ Change video link</a></div>`
+          ? `<div class="work-video-meta hj-edit-only"><a class="work-video-edit" href="${esc(video)}" data-edit-href="${p}.video" data-prompt="Paste the YouTube or Vimeo link for this tile. Leave blank to remove.">${icon("edit", 12)} Change video link</a></div>`
           : "";
         return `<figure class="work will-reveal${kindClass}" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}"
                  ${isVideo ? 'data-kind="video"' : ""} data-lightbox
@@ -446,12 +465,12 @@
           </label>
           <span class="work-media">
             <img src="${esc(thumb)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
-            ${isVideo ? `<button type="button" class="work-play" data-play-video="${esc(video)}" aria-label="Play video"><span class="work-play__icon">▶</span></button>` : ""}
+            ${isVideo ? `<button type="button" class="work-play" data-play-video="${esc(video)}" aria-label="Play video"><span class="work-play__icon">${icon("play", 22)}</span></button>` : ""}
           </span>
           <figcaption>
             <span class="title"${ed(p + ".title")}>${esc(item.title)}</span>
             <span class="credit"${ed(p + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</span>
-            <p class="work-notes"${ed(p + ".notes", 'data-edit-label="Notes: credits, cast, and details"')}>${esc(notes)}</p>
+            <p class="work-notes"${ed(p + ".notes", 'data-edit-label="Notes: credits, cast, and details" data-edit-multiline="1"')}>${esc(notes)}</p>
             ${videoEditRow}
             <div class="work-shape">
               ${shapeBtn("orient", "portrait", "Tall")}
@@ -487,7 +506,7 @@
           : `<figure class="show__poster show__poster--empty" data-edit-empty-img="${p}poster"></figure>`;
         const onsale = `<p class="onsale"${ed(p + "onsale")}>${esc(s.onsale || "")}</p>`;
         const tickets = s.tickets
-          ? `<a class="btn btn--red" href="${esc(s.tickets)}" target="_blank" rel="noopener" data-edit-href="${p}tickets">Tickets <span aria-hidden="true">→</span></a>`
+          ? `<a class="btn btn--red" href="${esc(s.tickets)}" target="_blank" rel="noopener" data-edit-href="${p}tickets">Tickets ${icon("arrow", 14)}</a>`
           : `<button type="button" class="btn hj-ticket-placeholder" data-edit-href="${p}tickets">Add ticket link</button>`;
         return `<article class="show${s.featured ? " show--featured" : ""} will-reveal" data-edit-item="upcoming" data-index="${i}">
           ${poster}
@@ -607,6 +626,65 @@
     }
   }
 
+  function defaultNav() {
+    return [
+      { href: "about.html", label: "About" },
+      { href: "headshots.html", label: "Headshots & Resume" },
+      { href: "portfolio.html", label: "Portfolio" },
+      { href: "upcoming.html", label: "Upcoming" },
+      { href: "contact.html", label: "Contact" },
+    ];
+  }
+
+  function navList(site) {
+    if (Array.isArray(site.nav) && site.nav.length) return site.nav;
+    return defaultNav();
+  }
+
+  function currentPage() {
+    const file = (location.pathname.split("/").pop() || "index.html").toLowerCase();
+    return file || "index.html";
+  }
+
+  function hydrateNav(site) {
+    const items = navList(site);
+    site.nav = items;
+    const page = currentPage();
+
+    const header = document.querySelector(".nav__links");
+    if (header) {
+      header.innerHTML = items
+        .map((item) => {
+          const href = item.href || "";
+          const label = item.label || href;
+          const active = href.toLowerCase() === page ? " is-active" : "";
+          const hidden = item.hidden ? " is-nav-hidden" : "";
+          return `<span class="nav-chip${hidden}"><a href="${esc(href)}" class="${active.trim()}" data-nav-href="${esc(href)}">${esc(label)}</a><button type="button" class="nav-chip__x" data-nav-hide="${esc(href)}" title="${item.hidden ? "Show this tab" : "Hide this tab"}" aria-label="${item.hidden ? "Show" : "Hide"} ${esc(label)}">${item.hidden ? icon("plus", 11) : icon("close", 11)}</button></span>`;
+        })
+        .join("");
+      const toggle = document.querySelector(".nav__toggle");
+      header.querySelectorAll("a").forEach((a) => {
+        a.addEventListener("click", () => {
+          if (document.body.classList.contains("hj-edit")) return;
+          header.classList.remove("is-open");
+          if (toggle) toggle.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("nav-open");
+        });
+      });
+    }
+
+    const footer = document.querySelector(".footer__links");
+    if (footer) {
+      const insta = footer.querySelector('a[href*="instagram"]');
+      const instaHtml = insta ? insta.outerHTML : "";
+      footer.innerHTML =
+        items
+          .filter((item) => !item.hidden)
+          .map((item) => `<a href="${esc(item.href)}">${esc(item.label)}</a>`)
+          .join("") + instaHtml;
+    }
+  }
+
   function hydrate(site) {
     applyTheme(site);
     applyAccent(site);
@@ -616,6 +694,7 @@
     hydratePortfolio(site);
     hydrateUpcoming(site);
     hydrateContact(site);
+    hydrateNav(site);
     if (typeof window.HJ_observeReveals === "function") window.HJ_observeReveals();
     document.dispatchEvent(new CustomEvent("hj:rendered", { detail: site }));
   }
