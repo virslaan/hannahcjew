@@ -70,7 +70,11 @@
   };
   const imageFileName = (item, fallback) => {
     if (!item.id) item.id = uid("img");
-    return `${slug(item.title || fallback)}_${item.id}.jpg`;
+    // A title written only in Chinese slugs down to nothing, so fall back
+    // rather than naming the file "_abc123.jpg".
+    const named = (v) => (String(v ?? "").trim() ? slug(v) : "");
+    const name = named(item.title) || named(fallback) || "photo";
+    return `${name}_${item.id}.jpg`;
   };
   const b64of = (dataUrl) => String(dataUrl).split(",")[1] || "";
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -140,6 +144,10 @@
   // so anything larger is pointed at YouTube instead.
   const MAX_VIDEO_MB = 40;
   const MAX_VIDEO_BYTES = MAX_VIDEO_MB * 1024 * 1024;
+  // A resume rides along inside the draft in local storage until it is
+  // published, so an oversized one would blow that budget.
+  const MAX_PDF_MB = 10;
+  const MAX_PDF_BYTES = MAX_PDF_MB * 1024 * 1024;
 
   // Pull a still frame out of a video file so an uploaded clip gets a cover
   // image automatically, exactly like a YouTube link does.
@@ -452,7 +460,12 @@
         }
         e.stopPropagation();
       });
-      el.addEventListener("click", (e) => e.stopPropagation());
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        // Some labels live inside a link (buttons, the resume download). While
+        // editing, a click belongs to the words, not to the link.
+        if (el.closest("a")) e.preventDefault();
+      });
     });
 
     // 2. photos you can click to replace
@@ -706,10 +719,19 @@
     btn.type = "button";
     btn.className = "hj-add";
     btn.dataset.resume = "1";
-    btn.textContent = "↻ Replace resume PDF";
+    btn.innerHTML =
+      (window.HJ_icon ? window.HJ_icon("swap", 14) : "") + " Replace resume PDF";
     btn.addEventListener("click", async () => {
-      const files = await pickFile("application/pdf");
+      const files = await pickFile("application/pdf,.pdf");
       if (!files.length) return;
+      if (files[0].size > MAX_PDF_BYTES) {
+        await askNote({
+          title: "That PDF is too big",
+          help: `Resumes need to be under ${MAX_PDF_MB} MB. Exporting it again at a smaller size, or saving it as "reduced file size" from Preview, usually does it.`,
+          okLabel: "Got it",
+        });
+        return;
+      }
       site.resume = site.resume || {};
       site.resume.pdf = await readAsDataUrl(files[0]);
       rerender();
@@ -1126,10 +1148,9 @@
 
     const token = liveToken();
     if (!token) {
-      await askConfirm({
+      await askNote({
         title: "Sign in first",
         help: "Video files upload straight to your live site, so Studio needs to be signed in before it can take them.",
-        okLabel: "OK",
       });
       return;
     }
@@ -1137,7 +1158,7 @@
     const tooBig = files.filter((f) => f.size > MAX_VIDEO_BYTES);
     const usable = files.filter((f) => f.size <= MAX_VIDEO_BYTES);
     if (tooBig.length) {
-      await askConfirm({
+      await askNote({
         title: tooBig.length === 1 ? "That video is too big" : `${tooBig.length} videos are too big`,
         help:
           `Videos need to be under ${MAX_VIDEO_MB} MB to live on your site. ` +
@@ -1147,6 +1168,26 @@
       });
     }
     if (!usable.length) return;
+
+    // Phones usually record .mov, which Safari plays but Chrome often cannot.
+    // Better to say so before it goes up than to have visitors see a dead tile.
+    const risky = usable.filter(
+      (f) => !/\.(mp4|m4v)$/i.test(f.name || "") && !/mp4/i.test(f.type || "")
+    );
+    if (risky.length) {
+      const go = await askConfirm({
+        title:
+          risky.length === 1
+            ? "This video may not play for everyone"
+            : `${risky.length} of these may not play for everyone`,
+        help:
+          "Phone videos are often saved as .mov, which some browsers cannot play. MP4 works everywhere. " +
+          "On an iPhone you can usually get an MP4 by sharing the video to Files first, or put it on YouTube and paste the link instead.",
+        okLabel: "Upload anyway",
+        cancelLabel: "Cancel",
+      });
+      if (!go) return;
+    }
 
     holdLive = true;
     const state = $(".studio-bar [data-state]");
@@ -1164,14 +1205,17 @@
         const shot = await videoPoster(f);
         const id = uid("v");
         const base = slug((f.name || "video").replace(/\.[^.]+$/, "")) || "video";
-        const ext = (/\.([a-z0-9]+)$/i.exec(f.name || "") || [, "mp4"])[1].toLowerCase();
+        const extMatch = /\.([a-z0-9]+)$/i.exec(f.name || "");
+        const ext = (extMatch ? extMatch[1] : "mp4").toLowerCase();
         const videoPath = `assets/video/${base}_${id}.${ext}`;
 
         say(`Uploading ${label}…`);
         const raw = await readAsDataUrl(f);
         await ghPut(videoPath, b64of(raw), token, "Add video " + videoPath);
 
-        let posterPath = window.HJ_VIDEO_PLACEHOLDER || "";
+        // Left empty when no frame could be grabbed; the grid falls back to its
+        // own placeholder rather than carrying a data URL around in site.json.
+        let posterPath = "";
         if (shot.poster) {
           posterPath = `assets/img/${base}_${id}.jpg`;
           await ghPut(posterPath, b64of(shot.poster), token, "Add video cover " + posterPath);
@@ -1195,11 +1239,18 @@
         window.HJ_SITE = site;
         window.HJ_hydrateSite(site);
         if (isEditing()) armEditing();
+        // Save after every clip, so closing the tab halfway never loses the
+        // ones already uploaded.
+        persistDraft();
         ok += 1;
       } catch (err) {
         console.error("video upload failed", err);
         failed += 1;
-        toast("Could not upload " + (f.name || "one video") + ".");
+        const big = f.size > 20 * 1024 * 1024;
+        toast(
+          "Could not upload " + (f.name || "one video") + "." +
+            (big ? " It may be too large — try putting it on YouTube and pasting the link." : "")
+        );
       }
     }
 
@@ -1265,6 +1316,9 @@
         window.HJ_SITE = site;
         window.HJ_hydrateSite(site);
         if (isEditing()) armEditing();
+        // Save after every photo, so closing the tab halfway never loses the
+        // ones already uploaded.
+        persistDraft();
         ok += 1;
       } catch (err) {
         console.error("upload photo failed", err);
@@ -1677,12 +1731,26 @@
         dialogHead(opts) +
         `<div class="studio-lock__actions">
           <button type="button" data-go class="btn btn--red">${escHtml(opts.okLabel || "Yes, remove")}</button>
-          <button type="button" data-cancel class="btn">Keep it</button>
+          <button type="button" data-cancel class="btn">${escHtml(opts.cancelLabel || "Keep it")}</button>
         </div>`;
       $("[data-go]", card).onclick = () => close(true);
       $("[data-cancel]", card).onclick = () => close(false);
       setTimeout(() => $("[data-go]", card).focus(), 30);
     }).then((v) => v === true);
+  }
+
+  // Just tells her something. One button, nothing to decide.
+  function askNote(o) {
+    const opts = o || {};
+    return studioModal((card, close) => {
+      card.innerHTML =
+        dialogHead(opts) +
+        `<div class="studio-lock__actions">
+          <button type="button" data-go class="btn btn--red">${escHtml(opts.okLabel || "OK")}</button>
+        </div>`;
+      $("[data-go]", card).onclick = () => close(true);
+      setTimeout(() => $("[data-go]", card).focus(), 30);
+    });
   }
 
   // A short menu. Resolves to the chosen option's id, or null if cancelled.

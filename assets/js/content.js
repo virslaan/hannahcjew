@@ -124,6 +124,7 @@
       arrow: `<svg ${box} ${line}><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
       download: `<svg ${box} ${line}><path d="M12 4v12M7 12l5 5 5-5M5 20h14"/></svg>`,
       edit: `<svg ${box} ${line}><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>`,
+      swap: `<svg ${box} ${line}><path d="M4 9h12l-3-3M20 15H8l3 3"/></svg>`,
     };
     return map[name] || "";
   }
@@ -224,6 +225,42 @@
     return ` data-edit="${path}"${extra ? " " + extra : ""}`;
   }
 
+  // ----- page headings, kickers and intro lines --------------------------
+  // These sit in the HTML so a page still reads correctly before any script
+  // runs. The words in the markup are the starting point: whatever is there
+  // becomes the saved value the first time a page loads, and from then on it
+  // is editable in Studio like everything else. A missing key therefore never
+  // leaves a blank heading on the live site.
+  const PAGE_DEFAULTS = {};
+
+  function pageText(site, key, fallback) {
+    const path = "pages." + key;
+    const saved = getPath(site, path);
+    if (typeof saved === "string") return saved;
+    setPath(site, path, fallback);
+    return fallback;
+  }
+  window.HJ_pageText = pageText;
+
+  // "shotsNote" -> "Shots note", used only as the faint hint shown in edit
+  // mode when a heading has been deleted, so it can always be typed again.
+  function pageLabel(key) {
+    const last = key.split(".").pop();
+    const words = last.replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();
+    return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+
+  function hydratePageText(site) {
+    document.querySelectorAll("[data-page-text]").forEach((el) => {
+      const key = el.dataset.pageText;
+      if (!key) return;
+      if (PAGE_DEFAULTS[key] == null) PAGE_DEFAULTS[key] = cleanRich(el.innerHTML).trim();
+      el.innerHTML = rich(pageText(site, key, PAGE_DEFAULTS[key]));
+      el.setAttribute("data-edit", "pages." + key);
+      el.setAttribute("data-edit-label", pageLabel(key));
+    });
+  }
+
   // ----- accent colour -----
   function applyAccent(site) {
     const accent = (site.theme && site.theme.accent) || "";
@@ -280,6 +317,12 @@
       site.portfolioLayout = draft.portfolioLayout || base.portfolioLayout;
       site.nav = draft.nav || base.nav;
       site.upcomingNote = draft.upcomingNote ?? base.upcomingNote;
+      // Headings are grouped a page at a time, so merge both levels: a draft
+      // that only touched the portfolio heading must not drop the rest.
+      site.pages = Object.assign({}, base.pages);
+      Object.keys(draft.pages || {}).forEach((page) => {
+        site.pages[page] = Object.assign({}, (base.pages || {})[page], draft.pages[page]);
+      });
     }
     // one-time migration from the older portfolio-only draft
     if (!draft) {
@@ -715,7 +758,10 @@
     const materials = document.querySelector("[data-contact-materials]");
     if (materials) {
       const pdf = (site.resume && site.resume.pdf) || "assets/resume/Hannah-Jew-Resume.pdf";
-      materials.innerHTML = `<a href="${esc(pdf)}" download style="border-bottom:1.5px solid var(--red);">Download resume (PDF)</a>`;
+      const label = pageText(site, "contact.materialsLink", "Download resume (PDF)");
+      materials.innerHTML = `<a href="${esc(pdf)}" download style="border-bottom:1.5px solid var(--red);"><span${ed(
+        "pages.contact.materialsLink"
+      )}>${rich(label)}</span></a>`;
     }
 
     const img = document.querySelector("[data-contact-img]");
@@ -812,6 +858,7 @@
   function hydrate(site) {
     applyTheme(site);
     applyAccent(site);
+    hydratePageText(site);
     hydrateHome(site);
     hydrateAbout(site);
     hydrateHeadshots(site);
