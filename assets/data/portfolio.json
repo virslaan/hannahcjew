@@ -1,23 +1,12 @@
 [
   {
-    "id": "v-mt1qlt92-ai7k",
-    "video": "https://www.youtube.com/watch?v=q4DU7X9UCXM&list=RDq4DU7X9UCXM&start_radio=1",
-    "src": "https://img.youtube.com/vi/q4DU7X9UCXM/hqdefault.jpg",
-    "title": "Mountain of Echoing Halls",
-    "credit": "*world premiere",
-    "notes": "Composer/Yangqin: Chengjin Koh, Musicians: Verona Quartet, Choreographer/Dancer: Hannah Jew,",
-    "category": "choreographer",
-    "orient": "landscape",
-    "span": 1,
-    "alt": "Mountain of Echoing Halls (video)"
-  },
-  {
     "id": "p-msv6l3ce-d004",
     "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
     "title": "Nightmare Screen",
     "credit": "Kashif salahuddin",
     "category": "in-studio-the-process",
-    "alt": "Kashif Photography"
+    "alt": "Kashif Photography",
+    "videos": []
   },
   {
     "id": "p-msv44voz-qsqh",
@@ -26,7 +15,7 @@
     "credit": "Nai-ni chen dance company",
     "category": "performer",
     "alt": "IMG 3719",
-    "orient": "landscape"
+    "videos": []
   },
   {
     "id": "p-msv43304-f0dq",
@@ -35,15 +24,16 @@
     "credit": "Shotwell photography",
     "category": "performer",
     "alt": "58362884 B171 46D3 A115 C1D3800065A5",
-    "orient": "portrait"
+    "videos": []
   },
   {
     "id": "p-msv3w8nd-epeo",
-    "src": "assets/img/portfolio/photo_p-msv3w8nd-epeo.jpg",
+    "src": "assets/img/portfolio/hannah-2-copy_2026-08-15_photo.jpg",
     "title": "",
     "credit": "Photo by Luther cherry",
     "category": "photoshoots",
-    "alt": "Hannah 2 copy"
+    "alt": "Hannah 2 copy",
+    "videos": []
   },
   {
     "id": "p-msv3brdy-m9s1",
@@ -51,7 +41,8 @@
     "title": "The King and I",
     "credit": "Indy Ghostlight",
     "category": "performer",
-    "alt": "IMG 1107 Enhanced NR"
+    "alt": "IMG 1107 Enhanced NR",
+    "videos": []
   },
   {
     "id": "p-msv38c2z-6sju",
@@ -59,7 +50,8 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell Photography",
     "category": "performer",
-    "alt": "DSC04485"
+    "alt": "DSC04485",
+    "videos": []
   },
   {
     "id": "p-msv36h3i-aqt1",
@@ -67,7 +59,8 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell Photography",
     "category": "performer",
-    "alt": "DSC04490"
+    "alt": "DSC04490",
+    "videos": []
   },
   {
     "id": "p-msuxucqc-z87c",
@@ -75,7 +68,8 @@
     "title": "AES Yuletide Celebration",
     "credit": "Shotwell Photography",
     "category": "performer",
-    "alt": "DSC04124"
+    "alt": "DSC04124",
+    "videos": []
   },
   {
     "id": "blue-silk",
@@ -83,7 +77,8 @@
     "title": "",
     "credit": "Photo by Linda l'anson",
     "category": "photoshoots",
-    "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her"
+    "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
+    "videos": []
   },
   {
     "id": "pointe-shoes",
@@ -91,7 +86,8 @@
     "title": "",
     "credit": "photo by kashif salahuddin",
     "category": "in-studio-the-process",
-    "alt": "Close-up of pointe shoes stepping through a studio, black and white"
+    "alt": "Close-up of pointe shoes stepping through a studio, black and white",
+    "videos": []
   },
   {
     "id": "green-leotard",
@@ -99,15 +95,17 @@
     "title": "Sculptural in green",
     "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah in a green leotard with arms curved in a sculptural shape"
+    "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
+    "videos": []
   },
   {
     "id": "meatpacking",
     "src": "assets/img/street-mirror.jpg",
-    "title": "",
-    "credit": "Jin huang",
+    "title": "Meatpacking, NYC",
+    "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street"
+    "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
+    "videos": []
   },
   {
     "id": "studio-duet",
@@ -115,7 +113,8 @@
     "title": "The Nutcracker - \"Ribbon Dance\"",
     "credit": "the UNiversity of OKlahoma School of dance (oklahoma Festival ballet)",
     "category": "choreographer",
-    "alt": "Hannah and a partner reaching toward each other in a studio, black and white"
+    "alt": "Hannah and a partner reaching toward each other in a studio, black and white",
+    "videos": []
   },
   {
     "id": "mid-turn",
@@ -123,7 +122,8 @@
     "title": "Photo by Corey Hayes",
     "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah mid-turn in rehearsal with one leg raised"
+    "alt": "Hannah mid-turn in rehearsal with one leg raised",
+    "videos": []
   },
   {
     "id": "chinatown",
@@ -131,6 +131,7 @@
     "title": "SUFFOLK Pop-Up (NYC)",
     "credit": "",
     "category": "photoshoots",
-    "alt": "Hannah in a qipao beneath a neon chop suey sign"
+    "alt": "Hannah in a qipao beneath a neon chop suey sign",
+    "videos": []
   }
 ]
