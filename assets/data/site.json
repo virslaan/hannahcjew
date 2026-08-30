@@ -108,6 +108,26 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtfz1t1j-szxz",
+      "src": "assets/img/portfolio/b_p-mtfz1t1j-szxz.jpg",
+      "title": "b",
+      "credit": "test",
+      "category": "test",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "b"
+    },
+    {
+      "id": "p-mtfz1s5u-k3sd",
+      "src": "assets/img/portfolio/dancer_p-mtfz1s5u-k3sd.jpg",
+      "title": "dancer",
+      "credit": "",
+      "category": "test",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "dancer"
+    },
+    {
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
