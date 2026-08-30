@@ -63,15 +63,15 @@
   },
   "headshots": [
     {
-      "id": "hs-msuvcvvz-pmpj",
-      "src": "assets/img/headshots/hannah-jew_2026-08-17.jpg",
+      "id": "hs-mssfqeuw-gtly",
+      "src": "assets/img/headshots/hannah-jew_2026-08-18.jpg",
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
       "alt": "Headshot of Hannah Jew"
     },
     {
-      "id": "hs-mssfqeuw-gtly",
-      "src": "assets/img/headshots/hannah-jew_2026-08-18.jpg",
+      "id": "hs-msuvcvvz-pmpj",
+      "src": "assets/img/headshots/hannah-jew_2026-08-17.jpg",
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
       "alt": "Headshot of Hannah Jew"
@@ -104,16 +104,14 @@
   ],
   "portfolio": [
     {
-      "id": "v-mtfwd5wu-4iwt",
-      "video": "https://www.youtube.com/watch?v=IxxstCcJlsc",
-      "src": "https://img.youtube.com/vi/IxxstCcJlsc/hqdefault.jpg",
-      "title": "TEST",
+      "id": "p-mtfyikgr-c5i2",
+      "src": "assets/img/portfolio/dancer_p-mtfyikgr-c5i2.jpg",
+      "title": "dancer",
       "credit": "",
-      "notes": "nope",
       "category": "in-studio-the-process",
       "orient": "portrait",
       "span": 1,
-      "alt": "TEST (video)"
+      "alt": "dancer"
     },
     {
       "id": "p-msv6l3ce-d004",
