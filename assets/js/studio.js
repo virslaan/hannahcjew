@@ -134,6 +134,55 @@
     });
   }
 
+  // ----- video handling -------------------------------------------------
+  // GitHub's contents API starts rejecting bodies well before its documented
+  // ceiling, and a repo is the wrong home for a feature-length file anyway,
+  // so anything larger is pointed at YouTube instead.
+  const MAX_VIDEO_MB = 40;
+  const MAX_VIDEO_BYTES = MAX_VIDEO_MB * 1024 * 1024;
+
+  // Pull a still frame out of a video file so an uploaded clip gets a cover
+  // image automatically, exactly like a YouTube link does.
+  function videoPoster(file, maxEdge = 1400, quality = 0.8) {
+    return new Promise((resolve) => {
+      const url = URL.createObjectURL(file);
+      const v = document.createElement("video");
+      let settled = false;
+      const finish = (poster, width, height) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        URL.revokeObjectURL(url);
+        v.remove();
+        resolve({ poster: poster || "", width: width || 0, height: height || 0 });
+      };
+      const timer = setTimeout(() => finish(""), 12000);
+      v.preload = "metadata";
+      v.muted = true;
+      v.playsInline = true;
+      v.setAttribute("playsinline", "");
+      v.style.cssText = "position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:0;";
+      document.body.appendChild(v);
+      v.addEventListener("loadeddata", () => {
+        // Frame zero is often black, so grab something a moment in.
+        try {
+          v.currentTime = Math.min(1.2, (v.duration || 2) / 2);
+        } catch (_) {
+          finish("");
+        }
+      });
+      v.addEventListener("seeked", () => {
+        try {
+          finish(canvasJpeg(v, v.videoWidth, v.videoHeight, maxEdge, quality), v.videoWidth, v.videoHeight);
+        } catch (_) {
+          finish("", v.videoWidth, v.videoHeight);
+        }
+      });
+      v.addEventListener("error", () => finish(""));
+      v.src = url;
+    });
+  }
+
   // ----- model helpers --------------------------------------------------
   const get = (path) => window.HJ_getPath(site, path);
   const set = (path, value) => window.HJ_setPath(site, path, value);
@@ -173,6 +222,182 @@
   const isUnlocked = () => sessionStorage.getItem(UNLOCK_KEY) === "1";
   const isEditing = () => sessionStorage.getItem(EDITING_KEY) === "1";
 
+  // ----- text formatting bar --------------------------------------------
+  const cleanRich = (html) => (window.HJ_cleanRich ? window.HJ_cleanRich(html) : String(html || ""));
+
+  const FONT_CHOICES = [
+    { label: "Site heading font", value: '"Cormorant Garamond", "Noto Serif TC", Georgia, serif' },
+    { label: "Site body font", value: '"Manrope", "Helvetica Neue", Arial, sans-serif' },
+    { label: "Chinese serif", value: '"Noto Serif TC", "Songti TC", serif' },
+    { label: "Georgia", value: "Georgia, serif" },
+    { label: "Times", value: '"Times New Roman", Times, serif' },
+    { label: "Helvetica", value: '"Helvetica Neue", Helvetica, Arial, sans-serif' },
+    { label: "Courier", value: '"Courier New", Courier, monospace' },
+  ];
+  const COLOR_CHOICES = ["#1a1a1a", "#d7281c", "#8a877f", "#b8860b", "#0f7b6c", "#1e4fd8", "#c2185b"];
+
+  let formatBar = null;
+  let formatTarget = null;
+  // Opening the font menu or the colour picker moves focus out of the text,
+  // which would drop the highlight. Remember it so commands still land.
+  let savedRange = null;
+
+  function rememberRange() {
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount || !formatTarget) return;
+    const r = sel.getRangeAt(0);
+    if (formatTarget.contains(r.commonAncestorContainer)) savedRange = r.cloneRange();
+  }
+
+  function restoreRange() {
+    if (!formatTarget) return false;
+    formatTarget.focus();
+    if (savedRange) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedRange);
+    }
+    return true;
+  }
+
+  function buildFormatBar() {
+    if (formatBar) return formatBar;
+    const bar = document.createElement("div");
+    bar.className = "hj-format";
+    bar.contentEditable = "false";
+    const ic = (n, s) => (window.HJ_icon ? window.HJ_icon(n, s || 14) : "");
+    bar.innerHTML = `
+      <button type="button" data-cmd="bold" title="Bold" aria-label="Bold"><b>B</b></button>
+      <button type="button" data-cmd="italic" title="Italic" aria-label="Italic"><i>I</i></button>
+      <button type="button" data-cmd="underline" title="Underline" aria-label="Underline"><u>U</u></button>
+      <span class="hj-format__sep"></span>
+      <span class="hj-format__colors">
+        ${COLOR_CHOICES.map(
+          (c) => `<button type="button" class="hj-format__color" data-color="${c}" title="${c}" aria-label="Colour ${c}" style="background:${c}"></button>`
+        ).join("")}
+        <label class="hj-format__color hj-format__color--custom" title="Any other colour">
+          <input type="color" data-color-custom value="#d7281c" />
+        </label>
+      </span>
+      <span class="hj-format__sep"></span>
+      <select data-font aria-label="Font">
+        <option value="">Font</option>
+        ${FONT_CHOICES.map((f) => `<option value="${escHtml(f.value)}">${escHtml(f.label)}</option>`).join("")}
+      </select>
+      <button type="button" data-clear title="Remove formatting" aria-label="Remove formatting">${ic("close")}</button>`;
+
+    // Keep the caret in the text: pressing a button must never steal focus.
+    // The menu and colour picker need their normal behaviour, so they are
+    // left alone and rely on the remembered selection instead.
+    bar.addEventListener("mousedown", (e) => {
+      if (e.target.closest("select, input")) return;
+      e.preventDefault();
+    });
+
+    bar.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn || !restoreRange()) return;
+      e.preventDefault();
+      document.execCommand("styleWithCSS", false, true);
+      if (btn.dataset.cmd) document.execCommand(btn.dataset.cmd);
+      else if (btn.dataset.color) document.execCommand("foreColor", false, btn.dataset.color);
+      else if (btn.hasAttribute("data-clear")) document.execCommand("removeFormat");
+      else return;
+      syncFormatTarget();
+    });
+
+    $("[data-color-custom]", bar).addEventListener("input", (e) => {
+      if (!restoreRange()) return;
+      document.execCommand("styleWithCSS", false, true);
+      document.execCommand("foreColor", false, e.target.value);
+      syncFormatTarget();
+    });
+
+    $("[data-font]", bar).addEventListener("change", (e) => {
+      const value = e.target.value;
+      e.target.value = "";
+      if (!value || !restoreRange()) return;
+      document.execCommand("styleWithCSS", false, true);
+      document.execCommand("fontName", false, value);
+      syncFormatTarget();
+    });
+
+    document.body.appendChild(bar);
+    formatBar = bar;
+    return bar;
+  }
+
+  // Push whatever the buttons just changed back into the saved copy.
+  function syncFormatTarget() {
+    if (!formatTarget) return;
+    set(formatTarget.dataset.edit, cleanRich(formatTarget.innerHTML));
+    touch();
+    rememberRange();
+    updateFormatState();
+  }
+
+  function updateFormatState() {
+    if (!formatBar) return;
+    ["bold", "italic", "underline"].forEach((cmd) => {
+      const btn = $(`[data-cmd="${cmd}"]`, formatBar);
+      if (!btn) return;
+      let on = false;
+      try {
+        on = document.queryCommandState(cmd);
+      } catch (_) {}
+      btn.classList.toggle("is-on", on);
+    });
+  }
+
+  function placeFormatBar() {
+    if (!formatBar || !formatTarget) return;
+    const r = formatTarget.getBoundingClientRect();
+    const bw = formatBar.offsetWidth || 320;
+    const bh = formatBar.offsetHeight || 40;
+    // Prefer just above the field; drop below when it would run off the top.
+    let top = r.top - bh - 8;
+    if (top < 8) top = Math.min(r.bottom + 8, window.innerHeight - bh - 8);
+    let left = r.left;
+    left = Math.max(8, Math.min(left, window.innerWidth - bw - 8));
+    formatBar.style.top = top + "px";
+    formatBar.style.left = left + "px";
+  }
+
+  function showFormatBar(el) {
+    if (!isEditing() || el.dataset.editPlain === "1") return;
+    formatTarget = el;
+    savedRange = null;
+    const bar = buildFormatBar();
+    bar.classList.add("is-on");
+    requestAnimationFrame(() => {
+      placeFormatBar();
+      updateFormatState();
+    });
+  }
+
+  function hideFormatBar(el) {
+    if (el && formatTarget !== el) return;
+    // A click on the bar itself blurs the field for an instant; give that a
+    // beat to settle so the button press still lands.
+    setTimeout(() => {
+      const active = document.activeElement;
+      if (active && active.hasAttribute && active.hasAttribute("data-edit")) return;
+      if (formatBar && formatBar.contains(active)) return;
+      if (formatBar) formatBar.classList.remove("is-on");
+      formatTarget = null;
+      savedRange = null;
+    }, 200);
+  }
+
+  document.addEventListener("selectionchange", () => {
+    if (!formatTarget) return;
+    rememberRange();
+    updateFormatState();
+    placeFormatBar();
+  });
+  window.addEventListener("scroll", () => placeFormatBar(), { passive: true });
+  window.addEventListener("resize", () => placeFormatBar());
+
   function armEditing() {
     document.body.classList.add("hj-edit");
 
@@ -183,7 +408,12 @@
       el.setAttribute("contenteditable", "true");
       el.setAttribute("spellcheck", "true");
 
+      // The home headline builds its own <em>, so it stays plain text. Every
+      // other field can carry bold / italic / underline / colour / font.
+      const isRich = el.dataset.editPlain !== "1";
+
       const readText = () => {
+        if (isRich) return cleanRich(el.innerHTML);
         // innerText keeps Return as a real line break in multiline boxes;
         // textContent would flatten them into one sentence.
         const raw = el.dataset.editMultiline === "1" ? el.innerText : el.textContent;
@@ -191,16 +421,18 @@
       };
 
       el.addEventListener("input", () => {
-        const value = el.dataset.editMultiline === "1" ? readText() : readText().trim();
+        const value = el.dataset.editMultiline === "1" || isRich ? readText() : readText().trim();
         set(el.dataset.edit, value);
         touch();
       });
       el.addEventListener("blur", () => {
         const value = readText().trim();
         set(el.dataset.edit, value);
-        if (el.dataset.editMultiline === "1") el.innerText = value;
+        if (!isRich && el.dataset.editMultiline === "1") el.innerText = value;
         touch();
+        hideFormatBar(el);
       });
+      el.addEventListener("focus", () => showFormatBar(el));
       el.addEventListener("paste", (e) => {
         e.preventDefault();
         const text = (e.clipboardData || window.clipboardData).getData("text/plain");
@@ -212,6 +444,11 @@
         if (e.key === "Enter" && !e.shiftKey && el.dataset.editMultiline !== "1") {
           e.preventDefault();
           el.blur();
+        } else if (e.key === "Enter" && el.dataset.editMultiline === "1" && isRich) {
+          // Insert a plain line break rather than letting the browser wrap
+          // each line in its own block element.
+          e.preventDefault();
+          document.execCommand("insertLineBreak");
         }
         e.stopPropagation();
       });
@@ -265,15 +502,17 @@
     $$("[data-edit-href]").forEach((el) => {
       if (el.dataset.armedHref === "1") return;
       el.dataset.armedHref = "1";
-      el.addEventListener("click", (e) => {
+      el.addEventListener("click", async (e) => {
         if (!isEditing()) return;
         e.preventDefault();
         e.stopPropagation();
         const path = el.dataset.editHref;
-        const promptText =
-          el.dataset.prompt ||
-          "Paste the link. Leave it blank to remove it.";
-        const next = prompt(promptText, get(path) || "");
+        const next = await askText({
+          title: "Link",
+          help: el.dataset.prompt || "Paste the link. Leave it blank to remove it.",
+          value: get(path) || "",
+          placeholder: "https://",
+        });
         if (next == null) return;
         set(path, next.trim());
         rerender();
@@ -283,6 +522,7 @@
     // 5. per-item controls, list add buttons, resume swap
     decorateItems();
     decorateLists();
+    decorateFeatureImages();
     decorateResume();
     decorateCategoryBar();
     decorateNav();
@@ -305,14 +545,19 @@
     header.querySelectorAll("[data-nav-href]").forEach((a) => {
       if (a.dataset.armedNav === "1") return;
       a.dataset.armedNav = "1";
-      a.addEventListener("click", (e) => {
+      a.addEventListener("click", async (e) => {
         if (!isEditing()) return;
         e.preventDefault();
         e.stopPropagation();
         const href = a.dataset.navHref;
         const item = site.nav.find((n) => n.href === href);
         if (!item) return;
-        const next = prompt("Rename this tab. The page stays the same — this only changes the label.", item.label || "");
+        const next = await askText({
+          title: "Rename this tab",
+          help: "The page itself stays the same. This only changes the wording in the menu.",
+          value: item.label || "",
+          okLabel: "Rename",
+        });
         if (next == null) return;
         const label = next.trim();
         if (!label) return;
@@ -342,6 +587,117 @@
     });
   }
 
+  // ----- big picture framing --------------------------------------------
+  // The hero and cover photos are cropped by the layout, so Studio needs a way
+  // to say which part of the picture should show, how close in it sits, and
+  // how much it drifts on scroll.
+  // Anything big enough to be cropped by the layout, but not a grid thumbnail
+  // (those already have their own row of controls underneath).
+  function isFeatureImage(img) {
+    if (img.closest("[data-edit-item]")) return false;
+    const r = img.getBoundingClientRect();
+    return r.width >= 240 && r.height >= 240;
+  }
+
+  function tuneFor(path) {
+    site.imageTune = site.imageTune || {};
+    if (!site.imageTune[path]) site.imageTune[path] = {};
+    return site.imageTune[path];
+  }
+
+  function decorateFeatureImages() {
+    $$("[data-edit-img]").forEach((img) => {
+      if (!isFeatureImage(img)) return;
+      const holder = img.parentElement;
+      if (!holder || $(".hj-tune-open", holder)) return;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "hj-tune-open";
+      btn.contentEditable = "false";
+      btn.textContent = "Adjust photo";
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openTunePanel(img);
+      });
+      if (getComputedStyle(holder).position === "static") holder.style.position = "relative";
+      holder.appendChild(btn);
+    });
+  }
+
+  function openTunePanel(img) {
+    const path = img.dataset.editImg;
+    const t = tuneFor(path);
+    const isHero = !!img.closest(".hero__img");
+
+    // Seed the sliders from whatever the picture is showing right now.
+    if (t.x == null || t.y == null) {
+      const pos = getComputedStyle(img).objectPosition.split(" ");
+      const pct = (v, fallback) => {
+        const n = parseFloat(v);
+        return /%$/.test(String(v)) && isFinite(n) ? Math.round(n) : fallback;
+      };
+      if (t.x == null) t.x = pct(pos[0], 50);
+      if (t.y == null) t.y = pct(pos[1], 50);
+    }
+    if (t.zoom == null) t.zoom = 100;
+    if (t.bright == null) t.bright = 100;
+    if (t.contrast == null) t.contrast = 100;
+    if (isHero && t.parallax == null) t.parallax = 22;
+
+    $$(".hj-tune").forEach((el) => el.remove());
+    const panel = document.createElement("div");
+    panel.className = "hj-tune";
+    panel.contentEditable = "false";
+    const row = (key, label, min, max, suffix) => `
+      <label class="hj-tune__row">
+        <span class="hj-tune__label">${escHtml(label)}</span>
+        <input type="range" data-tune="${key}" min="${min}" max="${max}" value="${t[key]}" />
+        <output data-out="${key}">${t[key]}${suffix || ""}</output>
+      </label>`;
+    panel.innerHTML = `
+      <div class="hj-tune__head">
+        <strong>Adjust this photo</strong>
+        <button type="button" data-tune-done class="btn btn--red">Done</button>
+      </div>
+      ${row("x", "Move left / right", 0, 100, "%")}
+      ${row("y", "Move up / down", 0, 100, "%")}
+      ${row("zoom", "Zoom in", 100, 200, "%")}
+      ${row("bright", "Brightness", 50, 150, "%")}
+      ${row("contrast", "Contrast", 50, 150, "%")}
+      ${isHero ? row("parallax", "Scroll drift", 0, 60, "") : ""}
+      <div class="hj-tune__foot">
+        <button type="button" data-tune-reset>Reset to original</button>
+      </div>`;
+    document.body.appendChild(panel);
+
+    const paint = () => {
+      window.HJ_applyImageTune(site);
+      touch();
+    };
+
+    $$("[data-tune]", panel).forEach((input) => {
+      input.addEventListener("input", () => {
+        const key = input.dataset.tune;
+        t[key] = Number(input.value);
+        const out = $(`[data-out="${key}"]`, panel);
+        if (out) out.textContent = input.value + (key === "parallax" ? "" : "%");
+        paint();
+      });
+    });
+
+    $("[data-tune-reset]", panel).addEventListener("click", () => {
+      delete site.imageTune[path];
+      img.style.objectPosition = "";
+      img.style.scale = "";
+      img.style.filter = "";
+      panel.remove();
+      touch();
+    });
+
+    $("[data-tune-done]", panel).addEventListener("click", () => panel.remove());
+  }
+
   // the resume PDF gets its own button beside the download link
   function decorateResume() {
     const anchor = $("main [data-resume-pdf]");
@@ -369,7 +725,7 @@
     $$("[data-remove-cat]", bar).forEach((btn) => {
       if (btn.dataset.armedRmCat === "1") return;
       btn.dataset.armedRmCat = "1";
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("click", async (e) => {
         e.preventDefault();
         e.stopPropagation();
         const id = btn.dataset.removeCat;
@@ -381,10 +737,14 @@
         const cat = cats.find((c) => c.id === id);
         if (!cat) return;
         const n = (site.portfolio || []).filter((p) => (p.category || "") === id).length;
-        const extra = n
-          ? ` ${n} item${n === 1 ? "" : "s"} stay saved and will show again if you add this tab later.`
-          : " You can add it again later.";
-        if (!confirm(`Remove the “${cat.label}” tab?` + extra)) return;
+        const ok = await askConfirm({
+          title: `Remove the “${cat.label}” tab?`,
+          help: n
+            ? `${n} item${n === 1 ? "" : "s"} stay saved and will show again if you add this tab back later.`
+            : "You can add it again later.",
+          okLabel: "Remove tab",
+        });
+        if (!ok) return;
         site.portfolioCategories = cats.filter((c) => c.id !== id);
         rerender();
       });
@@ -396,8 +756,13 @@
     btn.className = "hj-add hj-add--copy";
     btn.dataset.addCat = "1";
     btn.textContent = "+ Add tab";
-    btn.addEventListener("click", () => {
-      const label = (prompt("New tab name", "") || "").trim();
+    btn.addEventListener("click", async () => {
+      const label = ((await askText({
+        title: "New tab",
+        help: "Name a new category for your portfolio, like “Teaching” or “Film”.",
+        placeholder: "Tab name",
+        okLabel: "Add tab",
+      })) || "").trim();
       if (!label) return;
       const id = slug(label);
       site.portfolioCategories = site.portfolioCategories || [];
@@ -480,7 +845,9 @@
   function disarmEditing() {
     document.body.classList.remove("hj-edit");
     $$("[data-edit]").forEach((el) => el.removeAttribute("contenteditable"));
-    $$(".hj-item-tools, .hj-add, .hj-layout, .hj-edit-hint").forEach((el) => el.remove());
+    $$(".hj-item-tools, .hj-add, .hj-layout, .hj-edit-hint, .hj-tune, .hj-tune-open").forEach((el) => el.remove());
+    formatTarget = null;
+    if (formatBar) formatBar.classList.remove("is-on");
   }
 
   function itemInfo(el) {
@@ -533,9 +900,10 @@
       const { list, index } = itemInfo(el);
       if (list == null || index == null) return;
 
-      const isCopy = list === "about.paragraphs" || list === "home.paragraphs";
+      // Every list keeps its controls in a row underneath the item, so they
+      // never sit on top of a photo or the words being typed.
       const tools = document.createElement("div");
-      tools.className = isCopy ? "hj-item-tools hj-item-tools--row" : "hj-item-tools";
+      tools.className = "hj-item-tools hj-item-tools--row";
       tools.contentEditable = "false";
       const ic = (name) => (window.HJ_icon ? window.HJ_icon(name, 15) : name);
       const drag = list === "portfolio" ? `<button type="button" data-grip title="Drag to reorder">${ic("grip")}</button>` : "";
@@ -600,8 +968,6 @@
         });
       }
 
-      // Paragraphs keep tools under the text so arrows never cover what she is typing.
-      if (!isCopy && getComputedStyle(el).position === "static") el.style.position = "relative";
       el.appendChild(tools);
     });
   }
@@ -660,19 +1026,47 @@
   // Add a video the same way a photo is added: it becomes its own tile in
   // the portfolio grid, with a YouTube thumbnail baked in when possible.
   async function addPortfolioVideo() {
-    const url = prompt("Paste a YouTube or Vimeo link for this video:", "");
+    const how = await askChoice({
+      title: "Add a video",
+      help: "Both kinds play right on the page.",
+      options: [
+        {
+          id: "file",
+          label: "Upload my own video",
+          help: `Pick a clip from this device. Short files up to ${MAX_VIDEO_MB} MB, and MP4 plays on the widest range of phones and computers.`,
+        },
+        {
+          id: "link",
+          label: "Paste a YouTube or Vimeo link",
+          help: "Best for long videos, and it will not use up your site's space.",
+        },
+      ],
+    });
+    if (how === "file") return addVideoFiles();
+    if (how !== "link") return;
+
+    const url = await askText({
+      title: "Video link",
+      help: "Paste the YouTube or Vimeo address for this video.",
+      placeholder: "https://youtube.com/watch?v=…",
+      okLabel: "Next",
+    });
     if (url == null) return;
     const clean = String(url).trim();
     if (!clean) return;
-    const title = prompt(
-      "Title for this video? (shown under the thumbnail — e.g. the piece name)",
-      ""
-    );
+    const title = await askText({
+      title: "Title for this video",
+      help: "Shown under the thumbnail — usually the name of the piece.",
+      placeholder: "Name of the work",
+      okLabel: "Next",
+    });
     if (title == null) return;
-    const notes = prompt(
-      "Notes? (optional — credits, cast, description. Leave blank to skip.)",
-      ""
-    );
+    const notes = await askText({
+      title: "Notes",
+      help: "Optional. Credits, cast, or a description. Press Return for a new line. Leave blank to skip.",
+      multiline: true,
+      okLabel: "Add video",
+    });
     if (notes == null) return;
     const cover =
       (typeof window.HJ_youtubeThumb === "function" ? window.HJ_youtubeThumb(clean) : "") ||
@@ -718,6 +1112,122 @@
       dirty = false;
     } catch (err) {
       console.error("save video failed", err);
+      dirty = true;
+      scheduleLive();
+    }
+    updateBar();
+  }
+
+  // Upload video files straight from Hannah's phone or laptop. Each clip gets
+  // its own tile with a cover frame lifted out of the video itself.
+  async function addVideoFiles() {
+    const files = await pickFile("video/*,.mov,.mp4,.m4v,.webm", true);
+    if (!files.length) return;
+
+    const token = liveToken();
+    if (!token) {
+      await askConfirm({
+        title: "Sign in first",
+        help: "Video files upload straight to your live site, so Studio needs to be signed in before it can take them.",
+        okLabel: "OK",
+      });
+      return;
+    }
+
+    const tooBig = files.filter((f) => f.size > MAX_VIDEO_BYTES);
+    const usable = files.filter((f) => f.size <= MAX_VIDEO_BYTES);
+    if (tooBig.length) {
+      await askConfirm({
+        title: tooBig.length === 1 ? "That video is too big" : `${tooBig.length} videos are too big`,
+        help:
+          `Videos need to be under ${MAX_VIDEO_MB} MB to live on your site. ` +
+          `Put the long ones on YouTube and paste the link instead — that also keeps your site fast.` +
+          (usable.length ? ` The other ${usable.length} will upload now.` : ""),
+        okLabel: "Got it",
+      });
+    }
+    if (!usable.length) return;
+
+    holdLive = true;
+    const state = $(".studio-bar [data-state]");
+    const say = (m) => { if (state) state.textContent = m; };
+    const total = usable.length;
+    toast(total === 1 ? "Adding your video…" : "Adding " + total + " videos…");
+
+    let ok = 0;
+    let failed = 0;
+    for (let i = 0; i < total; i++) {
+      const f = usable[i];
+      const label = total === 1 ? "your video" : `video ${i + 1} of ${total}`;
+      try {
+        say(`Reading ${label}…`);
+        const shot = await videoPoster(f);
+        const id = uid("v");
+        const base = slug((f.name || "video").replace(/\.[^.]+$/, "")) || "video";
+        const ext = (/\.([a-z0-9]+)$/i.exec(f.name || "") || [, "mp4"])[1].toLowerCase();
+        const videoPath = `assets/video/${base}_${id}.${ext}`;
+
+        say(`Uploading ${label}…`);
+        const raw = await readAsDataUrl(f);
+        await ghPut(videoPath, b64of(raw), token, "Add video " + videoPath);
+
+        let posterPath = window.HJ_VIDEO_PLACEHOLDER || "";
+        if (shot.poster) {
+          posterPath = `assets/img/${base}_${id}.jpg`;
+          await ghPut(posterPath, b64of(shot.poster), token, "Add video cover " + posterPath);
+        }
+
+        const title = (f.name || "Video").replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+        const arr = (get("portfolio") || []).slice();
+        arr.unshift({
+          id,
+          videoFile: videoPath,
+          src: posterPath,
+          title: title || "Video",
+          credit: "",
+          notes: "",
+          category: currentPortfolioCat(),
+          orient: shot.width && shot.height && shot.width > shot.height ? "landscape" : "portrait",
+          span: 1,
+          alt: (title || "Video") + " (video)",
+        });
+        set("portfolio", arr);
+        window.HJ_SITE = site;
+        window.HJ_hydrateSite(site);
+        if (isEditing()) armEditing();
+        ok += 1;
+      } catch (err) {
+        console.error("video upload failed", err);
+        failed += 1;
+        toast("Could not upload " + (f.name || "one video") + ".");
+      }
+    }
+
+    holdLive = false;
+    persistDraft();
+    if (!ok) {
+      updateBar();
+      return;
+    }
+
+    say("Saving list…");
+    try {
+      await ghPut("assets/data/site.json", jsonB64(site), token, "Add portfolio video");
+      await ghPut("assets/data/portfolio.json", jsonB64(site.portfolio || []), token, "Sync portfolio.json");
+      window.HJ_clearSiteDraft();
+      dirty = false;
+      savedThisSession = true;
+      say(SAVED_LABEL);
+      toast(
+        (ok === 1 ? "Video added." : ok + " videos added.") +
+          (failed ? " " + failed + " could not upload." : "") +
+          " They show up on the live site in 1–2 minutes."
+      );
+      setTimeout(() => { if (state && state.textContent === SAVED_LABEL) state.textContent = ""; }, 8000);
+    } catch (err) {
+      console.error("save video list failed", err);
+      say("Not saved");
+      toast("Videos uploaded but the list did not save. It will retry.");
       dirty = true;
       scheduleLive();
     }
@@ -845,7 +1355,7 @@
         hint.className = "hj-edit-hint";
         hint.textContent =
           path === "portfolio"
-            ? "Tap + Add photos to upload any number of images at once. Tap + Add video to paste a YouTube or Vimeo link — it becomes its own tile with a thumbnail. Click any thumbnail to swap the cover, or click the ▶ to play."
+            ? "Tap + Add photos to upload any number of images at once. Tap + Add video to upload your own clip or paste a YouTube link — either way it becomes its own tile with a thumbnail. Click any thumbnail to swap the cover, or click the play button to watch it."
             : "Tap to add. In the photo picker, select as many pictures as you want at once.";
         btn.insertAdjacentElement("afterend", hint);
       }
@@ -1074,6 +1584,134 @@
     ($(".footer__bottom") || $(".footer") || document.body).appendChild(gear);
   }
 
+  // ----- in-page dialogs -------------------------------------------------
+  // Chrome renders native prompt()/confirm() as browser alert bars and offers
+  // a "prevent this page from creating more dialogs" checkbox that silently
+  // disables them for the rest of the visit, which would leave the editor
+  // unable to ask anything. These dialogs are part of the page instead.
+  const escHtml = (s) =>
+    String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+    );
+
+  function studioModal(build) {
+    return new Promise((resolve) => {
+      const wrap = document.createElement("div");
+      wrap.className = "studio-lock studio-modal";
+      const card = document.createElement("div");
+      card.className = "studio-lock__card studio-modal__card";
+      card.setAttribute("role", "dialog");
+      card.setAttribute("aria-modal", "true");
+      wrap.appendChild(card);
+
+      let settled = false;
+      const close = (value) => {
+        if (settled) return;
+        settled = true;
+        document.removeEventListener("keydown", onKey, true);
+        wrap.remove();
+        resolve(value);
+      };
+      const onKey = (e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          e.stopPropagation();
+          close(null);
+        }
+      };
+      document.addEventListener("keydown", onKey, true);
+      wrap.addEventListener("mousedown", (e) => {
+        if (e.target === wrap) close(null);
+      });
+
+      build(card, close);
+      document.body.appendChild(wrap);
+    });
+  }
+
+  function dialogHead(o) {
+    return `
+      <p class="studio-lock__kicker">${escHtml(o.kicker || "Site studio")}</p>
+      <h2>${escHtml(o.title || "")}</h2>
+      ${o.help ? `<p class="studio-lock__help">${escHtml(o.help)}</p>` : ""}`;
+  }
+
+  // Replaces prompt(). Resolves to the typed string, or null if cancelled.
+  function askText(o) {
+    const opts = o || {};
+    return studioModal((card, close) => {
+      card.innerHTML =
+        dialogHead(opts) +
+        `<div class="studio-modal__field"></div>
+        <div class="studio-lock__actions">
+          <button type="button" data-go class="btn btn--red">${escHtml(opts.okLabel || "Save")}</button>
+          <button type="button" data-cancel class="btn">Cancel</button>
+        </div>`;
+      const field = $(".studio-modal__field", card);
+      const input = document.createElement(opts.multiline ? "textarea" : "input");
+      if (opts.multiline) input.rows = 4;
+      else input.type = "text";
+      input.value = opts.value || "";
+      input.placeholder = opts.placeholder || "";
+      field.appendChild(input);
+      $("[data-go]", card).onclick = () => close(input.value);
+      $("[data-cancel]", card).onclick = () => close(null);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !opts.multiline) {
+          e.preventDefault();
+          close(input.value);
+        }
+      });
+      setTimeout(() => {
+        input.focus();
+        if (input.select) input.select();
+      }, 30);
+    });
+  }
+
+  // Replaces confirm(). Resolves true only when the confirm button is used.
+  function askConfirm(o) {
+    const opts = o || {};
+    return studioModal((card, close) => {
+      card.innerHTML =
+        dialogHead(opts) +
+        `<div class="studio-lock__actions">
+          <button type="button" data-go class="btn btn--red">${escHtml(opts.okLabel || "Yes, remove")}</button>
+          <button type="button" data-cancel class="btn">Keep it</button>
+        </div>`;
+      $("[data-go]", card).onclick = () => close(true);
+      $("[data-cancel]", card).onclick = () => close(false);
+      setTimeout(() => $("[data-go]", card).focus(), 30);
+    }).then((v) => v === true);
+  }
+
+  // A short menu. Resolves to the chosen option's id, or null if cancelled.
+  function askChoice(o) {
+    const opts = o || {};
+    return studioModal((card, close) => {
+      card.innerHTML =
+        dialogHead(opts) +
+        `<div class="studio-modal__choices">
+          ${(opts.options || [])
+            .map(
+              (c) =>
+                `<button type="button" class="studio-modal__choice" data-choice="${escHtml(c.id)}">
+                  <span class="studio-modal__choice-title">${escHtml(c.label)}</span>
+                  ${c.help ? `<span class="studio-modal__choice-help">${escHtml(c.help)}</span>` : ""}
+                </button>`
+            )
+            .join("")}
+        </div>
+        <div class="studio-lock__actions">
+          <button type="button" data-cancel class="btn">Cancel</button>
+        </div>`;
+      $$("[data-choice]", card).forEach((b) => {
+        b.onclick = () => close(b.dataset.choice);
+      });
+      $("[data-cancel]", card).onclick = () => close(null);
+    });
+  }
+
   function askPin() {
     const wrap = document.createElement("div");
     wrap.className = "studio-lock";
@@ -1218,7 +1856,12 @@
     };
 
     $("[data-undo]", bar).onclick = async () => {
-      if (!confirm("Undo every change since the last save to the live site?")) return;
+      const ok = await askConfirm({
+        title: "Undo every change?",
+        help: "This throws away everything you have changed since the last save and reloads the live version.",
+        okLabel: "Undo everything",
+      });
+      if (!ok) return;
       window.HJ_clearSiteDraft();
       site = await window.HJ_loadSite();
       window.HJ_hydrateSite(site);

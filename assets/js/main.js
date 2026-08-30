@@ -107,6 +107,16 @@ document.querySelectorAll(".hero__name .split").forEach((el) => {
 // and seal drift up and dissolve, handing the scene off to the intro.
 const heroImg = document.querySelector(".hero__img img");
 const heroContent = document.querySelector(".hero__content");
+// How far the hero drifts. Studio can dial this down to zero (no drift) or
+// up for a stronger effect; 22 matches the original design.
+function hjParallaxAmount() {
+  const tune = (window.HJ_SITE && window.HJ_SITE.imageTune) || {};
+  const t = tune["home.heroImage"];
+  const pct = t && t.parallax != null ? Number(t.parallax) : 22;
+  return (isFinite(pct) ? pct : 22) / 100;
+}
+window.HJ_parallaxAmount = hjParallaxAmount;
+
 if (heroImg && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
   let ticking = false;
   window.addEventListener("scroll", () => {
@@ -114,7 +124,7 @@ if (heroImg && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
     ticking = true;
     requestAnimationFrame(() => {
       const y = window.scrollY;
-      heroImg.style.translate = "0 " + y * 0.22 + "px";
+      heroImg.style.translate = "0 " + y * hjParallaxAmount() + "px";
       if (heroContent) {
         const p = Math.min(y / (innerHeight * 0.75), 1);
         heroContent.style.opacity = String(1 - p * p);
@@ -286,32 +296,49 @@ function hjClosePlayer(fig) {
   const media = fig.querySelector(".work-media");
   if (!media) return;
   const existing = media.querySelector(".work-player");
-  if (existing) existing.remove();
+  if (existing) {
+    // Stop the sound before detaching, so closing never leaves audio playing.
+    const v = existing.querySelector("video");
+    if (v) v.pause();
+    existing.remove();
+  }
   fig.classList.remove("is-playing");
 }
 
-function hjPlayInline(fig, url) {
+function hjPlayInline(fig, url, kind) {
   if (!fig || !url) return;
   const media = fig.querySelector(".work-media");
   if (!media) return;
-  const embed = hjToEmbed(url);
-  if (!embed) {
-    // Not a YouTube/Vimeo link — open in a new tab so it still works.
-    window.open(url, "_blank", "noopener");
-    return;
+
+  const closeBtn =
+    '<button type="button" class="work-player__close" aria-label="Close video">' +
+    (window.HJ_icon ? window.HJ_icon("close", 16) : "Close") +
+    "</button>";
+
+  let inner;
+  if (kind === "file") {
+    // A video Hannah uploaded herself, served straight from the site.
+    inner =
+      '<video src="' + url + '" controls autoplay playsinline preload="metadata"></video>' + closeBtn;
+  } else {
+    const embed = hjToEmbed(url);
+    if (!embed) {
+      // Not a YouTube/Vimeo link — open in a new tab so it still works.
+      window.open(url, "_blank", "noopener");
+      return;
+    }
+    const separator = embed.includes("?") ? "&" : "?";
+    inner =
+      '<iframe src="' + embed + separator + 'autoplay=1&rel=0"' +
+      ' allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"' +
+      ' allowfullscreen loading="lazy" title="Video"></iframe>' + closeBtn;
   }
+
   const old = media.querySelector(".work-player");
   if (old) old.remove();
   const wrap = document.createElement("div");
   wrap.className = "work-player";
-  const separator = embed.includes("?") ? "&" : "?";
-  wrap.innerHTML =
-    '<iframe src="' + embed + separator + 'autoplay=1&rel=0"' +
-    ' allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"' +
-    ' allowfullscreen loading="lazy" title="Video"></iframe>' +
-    '<button type="button" class="work-player__close" aria-label="Close video">' +
-    (window.HJ_icon ? window.HJ_icon("close", 16) : "Close") +
-    "</button>";
+  wrap.innerHTML = inner;
   media.appendChild(wrap);
   fig.classList.add("is-playing");
 }
@@ -319,14 +346,14 @@ function hjPlayInline(fig, url) {
 document.addEventListener("click", (e) => {
   const play = e.target.closest("[data-play-video]");
   if (play) {
-    // In Studio edit mode, the ▶ badge should not swallow the underlying
+    // In Studio edit mode, the play badge should not swallow the underlying
     // image click (Hannah is probably trying to swap the photo). Video pill
     // buttons under the caption still play normally in either mode.
     if (document.body.classList.contains("hj-edit") && play.classList.contains("work-play")) return;
     e.preventDefault();
     e.stopPropagation();
     const fig = play.closest(".work");
-    hjPlayInline(fig, play.dataset.playVideo);
+    hjPlayInline(fig, play.dataset.playVideo, play.dataset.playKind);
     return;
   }
   const closeBtn = e.target.closest(".work-player__close");

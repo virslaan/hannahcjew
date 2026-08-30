@@ -1257,12 +1257,15 @@ body.hj-edit .work-play { display: none; }
   background: #000;
   z-index: 4;
 }
-.work-player iframe {
+.work-player iframe,
+.work-player video {
   width: 100%;
   height: 100%;
   border: 0;
   display: block;
 }
+/* Uploaded clips keep their own shape rather than being cropped to the tile. */
+.work-player video { object-fit: contain; background: #000; }
 .work-player__close {
   position: absolute;
   top: 0.4rem;
@@ -1788,7 +1791,54 @@ body:not(.hj-edit) .contact-block.is-empty { display: none; }
 }
 .studio-lock input:focus { outline: none; border-color: var(--red); }
 .studio-lock.is-wrong .studio-lock__card { animation: shake 0.45s ease; }
-.studio-lock__actions { display: flex; gap: 0.6rem; justify-content: center; }
+.studio-lock__actions { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+
+/* Studio's own prompt/confirm replacements. Chrome lets people permanently
+   silence native dialogs, which would strand the editor mid-task. */
+.studio-modal__card { width: min(460px, 100%); }
+.studio-modal__field { margin: 1.2rem 0 1.1rem; }
+.studio-modal__field input,
+.studio-modal__field textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  text-align: left;
+}
+.studio-modal__field textarea { resize: vertical; min-height: 6rem; line-height: 1.5; }
+.studio-modal__field input:focus,
+.studio-modal__field textarea:focus { outline: none; border-color: var(--red); }
+
+.studio-modal__choices {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1.3rem 0 1.1rem;
+  text-align: left;
+}
+.studio-modal__choice {
+  display: grid;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out);
+}
+.studio-modal__choice:hover { border-color: var(--red); background: var(--paper-dim); }
+.studio-modal__choice-title {
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.studio-modal__choice-help { font-size: 0.78rem; line-height: 1.5; color: var(--grey); }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-7px); }
@@ -1975,29 +2025,17 @@ body.hj-edit .show__poster--empty::before {
 }
 
 /* move / remove controls that ride along with each item */
-.hj-item-tools {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.4rem;
-  z-index: 6;
-  display: flex;
-  gap: 0.2rem;
-  opacity: 0;
-  transition: opacity 0.25s var(--ease-out);
-}
-/* About / Home paragraphs: sit under the copy, never on top of it */
+/* Item controls always sit in a row beneath the photo or paragraph, so they
+   never cover the picture or the words being typed. */
+.hj-item-tools,
 .hj-item-tools--row {
-  position: static;
-  top: auto;
-  right: auto;
   display: none;
-  margin: 0.5rem 0 0.15rem;
+  gap: 0.25rem;
+  margin: 0.55rem 0 0.15rem;
   opacity: 1;
 }
+body.hj-edit .hj-item-tools,
 body.hj-edit .hj-item-tools--row { display: flex; }
-[data-edit-item]:hover > .hj-item-tools,
-.hj-item-tools:focus-within,
-body.hj-edit .hj-item-tools { opacity: 1; }
 body.hj-edit .work { overflow: visible; }
 .hj-item-tools button {
   width: 36px;
@@ -2023,11 +2061,180 @@ body.hj-edit .work { overflow: visible; }
   letter-spacing: -0.12em;
   cursor: grab;
 }
-body.hj-edit .work > .hj-item-tools { opacity: 1; }
 .hj-item-tools button:hover { background: var(--ink); color: var(--paper); }
 .hj-item-tools button[data-del]:hover { background: var(--red); color: #fff; }
 
 body.hj-edit [data-edit-choice]:hover { cursor: pointer; }
+
+/* ---------- big picture framing ---------- */
+.hj-tune-open {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  z-index: 7;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.hj-tune-open:hover { background: var(--red); border-color: var(--red); }
+body:not(.hj-edit) .hj-tune-open { display: none; }
+
+.hj-tune {
+  position: fixed;
+  right: clamp(0.6rem, 3vw, 1.6rem);
+  bottom: 5.5rem;
+  z-index: 330;
+  width: min(310px, calc(100vw - 1.2rem));
+  padding: 0.9rem 1rem 0.8rem;
+  background: rgb(var(--paper-rgb) / 0.97);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 14px 34px -18px rgb(0 0 0 / 0.5);
+  font-family: var(--font-ui);
+  animation: riseIn 0.35s var(--ease-out) both;
+}
+.hj-tune__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+.hj-tune__head strong {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--grey);
+  font-weight: 500;
+}
+.hj-tune__head .btn { padding: 0.3rem 0.8rem; font-size: 0.62rem; }
+.hj-tune__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.15rem 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.hj-tune__label {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+}
+.hj-tune__row output {
+  font-size: 0.68rem;
+  color: var(--grey);
+  font-variant-numeric: tabular-nums;
+}
+.hj-tune__row input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: var(--red);
+  margin: 0;
+}
+.hj-tune__foot { margin-top: 0.6rem; text-align: right; }
+.hj-tune__foot button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--grey);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.hj-tune__foot button:hover { color: var(--red); }
+@media (max-width: 560px) {
+  .hj-tune { left: 0.6rem; right: 0.6rem; width: auto; bottom: 7.5rem; }
+}
+
+/* ---------- text formatting bar ---------- */
+.hj-format {
+  position: fixed;
+  z-index: 320;
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.4rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 10px 28px -14px rgb(0 0 0 / 0.45);
+  font-family: var(--font-ui);
+}
+.hj-format.is-on { display: flex; }
+.hj-format button,
+.hj-format select {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 0.4rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.hj-format button:hover,
+.hj-format select:hover { background: var(--paper-dim); }
+.hj-format button.is-on { background: var(--ink); color: var(--paper); }
+.hj-format select {
+  min-width: 92px;
+  padding: 0 0.4rem;
+  border-color: var(--line);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+.hj-format__sep {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+  flex: 0 0 auto;
+}
+.hj-format__colors { display: flex; align-items: center; gap: 0.2rem; }
+.hj-format__color {
+  width: 18px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgb(0 0 0 / 0.18);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+.hj-format__color:hover { transform: scale(1.15); }
+.hj-format__color--custom {
+  background: conic-gradient(#d7281c, #b8860b, #0f7b6c, #1e4fd8, #c2185b, #d7281c);
+  display: inline-block;
+}
+.hj-format__color--custom input {
+  position: absolute;
+  inset: -30%;
+  opacity: 0;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+}
+@media (max-width: 560px) {
+  .hj-format { gap: 0.2rem; padding: 0.25rem 0.3rem; max-width: calc(100vw - 1rem); flex-wrap: wrap; }
+  .hj-format button, .hj-format select { height: 34px; min-width: 34px; }
+  .hj-format select { min-width: 78px; }
+  .hj-format__color { width: 22px; min-width: 22px; height: 22px; }
+}
 
 .hj-add {
   display: inline-flex;

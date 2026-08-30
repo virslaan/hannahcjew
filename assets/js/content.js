@@ -18,6 +18,98 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
+  // ----- rich text ------------------------------------------------------
+  // Studio lets Hannah bold, italicise, underline, recolour and restyle her
+  // words, so the saved copy can carry a little markup. Only this short list
+  // of tags and style properties survives; everything else is flattened back
+  // to plain text, which keeps a stray paste from breaking the page.
+  const RICH_TAGS = { B: 1, STRONG: 1, I: 1, EM: 1, U: 1, BR: 1, SPAN: 1 };
+  const RICH_STYLE = ["color", "font-family", "font-weight", "font-style", "text-decoration"];
+  // Browsers wrap new lines in DIV/P inside a contenteditable box; those turn
+  // back into the line breaks Hannah actually typed.
+  const BLOCK_TAGS = { DIV: 1, P: 1 };
+  const SAFE_STYLE_VALUE = /^[\w\s,'"#().%-]+$/;
+
+  function richNode(node) {
+    let out = "";
+    node.childNodes.forEach((n) => {
+      if (n.nodeType === 3) {
+        out += esc(n.nodeValue);
+        return;
+      }
+      if (n.nodeType !== 1) return;
+      const tag = n.tagName;
+      if (tag === "BR") {
+        out += "<br>";
+        return;
+      }
+      if (BLOCK_TAGS[tag]) {
+        const inner = richNode(n);
+        out += (out && !/<br>$/.test(out) ? "<br>" : "") + inner;
+        return;
+      }
+      // Anything not on the list keeps its words but loses its markup.
+      if (!RICH_TAGS[tag]) {
+        out += richNode(n);
+        return;
+      }
+      let attr = "";
+      if (tag === "SPAN") {
+        const styles = [];
+        RICH_STYLE.forEach((prop) => {
+          const v = n.style.getPropertyValue(prop);
+          if (v && SAFE_STYLE_VALUE.test(v)) styles.push(prop + ":" + v);
+        });
+        if (!styles.length) {
+          out += richNode(n);
+          return;
+        }
+        attr = ` style="${esc(styles.join(";"))}"`;
+      }
+      const lower = tag.toLowerCase();
+      out += `<${lower}${attr}>${richNode(n)}</${lower}>`;
+    });
+    return out;
+  }
+
+  function parseFragment(html) {
+    const doc = new DOMParser().parseFromString(`<body><div id="r">${html}</div></body>`, "text/html");
+    return doc.getElementById("r");
+  }
+
+  // Sanitise a chunk of editor HTML down to the formatting we allow.
+  function cleanRich(html) {
+    const str = String(html ?? "");
+    try {
+      return richNode(parseFragment(str));
+    } catch (_) {
+      return esc(str);
+    }
+  }
+
+  // Render a saved string as HTML. Text with no markup characters can skip
+  // the parser entirely, which keeps re-rendering cheap while she types.
+  function rich(s) {
+    const str = String(s ?? "");
+    if (!/[<&]/.test(str)) return esc(str);
+    return cleanRich(str);
+  }
+
+  // Strip formatting back to words, for alt text and other attributes.
+  function plain(s) {
+    const str = String(s ?? "");
+    if (!/[<&]/.test(str)) return str;
+    try {
+      return parseFragment(str.replace(/<br\s*\/?>/gi, " ")).textContent || "";
+    } catch (_) {
+      return str;
+    }
+  }
+
+  window.HJ_rich = rich;
+  window.HJ_plain = plain;
+  window.HJ_cleanRich = cleanRich;
+
   function icon(name, size) {
     const s = size || 16;
     const box = `class="i" viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"`;
@@ -251,7 +343,7 @@
       body.innerHTML = h.paragraphs
         .map(
           (p, i) =>
-            `<p data-edit-item="home.paragraphs" data-index="${i}"><span${ed("home.paragraphs." + i)}>${esc(p)}</span></p>`
+            `<p data-edit-item="home.paragraphs" data-index="${i}"><span${ed("home.paragraphs." + i)}>${rich(p)}</span></p>`
         )
         .join("");
     }
@@ -265,25 +357,25 @@
 
     const k = document.querySelector("[data-home-next-kicker]");
     if (k) {
-      k.textContent = ns.kicker || "";
+      k.innerHTML = rich(ns.kicker || "");
       k.setAttribute("data-edit", "home.nextShow.kicker");
     }
     const t = document.querySelector("[data-home-next-title]");
     if (t) {
       const role = (ns.role || "").trim();
       t.innerHTML =
-        `<em${ed("home.nextShow.title")}>${esc(ns.title || "")}</em>` +
-        (role ? ` · <span${ed("home.nextShow.role")}>${esc(role)}</span>` : "");
+        `<em${ed("home.nextShow.title")}>${rich(ns.title || "")}</em>` +
+        (role ? ` · <span${ed("home.nextShow.role")}>${rich(role)}</span>` : "");
     }
     const v = document.querySelector("[data-home-next-venue]");
     if (v) {
-      v.textContent = ns.venue || "";
+      v.innerHTML = rich(ns.venue || "");
       v.setAttribute("data-edit", "home.nextShow.venue");
     }
     const a = document.querySelector("[data-home-next-link]");
     if (a) {
       a.href = ns.link || "upcoming.html";
-      a.innerHTML = `<span${ed("home.nextShow.linkLabel")}>${esc(ns.linkLabel || "All upcoming")}</span> ${icon("arrow", 14)}`;
+      a.innerHTML = `<span${ed("home.nextShow.linkLabel")}>${rich(ns.linkLabel || "All upcoming")}</span> ${icon("arrow", 14)}`;
     }
   }
 
@@ -298,14 +390,14 @@
     }
     const coverCredit = document.querySelector("[data-about-cover-credit]");
     if (coverCredit) {
-      coverCredit.textContent = creditLine(a.coverCredit);
+      coverCredit.innerHTML = rich(creditLine(a.coverCredit));
       coverCredit.setAttribute("data-edit", "about.coverCredit");
       coverCredit.setAttribute("data-edit-label", "Photographer");
     }
 
     const lead = document.querySelector("[data-about-lead]");
     if (lead) {
-      lead.textContent = a.lead || "";
+      lead.innerHTML = rich(a.lead || "");
       lead.setAttribute("data-edit", "about.lead");
     }
 
@@ -317,12 +409,12 @@
     }
     const cap = document.querySelector("[data-about-caption]");
     if (cap) {
-      cap.textContent = a.imageCaption || "";
+      cap.innerHTML = rich(a.imageCaption || "");
       cap.setAttribute("data-edit", "about.imageCaption");
     }
     const credit = document.querySelector("[data-about-credit]");
     if (credit) {
-      credit.textContent = creditLine(a.imageCredit);
+      credit.innerHTML = rich(creditLine(a.imageCredit));
       credit.setAttribute("data-edit", "about.imageCredit");
       credit.setAttribute("data-edit-label", "Photographer");
     }
@@ -336,7 +428,7 @@
     copy.innerHTML = (a.paragraphs || [])
       .map(
         (p, i) =>
-          `<p data-edit-item="about.paragraphs" data-index="${i}"><span${ed("about.paragraphs." + i)}>${esc(p)}</span></p>`
+          `<p data-edit-item="about.paragraphs" data-index="${i}"><span${ed("about.paragraphs." + i)}>${rich(p)}</span></p>`
       )
       .join("");
   }
@@ -347,12 +439,12 @@
 
     const title = document.querySelector("[data-resume-title]");
     if (title) {
-      title.textContent = resume.title || "Resume";
+      title.innerHTML = rich(resume.title || "Resume");
       title.setAttribute("data-edit", "resume.title");
     }
     const blurb = document.querySelector("[data-resume-blurb]");
     if (blurb) {
-      blurb.textContent = resume.blurb || "";
+      blurb.innerHTML = rich(resume.blurb || "");
       blurb.setAttribute("data-edit", "resume.blurb");
     }
     document.querySelectorAll("[data-resume-pdf], [data-resume-open]").forEach((el) => {
@@ -368,7 +460,7 @@
     }
     const heroCredit = document.querySelector("[data-headshots-cover-credit]");
     if (heroCredit) {
-      heroCredit.textContent = creditLine(resume.coverCredit);
+      heroCredit.innerHTML = rich(creditLine(resume.coverCredit));
       heroCredit.setAttribute("data-edit", "resume.coverCredit");
       heroCredit.setAttribute("data-edit-label", "Photographer");
     }
@@ -380,9 +472,9 @@
       .map((s, i) => {
         const credit = creditLine(s.credit);
         return `<figure class="shot will-reveal" data-lightbox data-edit-item="headshots" data-index="${i}"
-                 data-title="${esc(s.title || "Hannah Jew")}" data-credit="${esc(credit)}">
-          <img src="${esc(s.src)}" alt="${esc(s.alt || s.title || "")}" loading="lazy" data-edit-img="headshots.${i}.src" />
-          <figcaption class="shot-credit"${ed("headshots." + i + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</figcaption>
+                 data-title="${esc(plain(s.title || "Hannah Jew"))}" data-credit="${esc(plain(credit))}">
+          <img src="${esc(s.src)}" alt="${esc(plain(s.alt || s.title || ""))}" loading="lazy" data-edit-img="headshots.${i}.src" />
+          <figcaption class="shot-credit"${ed("headshots." + i + ".credit", 'data-edit-label="Photographer"')}>${rich(credit)}</figcaption>
           <button type="button" class="hj-remove" data-remove>Remove</button>
         </figure>`;
       })
@@ -444,7 +536,11 @@
         const span = item.span || 1;
         const notes = (item.notes || "").trim();
         const video = (item.video || "").trim();
-        const isVideo = !!video;
+        // A tile is a video either because it links out to YouTube/Vimeo or
+        // because Hannah uploaded the file itself.
+        const videoFile = (item.videoFile || "").trim();
+        const isVideo = !!video || !!videoFile;
+        const playSrc = videoFile || video;
         // Videos fall back to the YouTube thumbnail, then a neutral placeholder,
         // so a fresh tile always shows something the moment it's added.
         const thumb = item.src || (isVideo ? youtubeThumb(video) || VIDEO_PLACEHOLDER : "");
@@ -455,25 +551,29 @@
           `<button type="button" data-${key}="${val}" class="${(key === "orient" ? orient : String(span)) === String(val) ? "is-on" : ""}">${label}</button>`;
         const p = "portfolio." + i;
         const kindClass = isVideo ? " work--video" : "";
-        const videoEditRow = isVideo
-          ? `<div class="work-video-meta hj-edit-only"><a class="work-video-edit" href="${esc(video)}" data-edit-href="${p}.video" data-prompt="Paste the YouTube or Vimeo link for this tile. Leave blank to remove.">${icon("edit", 12)} Change video link</a></div>`
-          : "";
+        // Uploaded files have no link to retype, so only linked videos get the
+        // "change the link" row.
+        const videoEditRow = videoFile
+          ? `<div class="work-video-meta hj-edit-only"><span class="work-video-edit">${icon("play", 12)} Uploaded video</span></div>`
+          : isVideo
+            ? `<div class="work-video-meta hj-edit-only"><a class="work-video-edit" href="${esc(video)}" data-edit-href="${p}.video" data-prompt="Paste the YouTube or Vimeo link for this tile. Leave blank to remove.">${icon("edit", 12)} Change video link</a></div>`
+            : "";
         return `<figure class="work will-reveal${kindClass}" data-category="${esc(cat)}" data-orient="${esc(orient)}" data-span="${span}"
                  ${isVideo ? 'data-kind="video"' : ""} data-lightbox
                  data-edit-item="portfolio" data-index="${i}"
-                 data-title="${esc(item.title)}" data-credit="${esc(credit)}">
+                 data-title="${esc(plain(item.title))}" data-credit="${esc(plain(credit))}">
           <span class="tag">${esc(catLabel(site, cat))}</span>
           <label class="tag-pick">
             <select data-edit-cat="portfolio.${i}.category" aria-label="Category">${options}</select>
           </label>
           <span class="work-media">
-            <img src="${esc(thumb)}" alt="${esc(item.alt || item.title)}" loading="lazy" data-edit-img="portfolio.${i}.src" />
-            ${isVideo ? `<button type="button" class="work-play" data-play-video="${esc(video)}" aria-label="Play video"><span class="work-play__icon">${icon("play", 22)}</span></button>` : ""}
+            <img src="${esc(thumb)}" alt="${esc(plain(item.alt || item.title))}" loading="lazy" data-edit-img="portfolio.${i}.src" />
+            ${isVideo ? `<button type="button" class="work-play" data-play-video="${esc(playSrc)}"${videoFile ? ' data-play-kind="file"' : ""} aria-label="Play video"><span class="work-play__icon">${icon("play", 22)}</span></button>` : ""}
           </span>
           <figcaption>
-            <span class="title"${ed(p + ".title")}>${esc(item.title)}</span>
-            <span class="credit"${ed(p + ".credit", 'data-edit-label="Photographer"')}>${esc(credit)}</span>
-            <p class="work-notes"${ed(p + ".notes", 'data-edit-label="Notes: credits, cast, and details" data-edit-multiline="1"')}>${esc(notes)}</p>
+            <span class="title"${ed(p + ".title")}>${rich(item.title)}</span>
+            <span class="credit"${ed(p + ".credit", 'data-edit-label="Photographer"')}>${rich(credit)}</span>
+            <p class="work-notes"${ed(p + ".notes", 'data-edit-label="Notes: credits, cast, and details" data-edit-multiline="1"')}>${rich(notes)}</p>
             ${videoEditRow}
             <div class="work-shape">
               ${shapeBtn("orient", "portrait", "Tall")}
@@ -502,12 +602,12 @@
       .map((s, i) => {
         const p = "upcoming." + i + ".";
         const poster = s.poster
-          ? `<figure class="show__poster" data-lightbox data-title="${esc(s.title)}" data-credit="">
-              <img src="${esc(s.poster)}" alt="${esc(s.posterAlt || s.title)}" loading="lazy" data-edit-img="${p}poster" />
+          ? `<figure class="show__poster" data-lightbox data-title="${esc(plain(s.title))}" data-credit="">
+              <img src="${esc(s.poster)}" alt="${esc(plain(s.posterAlt || s.title))}" loading="lazy" data-edit-img="${p}poster" />
               <span class="shine" aria-hidden="true"></span>
             </figure>`
           : `<figure class="show__poster show__poster--empty" data-edit-empty-img="${p}poster"></figure>`;
-        const onsale = `<p class="onsale"${ed(p + "onsale")}>${esc(s.onsale || "")}</p>`;
+        const onsale = `<p class="onsale"${ed(p + "onsale")}>${rich(s.onsale || "")}</p>`;
         const tickets = s.tickets
           ? `<a class="btn btn--red" href="${esc(s.tickets)}" target="_blank" rel="noopener" data-edit-href="${p}tickets">Tickets ${icon("arrow", 14)}</a>`
           : `<button type="button" class="btn hj-ticket-placeholder" data-edit-href="${p}tickets">Add ticket link</button>`;
@@ -515,13 +615,13 @@
           ${poster}
           <div class="show__body">
             <div class="show__date">
-              <span class="month"${ed(p + "month")}>${esc(s.month || "")}</span>
-              <span class="year"${ed(p + "year")}>${esc(s.year || "")}</span>
+              <span class="month"${ed(p + "month")}>${rich(s.month || "")}</span>
+              <span class="year"${ed(p + "year")}>${rich(s.year || "")}</span>
             </div>
-            <h2><em${ed(p + "title")}>${esc(s.title || "")}</em></h2>
-            <p class="role"${ed(p + "role")}>${esc(s.role || "")}</p>
-            <p class="venue"${ed(p + "venue")}>${esc(s.venue || "")}</p>
-            <p class="show__info"${ed(p + "info")}>${esc(s.info || "")}</p>
+            <h2><em${ed(p + "title")}>${rich(s.title || "")}</em></h2>
+            <p class="role"${ed(p + "role")}>${rich(s.role || "")}</p>
+            <p class="venue"${ed(p + "venue")}>${rich(s.venue || "")}</p>
+            <p class="show__info"${ed(p + "info")}>${rich(s.info || "")}</p>
             ${onsale}
             ${tickets}
             <button type="button" class="hj-remove" data-remove>Remove show</button>
@@ -532,7 +632,7 @@
 
     const note = document.querySelector("[data-upcoming-note]");
     if (note) {
-      note.textContent = site.upcomingNote || "";
+      note.innerHTML = rich(site.upcomingNote || "");
       note.setAttribute("data-edit", "upcomingNote");
     }
     if (typeof window.bindLightbox === "function") window.bindLightbox();
@@ -555,7 +655,7 @@
 
     const sub = document.querySelector("[data-contact-sub]");
     if (sub) {
-      sub.textContent = c.sub || "";
+      sub.innerHTML = rich(c.sub || "");
       sub.setAttribute("data-edit", "contact.sub");
     }
 
@@ -564,6 +664,8 @@
       email.href = "mailto:" + (c.email || "");
       email.textContent = c.email || "";
       email.setAttribute("data-edit", "contact.email");
+      // The address doubles as the mailto link, so it stays unformatted.
+      email.setAttribute("data-edit-plain", "1");
     }
 
     const rep = document.querySelector("[data-contact-rep]");
@@ -571,12 +673,12 @@
       const phone = (c.phone || "").trim();
       const fax = (c.fax || "").trim();
       rep.innerHTML =
-        `<span${ed("contact.agency")}>${esc(c.agency || "")}</span><br />` +
-        `<span${ed("contact.address")}>${esc(c.address || "")}</span>` +
+        `<span${ed("contact.agency")}>${rich(c.agency || "")}</span><br />` +
+        `<span${ed("contact.address")}>${rich(c.address || "")}</span>` +
         (phone
-          ? `<br /><a href="tel:+1${phone.replace(/\D/g, "")}"${ed("contact.phone")}>${esc(phone)}</a> (o)`
+          ? `<br /><a href="tel:+1${phone.replace(/\D/g, "")}"${ed("contact.phone", 'data-edit-plain="1"')}>${esc(phone)}</a> (o)`
           : "") +
-        (fax ? ` · <span${ed("contact.fax")}>${esc(fax)}</span> (f)` : "");
+        (fax ? ` · <span${ed("contact.fax", 'data-edit-plain="1"')}>${esc(fax)}</span> (f)` : "");
     }
 
     const agent = document.querySelector("[data-contact-agent]");
@@ -584,9 +686,9 @@
       const name = (c.agentName || "").trim();
       const mail = (c.agentEmail || "").trim();
       agent.innerHTML =
-        `<span${ed("contact.agentName", 'data-edit-label="Agent name"')}>${esc(name)}</span><br />` +
+        `<span${ed("contact.agentName", 'data-edit-label="Agent name"')}>${rich(name)}</span><br />` +
         (mail
-          ? `<a href="mailto:${esc(mail)}"${ed("contact.agentEmail")}>${esc(mail)}</a>`
+          ? `<a href="mailto:${esc(mail)}"${ed("contact.agentEmail", 'data-edit-plain="1"')}>${esc(mail)}</a>`
           : `<span${ed("contact.agentEmail", 'data-edit-label="Agent email"')}></span>`);
       const block = agent.closest(".contact-block");
       if (block) block.classList.toggle("is-empty", !name && !mail);
@@ -624,7 +726,7 @@
     }
     const cap = document.querySelector("[data-contact-caption]");
     if (cap) {
-      cap.textContent = c.imageCaption || "";
+      cap.innerHTML = rich(c.imageCaption || "");
       cap.setAttribute("data-edit", "contact.imageCaption");
     }
   }
@@ -688,6 +790,25 @@
     }
   }
 
+  // Per-image framing saved from Studio: which part of the photo shows,
+  // how far in it is cropped, and how bright it sits.
+  function applyImageTune(site) {
+    const tune = site.imageTune || {};
+    document.querySelectorAll("[data-edit-img]").forEach((img) => {
+      const t = tune[img.dataset.editImg];
+      if (!t) return;
+      if (t.x != null || t.y != null) {
+        img.style.objectPosition = `${t.x == null ? 50 : t.x}% ${t.y == null ? 50 : t.y}%`;
+      }
+      img.style.scale = t.zoom && Number(t.zoom) !== 100 ? String(Number(t.zoom) / 100) : "";
+      const filters = [];
+      if (t.bright != null && Number(t.bright) !== 100) filters.push(`brightness(${Number(t.bright)}%)`);
+      if (t.contrast != null && Number(t.contrast) !== 100) filters.push(`contrast(${Number(t.contrast)}%)`);
+      img.style.filter = filters.join(" ");
+    });
+  }
+  window.HJ_applyImageTune = applyImageTune;
+
   function hydrate(site) {
     applyTheme(site);
     applyAccent(site);
@@ -698,6 +819,7 @@
     hydrateUpcoming(site);
     hydrateContact(site);
     hydrateNav(site);
+    applyImageTune(site);
     if (typeof window.HJ_observeReveals === "function") window.HJ_observeReveals();
     document.dispatchEvent(new CustomEvent("hj:rendered", { detail: site }));
   }
