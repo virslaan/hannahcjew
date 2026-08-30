@@ -340,7 +340,18 @@
   "imageTune": {},
   "pages": {
     "portfolio": {
-      "intro": "Please select to "
+      "intro": "Please use tabs to find samples of my work"
+    },
+    "headshots": {
+      "kicker": "Headshots &amp; Resume",
+      "heading": "Hannah Jew",
+      "shotsHeading": "Headshots",
+      "shotsNote": "<br>",
+      "resumeDownload": "Download PDF",
+      "resumeOpen": "Open in a new tab"
+    },
+    "footer": {
+      "note": "Represented by Clear Talent Group · New York"
     }
   }
 }
