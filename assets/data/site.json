@@ -104,6 +104,16 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtfyikgr-c5i2",
+      "src": "assets/img/portfolio/dancer_p-mtfyikgr-c5i2.jpg",
+      "title": "dancer",
+      "credit": "",
+      "category": "in-studio-the-process",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "dancer"
+    },
+    {
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
@@ -292,7 +302,7 @@
     "accent": "#d7281c"
   },
   "portfolioLayout": {
-    "columns": 4
+    "columns": 2
   },
   "nav": [
     {
@@ -315,5 +325,14 @@
       "href": "contact.html",
       "label": "Contact"
     }
-  ]
+  ],
+  "imageTune": {
+    "home.introImage": {
+      "x": 50,
+      "y": 50,
+      "zoom": 100,
+      "bright": 100,
+      "contrast": 100
+    }
+  }
 }
