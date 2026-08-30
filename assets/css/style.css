@@ -2103,6 +2103,14 @@ body.hj-edit .hj-edit-hint { display: block; }
   .studio-bar__accent > span { display: none; }
   .studio-bar__actions { flex: 1 0 100%; justify-content: space-between; }
   .studio-bar .btn { padding: 0.5rem 0.85rem; font-size: 0.85rem; }
+  /* the save status is wordy, so let it stack rather than push the buttons off */
+  .studio-bar__state {
+    white-space: normal;
+    flex: 1 1 auto;
+    min-width: 0;
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+  }
 }
 
 @media (max-width: 720px) {

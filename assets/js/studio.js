@@ -357,7 +357,7 @@
       site.resume = site.resume || {};
       site.resume.pdf = await readAsDataUrl(files[0]);
       rerender();
-      toast("New resume loaded. It will go live in about a minute.");
+      toast("New resume loaded. It shows up on the live site in 1–2 minutes.");
     });
     anchor.insertAdjacentElement("afterend", btn);
   }
@@ -698,7 +698,7 @@
     if (isEditing()) armEditing();
     persistDraft();
     updateBar();
-    toast("Video added. Click ▶ on the tile to play. To swap the cover, click the thumbnail in edit mode.");
+    toast("Video added. Click the play button on the tile to watch it. To swap the cover image, click the thumbnail in edit mode.");
 
     const token = liveToken();
     if (!token) {
@@ -784,13 +784,14 @@
       }
       window.HJ_clearSiteDraft();
       dirty = false;
-      say("Live");
+      savedThisSession = true;
+      say(SAVED_LABEL);
       toast(
         (ok === 1 ? "Photo added." : ok + " photos added.") +
           (failed ? " " + failed + " could not upload." : "") +
-          " Live in about a minute."
+          " They show up on the live site in 1–2 minutes."
       );
-      setTimeout(() => { if (state && state.textContent === "Live") state.textContent = ""; }, 4000);
+      setTimeout(() => { if (state && state.textContent === SAVED_LABEL) state.textContent = ""; }, 8000);
     } catch (err) {
       console.error("save list failed", err);
       say("Not saved");
@@ -898,6 +899,10 @@
   let liveTimer = null;
   let liveBusy = false;
   let liveAgain = false;
+  // GitHub Pages needs a moment to rebuild, so the bar says "saved" rather than
+  // "live" until the rebuild has realistically finished.
+  const SAVED_LABEL = "Saved · live in 1–2 min";
+  let savedThisSession = false;
 
   function scheduleLive() {
     if (holdLive) return;
@@ -924,12 +929,13 @@
     try {
       say("Saving…");
       await publish(token, say);
-      say("Live");
-      toast("Saved. The live site updates in about a minute.");
+      savedThisSession = true;
+      say(SAVED_LABEL);
+      toast("Saved. Your changes show up on the live site in 1–2 minutes.");
       setTimeout(() => {
         const state = $(".studio-bar [data-state]");
-        if (state && state.textContent === "Live") state.textContent = "";
-      }, 4000);
+        if (state && state.textContent === SAVED_LABEL) state.textContent = "";
+      }, 8000);
     } catch (err) {
       console.error(err);
       say("Could not save");
@@ -1075,7 +1081,7 @@
       <div class="studio-lock__card" role="dialog" aria-modal="true" aria-label="Passcode">
         <p class="studio-lock__kicker">Site studio</p>
         <h2>Edit your website</h2>
-        <p class="studio-lock__help">Enter your passcode, then click anything on the page to change it. It saves by itself and goes live in about a minute.</p>
+        <p class="studio-lock__help">Enter your passcode, then click anything on the page to change it. It saves by itself, and your changes show up on the live site in 1–2 minutes.</p>
         <input type="password" placeholder="Passcode" autocomplete="current-password" />
         <div class="studio-lock__actions">
           <button type="button" data-go class="btn btn--red">Start editing</button>
@@ -1107,6 +1113,7 @@
 
   function startEditing() {
     sessionStorage.setItem(EDITING_KEY, "1");
+    savedThisSession = false;
     buildBar();
     armEditing();
     toast("Edit mode on. Click any words or photo to change it. It saves by itself.");
@@ -1202,7 +1209,9 @@
       if (dirty) {
         clearTimeout(liveTimer);
         pushLive();
-        toast("Saving. The live site updates in about a minute.");
+        toast("Saving. Your changes show up on the live site in 1–2 minutes.");
+      } else if (savedThisSession) {
+        toast("All saved. Your changes show up on the live site in 1–2 minutes.");
       } else {
         toast("Edit mode off.");
       }
