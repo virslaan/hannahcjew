@@ -94,10 +94,6 @@
       "label": "Choreographer"
     },
     {
-      "id": "educator",
-      "label": "Educator"
-    },
-    {
       "id": "photoshoots",
       "label": "Photoshoots"
     },
@@ -107,6 +103,18 @@
     }
   ],
   "portfolio": [
+    {
+      "id": "v-mtfwd5wu-4iwt",
+      "video": "https://www.youtube.com/watch?v=IxxstCcJlsc",
+      "src": "https://img.youtube.com/vi/IxxstCcJlsc/hqdefault.jpg",
+      "title": "TEST",
+      "credit": "",
+      "notes": "nope",
+      "category": "in-studio-the-process",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "TEST (video)"
+    },
     {
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
@@ -292,7 +300,7 @@
     "phone": "212 840-4100"
   },
   "theme": {
-    "name": "noir",
+    "name": "seal",
     "accent": "#d7281c"
   },
   "portfolioLayout": {
