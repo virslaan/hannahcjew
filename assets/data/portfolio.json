@@ -1,15 +1,13 @@
 [
   {
-    "id": "v-mtfwd5wu-4iwt",
-    "video": "https://www.youtube.com/watch?v=IxxstCcJlsc",
-    "src": "https://img.youtube.com/vi/IxxstCcJlsc/hqdefault.jpg",
-    "title": "TEST",
+    "id": "p-mtfyikgr-c5i2",
+    "src": "assets/img/portfolio/dancer_p-mtfyikgr-c5i2.jpg",
+    "title": "dancer",
     "credit": "",
-    "notes": "nope",
     "category": "in-studio-the-process",
     "orient": "portrait",
     "span": 1,
-    "alt": "TEST (video)"
+    "alt": "dancer"
   },
   {
     "id": "p-msv6l3ce-d004",
