@@ -337,5 +337,10 @@
       "label": "Contact"
     }
   ],
-  "imageTune": {}
+  "imageTune": {},
+  "pages": {
+    "portfolio": {
+      "intro": "<br>"
+    }
+  }
 }
