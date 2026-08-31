@@ -255,7 +255,11 @@
       const key = el.dataset.pageText;
       if (!key) return;
       if (PAGE_DEFAULTS[key] == null) PAGE_DEFAULTS[key] = cleanRich(el.innerHTML).trim();
-      el.innerHTML = rich(pageText(site, key, PAGE_DEFAULTS[key]));
+      const value = pageText(site, key, PAGE_DEFAULTS[key]);
+      // Clearing a line in the editor leaves the browser's stray <br> behind.
+      // Render that as nothing, so the line closes up for visitors and edit
+      // mode offers the hint that lets her type it again.
+      el.innerHTML = plain(value).trim() ? rich(value) : "";
       el.setAttribute("data-edit", "pages." + key);
       el.setAttribute("data-edit-label", pageLabel(key));
     });
@@ -299,7 +303,7 @@
     return null;
   }
 
-  window.HJ_loadSite = async function () {
+  async function loadSite() {
     const base = await fetchSite();
     const draft = readDraft();
     const site = draft ? Object.assign({}, base, draft) : base;
@@ -333,6 +337,20 @@
     }
     window.HJ_SITE = site;
     return site;
+  }
+
+  // Content and Studio both wake up at the same moment and both ask for the
+  // site. Sharing the request in flight keeps them holding the one object, so
+  // the wording a page starts with is the wording Studio saves.
+  let loading = null;
+  window.HJ_loadSite = function () {
+    if (loading) return loading;
+    loading = loadSite();
+    const done = () => {
+      loading = null;
+    };
+    loading.then(done, done);
+    return loading;
   };
 
   window.HJ_saveSite = function (site) {

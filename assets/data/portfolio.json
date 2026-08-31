@@ -1,24 +1,15 @@
 [
   {
-    "id": "p-mtfz1t1j-szxz",
-    "src": "assets/img/portfolio/b_p-mtfz1t1j-szxz.jpg",
-    "title": "b",
-    "credit": "test",
-    "category": "test",
-    "orient": "portrait",
+    "id": "v-mt1qlt92-ai7k",
+    "video": "https://www.youtube.com/watch?v=q4DU7X9UCXM&list=RDq4DU7X9UCXM&start_radio=1",
+    "src": "https://img.youtube.com/vi/q4DU7X9UCXM/hqdefault.jpg",
+    "title": "Mountain of Echoing Halls",
+    "credit": "*world premiere",
+    "notes": "Composer/Yangqin: Chengjin Koh, Musicians: Verona Quartet, Choreographer/Dancer: Hannah Jew,",
+    "category": "choreographer",
+    "orient": "landscape",
     "span": 1,
-    "alt": "b"
-  },
-  {
-    "id": "p-mtfz1s5u-k3sd",
-    "src": "assets/img/portfolio/dancer_p-mtfz1s5u-k3sd.jpg",
-    "title": "dancer",
-    "credit": "",
-    "category": "test",
-    "orient": "portrait",
-    "span": 1,
-    "alt": "dancer",
-    "notes": "test"
+    "alt": "Mountain of Echoing Halls (video)"
   },
   {
     "id": "p-msv6l3ce-d004",
