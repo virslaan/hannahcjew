@@ -78,6 +78,13 @@
   };
   const b64of = (dataUrl) => String(dataUrl).split(",")[1] || "";
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  // The host needs a minute or two to publish a file we just saved, so hand
+  // the picture we already have to the page under the address it is about to
+  // live at. Without this the grid asks for a file that isn't there yet and
+  // Hannah watches an empty frame until she reloads.
+  const keepPreview = (path, dataUrl) => {
+    if (typeof window.HJ_previewImage === "function") window.HJ_previewImage(path, dataUrl);
+  };
   let holdLive = false;
 
   // ----- image handling -------------------------------------------------
@@ -1219,6 +1226,7 @@
         if (shot.poster) {
           posterPath = `assets/img/${base}_${id}.jpg`;
           await ghPut(posterPath, b64of(shot.poster), token, "Add video cover " + posterPath);
+          keepPreview(posterPath, shot.poster);
         }
 
         const title = (f.name || "Video").replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
@@ -1309,6 +1317,7 @@
           const p = folder + "/" + imageFileName(item, path === "headshots" ? "headshot" : "photo");
           say(`Uploading ${i + 1} of ${total}…`);
           await ghPut(p, b64of(item.src), token, "Add image " + p);
+          keepPreview(p, item.src);
           item.src = p;
         }
         arr.unshift(item);
@@ -1533,6 +1542,7 @@
           const p = `${folder}/${nameFn(item)}`;
           say(`Uploading ${item.title || "photo"}…`);
           await ghPut(p, b64of(item[field]), token, `Add image ${p}`);
+          keepPreview(p, item[field]);
           item[field] = p;
         }
       }
@@ -1551,6 +1561,7 @@
         const p = `assets/img/${label}_${uid("img")}.jpg`;
         say(`Uploading ${label} photo…`);
         await ghPut(p, b64of(obj[key]), token, `Update ${label} image`);
+        keepPreview(p, obj[key]);
         obj[key] = p;
       }
     }

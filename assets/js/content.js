@@ -18,6 +18,19 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
+  // ----- freshly uploaded pictures --------------------------------------
+  // A photo is saved to the repo the moment Hannah picks it, but the live
+  // host takes a minute or two to publish the file. Until then its address
+  // answers with nothing, so the page would show an empty frame. Studio
+  // parks the picture it already holds in here under the address it will
+  // eventually have, and every image below is drawn through src(), so she
+  // sees the photo straight away and the saved file takes over on reload.
+  const previews = new Map();
+  window.HJ_previewImage = function (path, dataUrl) {
+    if (path && dataUrl) previews.set(path, dataUrl);
+  };
+  const src = (s) => previews.get(String(s ?? "")) || s;
+
   // ----- rich text ------------------------------------------------------
   // Studio lets Hannah bold, italicise, underline, recolour and restyle her
   // words, so the saved copy can carry a little markup. Only this short list
@@ -377,7 +390,7 @@
 
     const hero = document.querySelector("[data-home-hero]");
     if (hero) {
-      if (h.heroImage) hero.src = h.heroImage;
+      if (h.heroImage) hero.src = src(h.heroImage);
       hero.setAttribute("data-edit-img", "home.heroImage");
     }
 
@@ -411,7 +424,7 @@
 
     const introImg = document.querySelector("[data-home-intro-img]");
     if (introImg) {
-      if (h.introImage) introImg.src = h.introImage;
+      if (h.introImage) introImg.src = src(h.introImage);
       introImg.alt = h.introImageAlt || "";
       introImg.setAttribute("data-edit-img", "home.introImage");
     }
@@ -445,7 +458,7 @@
 
     const cover = document.querySelector("[data-about-cover]");
     if (cover) {
-      if (a.cover) cover.src = a.cover;
+      if (a.cover) cover.src = src(a.cover);
       cover.alt = a.coverAlt || "";
       cover.setAttribute("data-edit-img", "about.cover");
     }
@@ -464,7 +477,7 @@
 
     const img = document.querySelector("[data-about-img]");
     if (img) {
-      if (a.image) img.src = a.image;
+      if (a.image) img.src = src(a.image);
       img.alt = a.imageAlt || "";
       img.setAttribute("data-edit-img", "about.image");
     }
@@ -515,8 +528,8 @@
     const shots = site.headshots || [];
     const hero = document.querySelector("[data-headshots-hero]");
     if (hero) {
-      const src = resume.cover || (shots[0] && shots[0].src);
-      if (src) hero.src = src;
+      const cover = resume.cover || (shots[0] && shots[0].src);
+      if (cover) hero.src = src(cover);
       hero.setAttribute("data-edit-img", "resume.cover");
     }
     const heroCredit = document.querySelector("[data-headshots-cover-credit]");
@@ -534,7 +547,7 @@
         const credit = creditLine(s.credit);
         return `<figure class="shot will-reveal" data-lightbox data-edit-item="headshots" data-index="${i}"
                  data-title="${esc(plain(s.title || "Hannah Jew"))}" data-credit="${esc(plain(credit))}">
-          <img src="${esc(s.src)}" alt="${esc(plain(s.alt || s.title || ""))}" loading="lazy" data-edit-img="headshots.${i}.src" />
+          <img src="${esc(src(s.src))}" alt="${esc(plain(s.alt || s.title || ""))}" loading="lazy" data-edit-img="headshots.${i}.src" />
           <figcaption class="shot-credit"${ed("headshots." + i + ".credit", 'data-edit-label="Photographer"')}>${rich(credit)}</figcaption>
           <button type="button" class="hj-remove" data-remove>Remove</button>
         </figure>`;
@@ -628,7 +641,7 @@
             <select data-edit-cat="portfolio.${i}.category" aria-label="Category">${options}</select>
           </label>
           <span class="work-media">
-            <img src="${esc(thumb)}" alt="${esc(plain(item.alt || item.title))}" loading="lazy" data-edit-img="portfolio.${i}.src" />
+            <img src="${esc(src(thumb))}" alt="${esc(plain(item.alt || item.title))}" loading="lazy" data-edit-img="portfolio.${i}.src" />
             ${isVideo ? `<button type="button" class="work-play" data-play-video="${esc(playSrc)}"${videoFile ? ' data-play-kind="file"' : ""} aria-label="Play video"><span class="work-play__icon">${icon("play", 22)}</span></button>` : ""}
           </span>
           <figcaption>
@@ -664,7 +677,7 @@
         const p = "upcoming." + i + ".";
         const poster = s.poster
           ? `<figure class="show__poster" data-lightbox data-title="${esc(plain(s.title))}" data-credit="">
-              <img src="${esc(s.poster)}" alt="${esc(plain(s.posterAlt || s.title))}" loading="lazy" data-edit-img="${p}poster" />
+              <img src="${esc(src(s.poster))}" alt="${esc(plain(s.posterAlt || s.title))}" loading="lazy" data-edit-img="${p}poster" />
               <span class="shine" aria-hidden="true"></span>
             </figure>`
           : `<figure class="show__poster show__poster--empty" data-edit-empty-img="${p}poster"></figure>`;
@@ -784,7 +797,7 @@
 
     const img = document.querySelector("[data-contact-img]");
     if (img) {
-      if (c.image) img.src = c.image;
+      if (c.image) img.src = src(c.image);
       img.alt = c.imageAlt || "";
       img.setAttribute("data-edit-img", "contact.image");
     }
