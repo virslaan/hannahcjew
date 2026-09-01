@@ -1400,7 +1400,14 @@
         set(path, arr);
         rerender();
       });
-      listEl.insertAdjacentElement("afterend", btn);
+      // Usually the button sits just after the list. But where the list is
+      // itself one cell of a layout — the About page sets her words beside
+      // her portrait — a button placed after it is dealt into the next cell,
+      // landing under the photo a column away from the paragraphs it adds to.
+      // There it belongs inside the list, under the last thing she wrote.
+      const around = listEl.parentElement && getComputedStyle(listEl.parentElement).display;
+      if (around === "grid" || around === "flex") listEl.appendChild(btn);
+      else listEl.insertAdjacentElement("afterend", btn);
       if (path === "portfolio") {
         const vbtn = document.createElement("button");
         vbtn.type = "button";
