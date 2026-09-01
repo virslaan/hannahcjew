@@ -2,19 +2,20 @@
   {
     "id": "p-mti2isrc-6jl4",
     "src": "assets/img/portfolio/img-1107-enhanced-nr_p-mti2isrc-6jl4.jpg",
-    "title": "<br>",
-    "credit": "",
+    "title": "The King and I <br>",
+    "credit": "photo by indy ghostlight",
     "category": "performer",
     "orient": "portrait",
     "span": 1,
-    "alt": "IMG 1107 Enhanced NR"
+    "alt": "IMG 1107 Enhanced NR",
+    "notes": ""
   },
   {
     "id": "p-mti2g92p-wfc5",
     "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
     "title": "",
     "credit": "photo by ted forbes",
-    "category": "in-studio-the-process",
+    "category": "photoshoots",
     "orient": "portrait",
     "span": 1,
     "alt": "1019460"
