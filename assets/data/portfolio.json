@@ -1,75 +1,42 @@
 [
   {
-    "id": "p-mti3ibqa-7dwv",
-    "src": "assets/img/portfolio/dsc04998_p-mti3ibqa-7dwv.jpg",
-    "title": "",
-    "credit": "james jin images",
-    "category": "in-studio-the-process",
+    "id": "p-mtfz1t1j-szxz",
+    "src": "assets/img/portfolio/b_p-mtfz1t1j-szxz.jpg",
+    "title": "b",
+    "credit": "test",
+    "category": "test",
     "orient": "portrait",
     "span": 1,
-    "alt": "DSC04998"
+    "alt": "b"
   },
   {
-    "id": "p-mti3e6vd-8tp9",
-    "src": "assets/img/portfolio/dsc04937_p-mti3e6vd-8tp9.jpg",
-    "title": "",
-    "credit": "james jin images",
-    "category": "in-studio-the-process",
+    "id": "p-mtfz1s5u-k3sd",
+    "src": "assets/img/portfolio/dancer_p-mtfz1s5u-k3sd.jpg",
+    "title": "dancer",
+    "credit": "",
+    "category": "test",
     "orient": "portrait",
     "span": 1,
-    "alt": "DSC04937"
-  },
-  {
-    "id": "p-msv3brdy-m9s1",
-    "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
-    "title": "The King and I",
-    "credit": "Indy Ghostlight",
-    "category": "performer",
-    "alt": "IMG 1107 Enhanced NR",
-    "videos": []
-  },
-  {
-    "id": "p-mti2g92p-wfc5",
-    "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
-    "title": "",
-    "credit": "photo by ted forbes",
-    "category": "photoshoots",
-    "orient": "portrait",
-    "span": 1,
-    "alt": "1019460"
-  },
-  {
-    "id": "v-mt1qlt92-ai7k",
-    "video": "https://www.youtube.com/watch?v=q4DU7X9UCXM&list=RDq4DU7X9UCXM&start_radio=1",
-    "src": "https://img.youtube.com/vi/q4DU7X9UCXM/hqdefault.jpg",
-    "title": "Mountain of Echoing Halls",
-    "credit": "*world premiere",
-    "notes": "Composer/Yangqin: Chengjin Koh\nMusicians: Verona Quartet\nChoreographer/Dancer: Hannah Jew\nCostume: Lauren Carmen\n\nLocation: Smithsonian National Museum of Asian Art  (Washington, D.C.)",
-    "category": "choreographer",
-    "orient": "landscape",
-    "span": 1,
-    "alt": "Mountain of Echoing Halls (video)"
+    "alt": "dancer",
+    "notes": "test"
   },
   {
     "id": "p-msv6l3ce-d004",
     "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
     "title": "Nightmare Screen",
-    "credit": "photo by Kashif salahuddin",
-    "category": "performer",
+    "credit": "Kashif salahuddin",
+    "category": "in-studio-the-process",
     "alt": "Kashif Photography",
-    "videos": [],
-    "notes": "Choreographer: Alexandra Light"
+    "videos": []
   },
   {
-    "id": "p-mti2isrc-6jl4",
-    "src": "assets/img/portfolio/the-king-and-i-br_p-mti2isrc-6jl4.jpg",
-    "title": "The King and I <br>",
-    "credit": "photo by indy ghostlight",
+    "id": "p-msv44voz-qsqh",
+    "src": "assets/img/portfolio/img-3719_2026-08-15_photo.jpg",
+    "title": "Mirage",
+    "credit": "Nai-ni chen dance company",
     "category": "performer",
-    "orient": "portrait",
-    "span": 1,
-    "alt": "IMG 1107 Enhanced NR",
-    "notes": ""
+    "alt": "IMG 3719",
+    "videos": []
   },
   {
     "id": "p-msv43304-f0dq",
@@ -90,12 +57,12 @@
     "videos": []
   },
   {
-    "id": "p-msv36h3i-aqt1",
-    "src": "assets/img/portfolio/dsc04490_2026-08-15_photo.jpg",
-    "title": "AES Yuletide Celebration",
-    "credit": "Shotwell Photography",
+    "id": "p-msv3brdy-m9s1",
+    "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
+    "title": "The King and I",
+    "credit": "Indy Ghostlight",
     "category": "performer",
-    "alt": "DSC04490",
+    "alt": "IMG 1107 Enhanced NR",
     "videos": []
   },
   {
@@ -108,6 +75,15 @@
     "videos": []
   },
   {
+    "id": "p-msv36h3i-aqt1",
+    "src": "assets/img/portfolio/dsc04490_2026-08-15_photo.jpg",
+    "title": "AES Yuletide Celebration",
+    "credit": "Shotwell Photography",
+    "category": "performer",
+    "alt": "DSC04490",
+    "videos": []
+  },
+  {
     "id": "p-msuxucqc-z87c",
     "src": "assets/img/portfolio/dsc04124_2026-08-15_photo.jpg",
     "title": "AES Yuletide Celebration",
@@ -117,19 +93,10 @@
     "videos": []
   },
   {
-    "id": "p-msv44voz-qsqh",
-    "src": "assets/img/portfolio/img-3719_2026-08-15_photo.jpg",
-    "title": "Mirage",
-    "credit": "Nai-ni chen dance company",
-    "category": "performer",
-    "alt": "IMG 3719",
-    "videos": []
-  },
-  {
     "id": "blue-silk",
     "src": "assets/img/blue-dress-flow.jpg",
     "title": "",
-    "credit": "Photo by Linda I'anson",
+    "credit": "Photo by Linda l'anson",
     "category": "photoshoots",
     "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
     "videos": []
@@ -141,24 +108,22 @@
     "credit": "photo by kashif salahuddin",
     "category": "in-studio-the-process",
     "alt": "Close-up of pointe shoes stepping through a studio, black and white",
-    "videos": [],
-    "notes": "Nightmare Screen \nChoreography: Alexandra Light"
+    "videos": []
   },
   {
     "id": "green-leotard",
     "src": "assets/img/green-leotard.jpg",
-    "title": "",
-    "credit": "photo by ted forbes",
+    "title": "Sculptural in green",
+    "credit": "",
     "category": "photoshoots",
     "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
-    "videos": [],
-    "notes": ""
+    "videos": []
   },
   {
     "id": "meatpacking",
     "src": "assets/img/street-mirror.jpg",
-    "title": "",
-    "credit": "photo by jin huang ",
+    "title": "Meatpacking, NYC",
+    "credit": "",
     "category": "photoshoots",
     "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
     "videos": []
@@ -175,11 +140,19 @@
   {
     "id": "mid-turn",
     "src": "assets/img/portfolio/rehearsal-mid-turn_2026-08-15_photo.jpg",
-    "title": "",
-    "credit": "photo by corey hayes",
+    "title": "Photo by Corey Hayes",
+    "credit": "",
     "category": "photoshoots",
     "alt": "Hannah mid-turn in rehearsal with one leg raised",
-    "videos": [],
-    "notes": "<br>"
+    "videos": []
+  },
+  {
+    "id": "chinatown",
+    "src": "assets/img/insta/insta-6.jpg",
+    "title": "SUFFOLK Pop-Up (NYC)",
+    "credit": "",
+    "category": "photoshoots",
+    "alt": "Hannah in a qipao beneath a neon chop suey sign",
+    "videos": []
   }
 ]
