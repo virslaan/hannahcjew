@@ -165,10 +165,11 @@
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
-      "credit": "Kashif salahuddin",
+      "credit": "photo by Kashif salahuddin",
       "category": "performer",
       "alt": "Kashif Photography",
-      "videos": []
+      "videos": [],
+      "notes": ""
     },
     {
       "id": "p-mti2isrc-6jl4",
@@ -252,7 +253,7 @@
       "category": "in-studio-the-process",
       "alt": "Close-up of pointe shoes stepping through a studio, black and white",
       "videos": [],
-      "notes": "Choreography"
+      "notes": "Nightmare Screen \nChoreography: Alexandra Light"
     },
     {
       "id": "green-leotard",
