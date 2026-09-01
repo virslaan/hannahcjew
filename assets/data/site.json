@@ -111,10 +111,20 @@
   ],
   "portfolio": [
     {
+      "id": "p-mti3ibqa-7dwv",
+      "src": "assets/img/portfolio/dsc04998_p-mti3ibqa-7dwv.jpg",
+      "title": "DSC04998",
+      "credit": "",
+      "category": "in-studio-the-process",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "DSC04998"
+    },
+    {
       "id": "p-mti3e6vd-8tp9",
       "src": "assets/img/portfolio/dsc04937_p-mti3e6vd-8tp9.jpg",
-      "title": "DSC04937",
-      "credit": "",
+      "title": "",
+      "credit": "james jin images",
       "category": "in-studio-the-process",
       "orient": "portrait",
       "span": 1,
