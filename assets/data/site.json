@@ -15,19 +15,19 @@
       "linkLabel": "All upcoming"
     },
     "paragraphs": [
-      "Hi y'all! My name is Hannah Jew. A multi-hyphenate artist based in New York City and telling stories that don't fit in one box. It all started back in my hometown of Oklahoma, separation anxiety almost got the best of me and I'm not quite sure why it was that random day, but after several attempts to stay in the studio without crying, I did and have not looked back ever since. I think it was meant to be that I was going to be a dancer/artist. I love everything about the arts: the process, what happens behind the scenes and the magic onstage. I'm always excited to meet new people and experience new things. As I continue to evolve as a person and artist, I'm so excited to see all the unexpected and beautiful experiences that are yet to come. Maybe you'll be a stepping stone in my journey too! Click below to learn more about me and thank you for the support!"
+      "Hi y'all! My name is Hannah Jew. A multi-hyphenate artist based in New York City and telling stories that don't fit in one box. It all started back in my hometown of Oklahoma, separation anxiety almost got the best of me and I'm not quite sure why it was that random day, but after several attempts to stay in the studio without crying, I did and have not looked back ever since. I think it was meant to be that I was going to be a performer/artist. I love everything about the arts: the process, what happens behind the scenes and the magic onstage. I'm always excited to meet new people and experience new things. As I continue to evolve as a person and artist, I'm so excited to see all the unexpected and beautiful experiences that are yet to come. Click below to learn more about me and thank you for the support!"
     ]
   },
   "about": {
     "cover": "assets/img/blue-dress-flow.jpg",
     "coverAlt": "Hannah Jew mid-turn, a pale blue dress sweeping around her",
     "coverCredit": "",
-    "lead": "Hannah Jew (周健倫) is a New York City based multi-hyphenate artist, educator and frequent collaborator with other creative disciplines.",
+    "lead": "Hannah Jew (周健倫) (She/Her) is a New York City based multi-hyphenate artist, educator and frequent collaborator with other creative disciplines.",
     "paragraphs": [
       "Trained at The University of Oklahoma (BFA, Ballet Performance) and shaped by intensives with Complexions Contemporary Ballet, the Joffrey Ballet, American Ballet Theatre, San Francisco Ballet and Tulsa Ballet, Hannah has danced professionally with Nai-Ni Chen Dance Company, Ballet Hispánico (BHdos), Dayton Ballet, and Oklahoma City Ballet.",
-      "Her choreographic and stage-direction work centers stories from the Asian-American experience, with projects at the Museum of Chinese in America, China Institute, National Asian Artists Project, and New York Theatre Workshop. As an educator, she teaches dance to all ages and experience levels, including individuals with disabilities.",
       "On stage, she has toured nationally with The King and I (dir. Bartlett Sher, chor. Christopher Gattelli), performed with the New York City Opera, danced at New York Fashion Week, and appeared in a world premiere at the Smithsonian's National Museum of Asian Art, as both dancer and choreographer.",
-      "She is a proud member of Actors' Equity Association and is represented by Clear Talent Group."
+      "She has enjoyed working on projects at the Museum of Chinese in America, China Institute,and New York Theatre Workshop. As an educator, she teaches dance to all ages and experience levels, including individuals with disabilities.",
+      "She is a member of Actors' Equity Association and is represented by Clear Talent Group."
     ],
     "image": "assets/img/about_2026-08-15.jpg",
     "imageAlt": "Hannah Jew in a green leotard, arms curved in a sculptural contemporary shape",
@@ -63,6 +63,13 @@
   },
   "headshots": [
     {
+      "id": "portrait-black",
+      "src": "assets/img/headshots/hannah-jew_2026-08-15.jpg",
+      "title": "Hannah Jew",
+      "credit": "Billy B Photography",
+      "alt": "Portrait headshot of Hannah Jew wearing black, hair in motion"
+    },
+    {
       "id": "hs-mssfqeuw-gtly",
       "src": "assets/img/headshots/hannah-jew_2026-08-18.jpg",
       "title": "Hannah Jew",
@@ -77,11 +84,11 @@
       "alt": "Headshot of Hannah Jew"
     },
     {
-      "id": "portrait-black",
-      "src": "assets/img/headshots/hannah-jew_2026-08-15.jpg",
+      "id": "hs-mti380qn-s9b7",
+      "src": "assets/img/headshots/hannah-jew_hs-mti380qn-s9b7.jpg",
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
-      "alt": "Portrait headshot of Hannah Jew wearing black, hair in motion"
+      "alt": "Headshot of Hannah Jew"
     }
   ],
   "portfolioCategories": [
@@ -104,43 +111,56 @@
   ],
   "portfolio": [
     {
-      "id": "p-mtfz1t1j-szxz",
-      "src": "assets/img/portfolio/b_p-mtfz1t1j-szxz.jpg",
-      "title": "b",
-      "credit": "test",
-      "category": "test",
+      "id": "p-mti3ibqa-7dwv",
+      "src": "assets/img/portfolio/dsc04998_p-mti3ibqa-7dwv.jpg",
+      "title": "",
+      "credit": "james jin images",
+      "category": "in-studio-the-process",
       "orient": "portrait",
       "span": 1,
-      "alt": "b"
+      "alt": "DSC04998"
     },
     {
-      "id": "p-mtfz1s5u-k3sd",
-      "src": "assets/img/portfolio/dancer_p-mtfz1s5u-k3sd.jpg",
-      "title": "dancer",
-      "credit": "",
-      "category": "test",
+      "id": "p-mti3e6vd-8tp9",
+      "src": "assets/img/portfolio/dsc04937_p-mti3e6vd-8tp9.jpg",
+      "title": "",
+      "credit": "james jin images",
+      "category": "in-studio-the-process",
       "orient": "portrait",
       "span": 1,
-      "alt": "dancer",
-      "notes": "test"
+      "alt": "DSC04937"
     },
     {
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
-      "credit": "Kashif salahuddin",
-      "category": "in-studio-the-process",
+      "credit": "photo by Kashif salahuddin",
+      "category": "performer",
       "alt": "Kashif Photography",
-      "videos": []
+      "videos": [],
+      "notes": ""
     },
     {
-      "id": "p-msv44voz-qsqh",
-      "src": "assets/img/portfolio/img-3719_2026-08-15_photo.jpg",
-      "title": "Mirage",
-      "credit": "Nai-ni chen dance company",
-      "category": "performer",
-      "alt": "IMG 3719",
-      "videos": []
+      "id": "p-mti2g92p-wfc5",
+      "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
+      "title": "",
+      "credit": "photo by ted forbes",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "1019460"
+    },
+    {
+      "id": "v-mt1qlt92-ai7k",
+      "video": "https://www.youtube.com/watch?v=q4DU7X9UCXM&list=RDq4DU7X9UCXM&start_radio=1",
+      "src": "https://img.youtube.com/vi/q4DU7X9UCXM/hqdefault.jpg",
+      "title": "Mountain of Echoing Halls",
+      "credit": "*world premiere",
+      "notes": "Composer/Yangqin: Chengjin Koh\nMusicians: Verona Quartet\nChoreographer/Dancer: Hannah Jew\nCostume: Lauren Carmen\n\nLocation: Smithsonian National Museum of Asian Art  (Washington, D.C.)",
+      "category": "choreographer",
+      "orient": "landscape",
+      "span": 1,
+      "alt": "Mountain of Echoing Halls (video)"
     },
     {
       "id": "p-msv43304-f0dq",
@@ -149,33 +169,6 @@
       "credit": "Shotwell photography",
       "category": "performer",
       "alt": "58362884 B171 46D3 A115 C1D3800065A5",
-      "videos": []
-    },
-    {
-      "id": "p-msv3w8nd-epeo",
-      "src": "assets/img/portfolio/hannah-2-copy_2026-08-15_photo.jpg",
-      "title": "",
-      "credit": "Photo by Luther cherry",
-      "category": "photoshoots",
-      "alt": "Hannah 2 copy",
-      "videos": []
-    },
-    {
-      "id": "p-msv3brdy-m9s1",
-      "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
-      "title": "The King and I",
-      "credit": "Indy Ghostlight",
-      "category": "performer",
-      "alt": "IMG 1107 Enhanced NR",
-      "videos": []
-    },
-    {
-      "id": "p-msv38c2z-6sju",
-      "src": "assets/img/portfolio/dsc04485_2026-08-15_photo.jpg",
-      "title": "AES Yuletide Celebration",
-      "credit": "Shotwell Photography",
-      "category": "performer",
-      "alt": "DSC04485",
       "videos": []
     },
     {
@@ -188,6 +181,24 @@
       "videos": []
     },
     {
+      "id": "p-msv38c2z-6sju",
+      "src": "assets/img/portfolio/dsc04485_2026-08-15_photo.jpg",
+      "title": "AES Yuletide Celebration",
+      "credit": "Shotwell Photography",
+      "category": "performer",
+      "alt": "DSC04485",
+      "videos": []
+    },
+    {
+      "id": "p-msv3w8nd-epeo",
+      "src": "assets/img/portfolio/hannah-2-copy_2026-08-15_photo.jpg",
+      "title": "",
+      "credit": "Photo by Luther cherry",
+      "category": "photoshoots",
+      "alt": "Hannah 2 copy",
+      "videos": []
+    },
+    {
       "id": "p-msuxucqc-z87c",
       "src": "assets/img/portfolio/dsc04124_2026-08-15_photo.jpg",
       "title": "AES Yuletide Celebration",
@@ -197,10 +208,39 @@
       "videos": []
     },
     {
+      "id": "p-mti2isrc-6jl4",
+      "src": "assets/img/portfolio/the-king-and-i-br_p-mti2isrc-6jl4.jpg",
+      "title": "The King and I <br>",
+      "credit": "photo by indy ghostlight",
+      "category": "performer",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "IMG 1107 Enhanced NR",
+      "notes": ""
+    },
+    {
+      "id": "p-msv3brdy-m9s1",
+      "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
+      "title": "The King and I",
+      "credit": "Indy Ghostlight",
+      "category": "performer",
+      "alt": "IMG 1107 Enhanced NR",
+      "videos": []
+    },
+    {
+      "id": "p-msv44voz-qsqh",
+      "src": "assets/img/portfolio/img-3719_2026-08-15_photo.jpg",
+      "title": "Mirage",
+      "credit": "Nai-ni chen dance company",
+      "category": "performer",
+      "alt": "IMG 3719",
+      "videos": []
+    },
+    {
       "id": "blue-silk",
       "src": "assets/img/blue-dress-flow.jpg",
       "title": "",
-      "credit": "Photo by Linda l'anson",
+      "credit": "Photo by Linda I'anson",
       "category": "photoshoots",
       "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
       "videos": []
@@ -212,22 +252,24 @@
       "credit": "photo by kashif salahuddin",
       "category": "in-studio-the-process",
       "alt": "Close-up of pointe shoes stepping through a studio, black and white",
-      "videos": []
+      "videos": [],
+      "notes": "<br>"
     },
     {
       "id": "green-leotard",
       "src": "assets/img/green-leotard.jpg",
-      "title": "Sculptural in green",
-      "credit": "",
+      "title": "",
+      "credit": "photo by ted forbes",
       "category": "photoshoots",
       "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
-      "videos": []
+      "videos": [],
+      "notes": ""
     },
     {
       "id": "meatpacking",
       "src": "assets/img/street-mirror.jpg",
-      "title": "Meatpacking, NYC",
-      "credit": "",
+      "title": "",
+      "credit": "photo by jin huang ",
       "category": "photoshoots",
       "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
       "videos": []
@@ -244,20 +286,12 @@
     {
       "id": "mid-turn",
       "src": "assets/img/portfolio/rehearsal-mid-turn_2026-08-15_photo.jpg",
-      "title": "Photo by Corey Hayes",
-      "credit": "",
+      "title": "",
+      "credit": "photo by corey hayes",
       "category": "photoshoots",
       "alt": "Hannah mid-turn in rehearsal with one leg raised",
-      "videos": []
-    },
-    {
-      "id": "chinatown",
-      "src": "assets/img/insta/insta-6.jpg",
-      "title": "SUFFOLK Pop-Up (NYC)",
-      "credit": "",
-      "category": "photoshoots",
-      "alt": "Hannah in a qipao beneath a neon chop suey sign",
-      "videos": []
+      "videos": [],
+      "notes": "<br>"
     }
   ],
   "upcoming": [
@@ -313,7 +347,7 @@
     "accent": "#d7281c"
   },
   "portfolioLayout": {
-    "columns": 3
+    "columns": 4
   },
   "nav": [
     {
@@ -340,7 +374,7 @@
   "imageTune": {},
   "pages": {
     "portfolio": {
-      "intro": "<br>",
+      "intro": "Please use tabs to find samples of my work",
       "kicker": "Portfolio",
       "heading": "The <em>work</em>"
     },
