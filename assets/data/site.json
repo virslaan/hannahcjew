@@ -111,6 +111,16 @@
   ],
   "portfolio": [
     {
+      "id": "p-mti3e6vd-8tp9",
+      "src": "assets/img/portfolio/dsc04937_p-mti3e6vd-8tp9.jpg",
+      "title": "DSC04937",
+      "credit": "",
+      "category": "in-studio-the-process",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "DSC04937"
+    },
+    {
       "id": "p-msv3brdy-m9s1",
       "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
       "title": "The King and I",
@@ -378,15 +388,6 @@
       "heading": "Hannah Jew",
       "ctaHeadshots": "Headshots &amp; resume",
       "ctaPortfolio": "See the portfolio"
-    },
-    "contact": {
-      "kicker": "Contact",
-      "labelEmail": "Email",
-      "labelRep": "Representation",
-      "labelAgent": "Agent",
-      "labelSocial": "Social",
-      "labelMaterials": "Materials",
-      "materialsLink": "Download resume (PDF)"
     }
   }
 }
