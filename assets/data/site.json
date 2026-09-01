@@ -63,15 +63,15 @@
   },
   "headshots": [
     {
-      "id": "hs-mssfqeuw-gtly",
-      "src": "assets/img/headshots/hannah-jew_2026-08-18.jpg",
+      "id": "portrait-black",
+      "src": "assets/img/headshots/hannah-jew_2026-08-15.jpg",
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
-      "alt": "Headshot of Hannah Jew"
+      "alt": "Portrait headshot of Hannah Jew wearing black, hair in motion"
     },
     {
-      "id": "hs-mti380qn-s9b7",
-      "src": "assets/img/headshots/hannah-jew_hs-mti380qn-s9b7.jpg",
+      "id": "hs-mssfqeuw-gtly",
+      "src": "assets/img/headshots/hannah-jew_2026-08-18.jpg",
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
       "alt": "Headshot of Hannah Jew"
@@ -84,11 +84,11 @@
       "alt": "Headshot of Hannah Jew"
     },
     {
-      "id": "portrait-black",
-      "src": "assets/img/headshots/hannah-jew_2026-08-15.jpg",
+      "id": "hs-mti380qn-s9b7",
+      "src": "assets/img/headshots/hannah-jew_hs-mti380qn-s9b7.jpg",
       "title": "Hannah Jew",
       "credit": "Billy B Photography",
-      "alt": "Portrait headshot of Hannah Jew wearing black, hair in motion"
+      "alt": "Headshot of Hannah Jew"
     }
   ],
   "portfolioCategories": [
@@ -378,6 +378,15 @@
       "heading": "Hannah Jew",
       "ctaHeadshots": "Headshots &amp; resume",
       "ctaPortfolio": "See the portfolio"
+    },
+    "contact": {
+      "kicker": "Contact",
+      "labelEmail": "Email",
+      "labelRep": "Representation",
+      "labelAgent": "Agent",
+      "labelSocial": "Social",
+      "labelMaterials": "Materials",
+      "materialsLink": "Download resume (PDF)"
     }
   }
 }
