@@ -104,12 +104,12 @@
   ],
   "portfolio": [
     {
-      "id": "p-msv43304-f0dq",
-      "src": "assets/img/portfolio/58362884-b171-46d3-a115-c1d3800065a5_2026-08-15_photo.jpg",
-      "title": "AES Yuletide Celebration",
-      "credit": "Shotwell photography",
+      "id": "p-msv3brdy-m9s1",
+      "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
+      "title": "The King and I",
+      "credit": "Indy Ghostlight",
       "category": "performer",
-      "alt": "58362884 B171 46D3 A115 C1D3800065A5",
+      "alt": "IMG 1107 Enhanced NR",
       "videos": []
     },
     {
@@ -144,15 +144,6 @@
       "videos": []
     },
     {
-      "id": "p-msv44voz-qsqh",
-      "src": "assets/img/portfolio/img-3719_2026-08-15_photo.jpg",
-      "title": "Mirage",
-      "credit": "Nai-ni chen dance company",
-      "category": "performer",
-      "alt": "IMG 3719",
-      "videos": []
-    },
-    {
       "id": "p-mti2isrc-6jl4",
       "src": "assets/img/portfolio/the-king-and-i-br_p-mti2isrc-6jl4.jpg",
       "title": "The King and I <br>",
@@ -164,30 +155,21 @@
       "notes": ""
     },
     {
+      "id": "p-msv43304-f0dq",
+      "src": "assets/img/portfolio/58362884-b171-46d3-a115-c1d3800065a5_2026-08-15_photo.jpg",
+      "title": "AES Yuletide Celebration",
+      "credit": "Shotwell photography",
+      "category": "performer",
+      "alt": "58362884 B171 46D3 A115 C1D3800065A5",
+      "videos": []
+    },
+    {
       "id": "p-msv3w8nd-epeo",
       "src": "assets/img/portfolio/hannah-2-copy_2026-08-15_photo.jpg",
       "title": "",
       "credit": "Photo by Luther cherry",
       "category": "photoshoots",
       "alt": "Hannah 2 copy",
-      "videos": []
-    },
-    {
-      "id": "p-msv3brdy-m9s1",
-      "src": "assets/img/portfolio/img-1107-enhanced-nr_2026-08-15_photo.jpg",
-      "title": "The King and I",
-      "credit": "Indy Ghostlight",
-      "category": "performer",
-      "alt": "IMG 1107 Enhanced NR",
-      "videos": []
-    },
-    {
-      "id": "p-msv38c2z-6sju",
-      "src": "assets/img/portfolio/dsc04485_2026-08-15_photo.jpg",
-      "title": "AES Yuletide Celebration",
-      "credit": "Shotwell Photography",
-      "category": "performer",
-      "alt": "DSC04485",
       "videos": []
     },
     {
@@ -200,12 +182,30 @@
       "videos": []
     },
     {
+      "id": "p-msv38c2z-6sju",
+      "src": "assets/img/portfolio/dsc04485_2026-08-15_photo.jpg",
+      "title": "AES Yuletide Celebration",
+      "credit": "Shotwell Photography",
+      "category": "performer",
+      "alt": "DSC04485",
+      "videos": []
+    },
+    {
       "id": "p-msuxucqc-z87c",
       "src": "assets/img/portfolio/dsc04124_2026-08-15_photo.jpg",
       "title": "AES Yuletide Celebration",
       "credit": "Shotwell Photography",
       "category": "performer",
       "alt": "DSC04124",
+      "videos": []
+    },
+    {
+      "id": "p-msv44voz-qsqh",
+      "src": "assets/img/portfolio/img-3719_2026-08-15_photo.jpg",
+      "title": "Mirage",
+      "credit": "Nai-ni chen dance company",
+      "category": "performer",
+      "alt": "IMG 3719",
       "videos": []
     },
     {
