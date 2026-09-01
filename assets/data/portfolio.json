@@ -1,5 +1,15 @@
 [
   {
+    "id": "p-mti2g92p-wfc5",
+    "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
+    "title": "1019460",
+    "credit": "",
+    "category": "in-studio-the-process",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "1019460"
+  },
+  {
     "id": "v-mt1qlt92-ai7k",
     "video": "https://www.youtube.com/watch?v=q4DU7X9UCXM&list=RDq4DU7X9UCXM&start_radio=1",
     "src": "https://img.youtube.com/vi/q4DU7X9UCXM/hqdefault.jpg",
@@ -104,11 +114,12 @@
   {
     "id": "green-leotard",
     "src": "assets/img/green-leotard.jpg",
-    "title": "Sculptural in green",
-    "credit": "",
+    "title": "",
+    "credit": "photo by ted forbes",
     "category": "photoshoots",
     "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
-    "videos": []
+    "videos": [],
+    "notes": ""
   },
   {
     "id": "meatpacking",
