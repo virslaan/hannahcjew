@@ -106,8 +106,8 @@
     {
       "id": "p-mti2g92p-wfc5",
       "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
-      "title": "1019460",
-      "credit": "",
+      "title": "",
+      "credit": "photo by ted forbes",
       "category": "in-studio-the-process",
       "orient": "portrait",
       "span": 1,
@@ -307,7 +307,7 @@
     "accent": "#d7281c"
   },
   "portfolioLayout": {
-    "columns": 3
+    "columns": 4
   },
   "nav": [
     {
