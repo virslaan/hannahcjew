@@ -113,8 +113,8 @@
     {
       "id": "p-mti3ibqa-7dwv",
       "src": "assets/img/portfolio/dsc04998_p-mti3ibqa-7dwv.jpg",
-      "title": "DSC04998",
-      "credit": "",
+      "title": "",
+      "credit": "james jin images",
       "category": "in-studio-the-process",
       "orient": "portrait",
       "span": 1,
@@ -166,7 +166,7 @@
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
       "credit": "Kashif salahuddin",
-      "category": "in-studio-the-process",
+      "category": "performer",
       "alt": "Kashif Photography",
       "videos": []
     },
@@ -251,7 +251,8 @@
       "credit": "photo by kashif salahuddin",
       "category": "in-studio-the-process",
       "alt": "Close-up of pointe shoes stepping through a studio, black and white",
-      "videos": []
+      "videos": [],
+      "notes": "Choreography"
     },
     {
       "id": "green-leotard",
