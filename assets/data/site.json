@@ -111,7 +111,7 @@
       "credit": "*world premiere",
       "notes": "Composer/Yangqin: Chengjin Koh\nMusicians: Verona Quartet\nChoreographer/Dancer: Hannah Jew\nCostume: Lauren Carmen",
       "category": "choreographer",
-      "orient": "landscape",
+      "orient": "square",
       "span": 1,
       "alt": "Mountain of Echoing Halls (video)"
     },
@@ -239,15 +239,6 @@
       "credit": "",
       "category": "photoshoots",
       "alt": "Hannah mid-turn in rehearsal with one leg raised",
-      "videos": []
-    },
-    {
-      "id": "chinatown",
-      "src": "assets/img/insta/insta-6.jpg",
-      "title": "SUFFOLK Pop-Up (NYC)",
-      "credit": "",
-      "category": "photoshoots",
-      "alt": "Hannah in a qipao beneath a neon chop suey sign",
       "videos": []
     }
   ],
