@@ -235,11 +235,12 @@
     {
       "id": "mid-turn",
       "src": "assets/img/portfolio/rehearsal-mid-turn_2026-08-15_photo.jpg",
-      "title": "Photo by Corey Hayes",
+      "title": "",
       "credit": "",
       "category": "photoshoots",
       "alt": "Hannah mid-turn in rehearsal with one leg raised",
-      "videos": []
+      "videos": [],
+      "notes": "PHOTO BY COREY HAYES"
     }
   ],
   "upcoming": [
