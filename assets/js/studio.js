@@ -217,11 +217,14 @@
     }
   }
 
+  // Every keystroke is kept on her own device straight away, so nothing is
+  // lost if she wanders off or the tab closes. Going out to the live site is
+  // a separate decision she makes by pressing Save, which lets her write,
+  // reword and change her mind without the bar chattering at her.
   function touch() {
     dirty = true;
     persistDraft();
     updateBar();
-    scheduleLive();
   }
 
   function rerender() {
@@ -1482,6 +1485,7 @@
   // GitHub Pages needs a moment to rebuild, so the bar says "saved" rather than
   // "live" until the rebuild has realistically finished.
   const SAVED_LABEL = "Saved · live in 1–2 min";
+  const UNSAVED_LABEL = "Unsaved changes";
   let savedThisSession = false;
 
   function scheduleLive() {
@@ -1805,7 +1809,7 @@
       <div class="studio-lock__card" role="dialog" aria-modal="true" aria-label="Passcode">
         <p class="studio-lock__kicker">Site studio</p>
         <h2>Edit your website</h2>
-        <p class="studio-lock__help">Enter your passcode, then click anything on the page to change it. It saves by itself, and your changes show up on the live site in 1–2 minutes.</p>
+        <p class="studio-lock__help">Enter your passcode, then click anything on the page to change it. Take as long as you like — nothing goes out until you press Save, and then it shows up on the live site in 1–2 minutes.</p>
         <input type="password" placeholder="Passcode" autocomplete="current-password" />
         <div class="studio-lock__actions">
           <button type="button" data-go class="btn btn--red">Start editing</button>
@@ -1840,7 +1844,7 @@
     savedThisSession = false;
     buildBar();
     armEditing();
-    toast("Edit mode on. Click any words or photo to change it. It saves by itself.");
+    toast("Edit mode on. Click any words or photo to change it, then press Save when you are happy.");
   }
 
   function stopEditing() {
@@ -1898,6 +1902,7 @@
       <div class="studio-bar__actions">
         <span class="studio-bar__state" data-state></span>
         <button type="button" class="btn" data-undo>Undo all</button>
+        <button type="button" class="btn btn--red" data-save>Save</button>
         <button type="button" class="btn" data-done>Done</button>
       </div>`;
     document.body.appendChild(bar);
@@ -1928,17 +1933,59 @@
       touch();
     };
 
-    $("[data-done]", bar).onclick = () => {
-      stopEditing();
-      if (dirty) {
-        clearTimeout(liveTimer);
-        pushLive();
-        toast("Saving. Your changes show up on the live site in 1–2 minutes.");
-      } else if (savedThisSession) {
-        toast("All saved. Your changes show up on the live site in 1–2 minutes.");
-      } else {
-        toast("Edit mode off.");
+    $("[data-save]", bar).onclick = async () => {
+      if (liveBusy) return;
+      if (!dirty) {
+        toast("Nothing new to save.");
+        return;
       }
+      if (!liveToken()) {
+        await askNote({
+          title: "Sign in first",
+          help: "Your changes are safe on this device. Studio needs to be signed in before it can put them on the live site.",
+        });
+        return;
+      }
+      clearTimeout(liveTimer);
+      liveTimer = null;
+      pushLive();
+    };
+
+    $("[data-done]", bar).onclick = async () => {
+      // Leaving with work that never reached the live site is the one way she
+      // could be caught out, so this is the single place that asks.
+      if (dirty) {
+        const wantsSave = await askConfirm({
+          title: "Save before you finish?",
+          help: "Some changes are not on the live site yet. They stay on this device either way, so you can come back and save them later.",
+          okLabel: "Save now",
+          cancelLabel: "Leave them for now",
+        });
+        if (wantsSave) {
+          if (!liveToken()) {
+            await askNote({
+              title: "Sign in first",
+              help: "Your changes are safe on this device. Studio needs to be signed in before it can put them on the live site.",
+            });
+            return;
+          }
+          clearTimeout(liveTimer);
+          liveTimer = null;
+          stopEditing();
+          pushLive();
+          toast("Saving. Your changes show up on the live site in 1–2 minutes.");
+          return;
+        }
+        stopEditing();
+        toast("Edit mode off. Your changes are still here when you come back.");
+        return;
+      }
+      stopEditing();
+      toast(
+        savedThisSession
+          ? "All saved. Your changes show up on the live site in 1–2 minutes."
+          : "Edit mode off."
+      );
     };
 
     $("[data-undo]", bar).onclick = async () => {
@@ -1962,16 +2009,16 @@
   function updateBar() {
     const state = $(".studio-bar [data-state]");
     if (!state) return;
-    if (liveBusy) {
-      if (!state.textContent || state.textContent === "Saving…") state.textContent = "Saving…";
-      return;
-    }
-    if (liveTimer) {
+    const save = $(".studio-bar [data-save]");
+    if (save) save.disabled = liveBusy || !dirty;
+    if (liveBusy || liveTimer) {
       state.textContent = "Saving…";
       return;
     }
-    if (dirty) state.textContent = "Saving…";
-    else if (state.textContent === "Saving…") state.textContent = "";
+    // While she is still working the bar only notes that there is something
+    // to save. It claims to be saving when it actually is, and not before.
+    if (dirty) state.textContent = UNSAVED_LABEL;
+    else if (state.textContent === UNSAVED_LABEL || state.textContent === "Saving…") state.textContent = "";
   }
 
   // ----- boot -----------------------------------------------------------

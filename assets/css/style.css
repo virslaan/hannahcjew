@@ -1927,6 +1927,13 @@ body:not(.hj-edit) .contact-block.is-empty { display: none; }
   white-space: nowrap;
 }
 .studio-bar .btn { padding: 0.3rem 0.7rem; font-size: 0.6rem; border-radius: 3px; }
+/* Save goes quiet once there is nothing left to save, so the bar shows at a
+   glance whether her latest words have reached the live site. */
+.studio-bar .btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
 
 .studio-toast {
   position: fixed;
