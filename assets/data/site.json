@@ -111,6 +111,16 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtjaqtko-gv5t",
+      "src": "assets/img/portfolio/photo-by-luther-cherry_p-mtjaqtko-gv5t.jpg",
+      "title": "<br>",
+      "credit": "photo by luther cherry",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "Photo by Luther Cherry"
+    },
+    {
       "id": "p-mti3ibqa-7dwv",
       "src": "assets/img/portfolio/dsc04998_p-mti3ibqa-7dwv.jpg",
       "title": "",
