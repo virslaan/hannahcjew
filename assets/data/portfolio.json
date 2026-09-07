@@ -1,9 +1,29 @@
 [
   {
+    "id": "p-mtqiwhqs-4cr1",
+    "src": "assets/img/portfolio/png-image_p-mtqiwhqs-4cr1.jpg",
+    "title": "",
+    "credit": "jeremy varner/varner creativ",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "PNG image"
+  },
+  {
+    "id": "p-mtqiw3rz-x29e",
+    "src": "assets/img/portfolio/png-image_p-mtqiw3rz-x29e.jpg",
+    "title": "",
+    "credit": "jeremy varner/varner creative",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "PNG image"
+  },
+  {
     "id": "p-mtqivgd6-odw9",
     "src": "assets/img/portfolio/png-image_p-mtqivgd6-odw9.jpg",
-    "title": "PNG image",
-    "credit": "",
+    "title": "",
+    "credit": "Jeremy varner/varner creative",
     "category": "photoshoots",
     "orient": "portrait",
     "span": 1,
