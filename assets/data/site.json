@@ -116,14 +116,25 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtqowq47-vh7y",
+      "src": "assets/img/portfolio/hjew-fandance_p-mtqowq47-vh7y.jpg",
+      "title": "HJew FanDance",
+      "credit": "",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "HJew FanDance"
+    },
+    {
       "id": "p-mtqovav4-h4tr",
       "src": "assets/img/portfolio/hjew-raindrops-photo_p-mtqovav4-h4tr.jpg",
-      "title": "HJew Raindrops photo",
-      "credit": "",
+      "title": "Raindrops",
+      "credit": "nai-ni Chen dance company",
       "category": "performer",
       "orient": "portrait",
       "span": 1,
-      "alt": "HJew Raindrops photo"
+      "alt": "HJew Raindrops photo",
+      "notes": "<br>"
     },
     {
       "id": "p-mtqivgd6-odw9",
