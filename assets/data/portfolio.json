@@ -2,32 +2,12 @@
   {
     "id": "p-mtqpgi8s-bdml",
     "src": "assets/img/portfolio/img-2189_p-mtqpgi8s-bdml.jpg",
-    "title": "IMG 2189",
+    "title": "",
     "credit": "",
-    "category": "photoshoots",
+    "category": "in-studio-the-process",
     "orient": "portrait",
     "span": 1,
     "alt": "IMG 2189"
-  },
-  {
-    "id": "p-mtqpd1g0-xf0g",
-    "src": "assets/img/portfolio/img-2576_p-mtqpd1g0-xf0g.jpg",
-    "title": "",
-    "credit": "jin huang",
-    "category": "photoshoots",
-    "orient": "portrait",
-    "span": 1,
-    "alt": "IMG 2576"
-  },
-  {
-    "id": "p-mtqpcbp5-3zw6",
-    "src": "assets/img/portfolio/dsf6418-nik-glenn-fuss_p-mtqpcbp5-3zw6.jpg",
-    "title": "<br>",
-    "credit": "glen fuss",
-    "category": "photoshoots",
-    "orient": "portrait",
-    "span": 1,
-    "alt": "DSF6418.nik Glenn Fuss"
   },
   {
     "id": "p-mtqpappj-q65t",
@@ -41,14 +21,14 @@
     "notes": ""
   },
   {
-    "id": "p-msv6l3ce-d004",
-    "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
-    "title": "Nightmare Screen",
-    "credit": "photo by Kashif salahuddin",
-    "category": "performer",
-    "alt": "Kashif Photography",
-    "videos": [],
-    "notes": ""
+    "id": "p-mtqpcbp5-3zw6",
+    "src": "assets/img/portfolio/dsf6418-nik-glenn-fuss_p-mtqpcbp5-3zw6.jpg",
+    "title": "<br>",
+    "credit": "glen fuss",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "DSF6418.nik Glenn Fuss"
   },
   {
     "id": "p-mtqox9dv-j9u3",
@@ -59,6 +39,26 @@
     "orient": "portrait",
     "span": 1,
     "alt": "Vandy Photography Fabric"
+  },
+  {
+    "id": "p-msv6l3ce-d004",
+    "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
+    "title": "Nightmare Screen",
+    "credit": "photo by Kashif salahuddin",
+    "category": "performer",
+    "alt": "Kashif Photography",
+    "videos": [],
+    "notes": ""
+  },
+  {
+    "id": "p-mtqpd1g0-xf0g",
+    "src": "assets/img/portfolio/photo_p-mtqpd1g0-xf0g.jpg",
+    "title": "",
+    "credit": "jin huang",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "IMG 2576"
   },
   {
     "id": "p-mtqowq47-vh7y",
