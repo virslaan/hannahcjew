@@ -116,10 +116,20 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtqpcbp5-3zw6",
+      "src": "assets/img/portfolio/dsf6418-nik-glenn-fuss_p-mtqpcbp5-3zw6.jpg",
+      "title": "DSF6418.nik Glenn Fuss",
+      "credit": "",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "DSF6418.nik Glenn Fuss"
+    },
+    {
       "id": "p-mtqpappj-q65t",
       "src": "assets/img/portfolio/png-image_p-mtqpappj-q65t.jpg",
-      "title": "PNG image",
-      "credit": "",
+      "title": "",
+      "credit": "jeremy varner/varner creative",
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
