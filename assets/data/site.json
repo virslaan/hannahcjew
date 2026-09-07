@@ -116,10 +116,30 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtqpgi8s-bdml",
+      "src": "assets/img/portfolio/img-2189_p-mtqpgi8s-bdml.jpg",
+      "title": "IMG 2189",
+      "credit": "",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "IMG 2189"
+    },
+    {
+      "id": "p-mtqpd1g0-xf0g",
+      "src": "assets/img/portfolio/img-2576_p-mtqpd1g0-xf0g.jpg",
+      "title": "",
+      "credit": "jin huang",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "IMG 2576"
+    },
+    {
       "id": "p-mtqpcbp5-3zw6",
       "src": "assets/img/portfolio/dsf6418-nik-glenn-fuss_p-mtqpcbp5-3zw6.jpg",
-      "title": "DSF6418.nik Glenn Fuss",
-      "credit": "",
+      "title": "<br>",
+      "credit": "glen fuss",
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
@@ -133,7 +153,8 @@
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
-      "alt": "PNG image"
+      "alt": "PNG image",
+      "notes": ""
     },
     {
       "id": "p-msv6l3ce-d004",
@@ -188,7 +209,7 @@
       "id": "p-mtjaqtko-gv5t",
       "src": "assets/img/portfolio/photo-by-luther-cherry_p-mtjaqtko-gv5t.jpg",
       "title": "<br>",
-      "credit": "photo by luther cherry",
+      "credit": "luther cherry",
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
@@ -227,7 +248,7 @@
       "id": "p-mti2g92p-wfc5",
       "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
       "title": "",
-      "credit": "photo by ted forbes",
+      "credit": "ted forbes",
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
@@ -317,7 +338,7 @@
       "id": "blue-silk",
       "src": "assets/img/blue-dress-flow.jpg",
       "title": "",
-      "credit": "Photo by Linda I'anson",
+      "credit": "Linda I'anson",
       "category": "photoshoots",
       "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
       "videos": []
@@ -336,7 +357,7 @@
       "id": "green-leotard",
       "src": "assets/img/green-leotard.jpg",
       "title": "",
-      "credit": "photo by ted forbes",
+      "credit": "ted forbes",
       "category": "photoshoots",
       "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
       "videos": [],
@@ -346,7 +367,7 @@
       "id": "meatpacking",
       "src": "assets/img/street-mirror.jpg",
       "title": "",
-      "credit": "photo by jin huang ",
+      "credit": "jin huang",
       "category": "photoshoots",
       "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
       "videos": []
@@ -364,7 +385,7 @@
       "id": "mid-turn",
       "src": "assets/img/portfolio/rehearsal-mid-turn_2026-08-15_photo.jpg",
       "title": "",
-      "credit": "photo by corey hayes",
+      "credit": "corey hayes",
       "category": "photoshoots",
       "alt": "Hannah mid-turn in rehearsal with one leg raised",
       "videos": [],
