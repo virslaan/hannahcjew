@@ -116,6 +116,16 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtqovav4-h4tr",
+      "src": "assets/img/portfolio/hjew-raindrops-photo_p-mtqovav4-h4tr.jpg",
+      "title": "HJew Raindrops photo",
+      "credit": "",
+      "category": "performer",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "HJew Raindrops photo"
+    },
+    {
       "id": "p-mtqivgd6-odw9",
       "src": "assets/img/portfolio/png-image_p-mtqivgd6-odw9.jpg",
       "title": "",
