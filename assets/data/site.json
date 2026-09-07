@@ -116,6 +116,16 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtqpappj-q65t",
+      "src": "assets/img/portfolio/png-image_p-mtqpappj-q65t.jpg",
+      "title": "PNG image",
+      "credit": "",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "PNG image"
+    },
+    {
       "id": "p-msv6l3ce-d004",
       "src": "assets/img/portfolio/kashif-photography_2026-08-15_photo.jpg",
       "title": "Nightmare Screen",
