@@ -116,14 +116,25 @@
   ],
   "portfolio": [
     {
-      "id": "p-mts0a8va-lahe",
-      "src": "assets/img/portfolio/liftonic-1_p-mts0a8va-lahe.jpg",
-      "title": "Liftonic 1",
+      "id": "p-mts0ck0x-oe4z",
+      "src": "assets/img/portfolio/photo-by-corey-hayes-2_p-mts0ck0x-oe4z.jpg",
+      "title": "Photo by Corey Hayes 2",
       "credit": "",
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
-      "alt": "Liftonic 1"
+      "alt": "Photo by Corey Hayes 2"
+    },
+    {
+      "id": "p-mts0a8va-lahe",
+      "src": "assets/img/portfolio/liftonic-1_p-mts0a8va-lahe.jpg",
+      "title": "",
+      "credit": "just dushawn",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "Liftonic 1",
+      "notes": "Advertisement for Liftonic"
     },
     {
       "id": "p-mtqpgi8s-bdml",
