@@ -116,12 +116,22 @@
   ],
   "portfolio": [
     {
+      "id": "p-mts0knnm-im9v",
+      "src": "assets/img/portfolio/img-7380_p-mts0knnm-im9v.jpg",
+      "title": "IMG 7380",
+      "credit": "",
+      "category": "performer",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "IMG 7380"
+    },
+    {
       "id": "v-mts0h1s3-u5of",
       "video": "https://www.youtube.com/watch?v=AhLVivRgDNU&t=2s",
       "src": "https://img.youtube.com/vi/AhLVivRgDNU/hqdefault.jpg",
       "title": "Optical Illusion",
       "credit": "",
-      "notes": "301 Project\nArt Director: Yoon Jung Kim\nChoreography/Performer: Jihyun Kim\nPerformer: Hannah Jew\nComposer: EJ Jeong\nVideographer: Seo Jong Park\nPhotographer: David Dongmin Park\nManager: Jin Lee\nSpecial thanks for Sean Minam Kim",
+      "notes": "301 Project\nLocation: New York, NY \nArt Director: Yoon Jung Kim\nChoreography/Performer: Jihyun Kim\nPerformer: Hannah Jew\nComposer: EJ Jeong\nVideographer: Seo Jong Park\nPhotographer: David Dongmin Park\nManager: Jin Lee\nSpecial thanks for Sean Minam Kim",
       "category": "performer",
       "orient": "portrait",
       "span": 1,
