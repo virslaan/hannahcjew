@@ -116,10 +116,22 @@
   ],
   "portfolio": [
     {
+      "id": "v-mts0h1s3-u5of",
+      "video": "https://www.youtube.com/watch?v=AhLVivRgDNU&t=2s",
+      "src": "https://img.youtube.com/vi/AhLVivRgDNU/hqdefault.jpg",
+      "title": "Optical Illusion",
+      "credit": "",
+      "notes": "301 Project\nArt Director: Yoon Jung Kim\nChoreography/Performer: Jihyun Kim\nPerformer: Hannah Jew\nComposer: EJ Jeong\nVideographer: Seo Jong Park\nPhotographer: David Dongmin Park\nManager: Jin Lee\nSpecial thanks for Sean Minam Kim",
+      "category": "performer",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "Optical Illusion (video)"
+    },
+    {
       "id": "p-mts0ck0x-oe4z",
       "src": "assets/img/portfolio/photo-by-corey-hayes-2_p-mts0ck0x-oe4z.jpg",
-      "title": "Photo by Corey Hayes 2",
-      "credit": "",
+      "title": "<br>",
+      "credit": "corey hayes",
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
