@@ -158,15 +158,15 @@
       "alt": "Photo by Corey Hayes 2"
     },
     {
-      "id": "p-mts0a8va-lahe",
-      "src": "assets/img/portfolio/liftonic-1_p-mts0a8va-lahe.jpg",
+      "id": "p-mtqpappj-q65t",
+      "src": "assets/img/portfolio/png-image_p-mtqpappj-q65t.jpg",
       "title": "",
-      "credit": "just dushawn",
+      "credit": "jeremy varner/varner creative",
       "category": "photoshoots",
       "orient": "portrait",
       "span": 1,
-      "alt": "Liftonic 1",
-      "notes": "Advertisement for Liftonic"
+      "alt": "PNG image",
+      "notes": ""
     },
     {
       "id": "p-mtqpgi8s-bdml",
@@ -177,17 +177,6 @@
       "orient": "portrait",
       "span": 1,
       "alt": "IMG 2189"
-    },
-    {
-      "id": "p-mtqpappj-q65t",
-      "src": "assets/img/portfolio/png-image_p-mtqpappj-q65t.jpg",
-      "title": "",
-      "credit": "jeremy varner/varner creative",
-      "category": "photoshoots",
-      "orient": "portrait",
-      "span": 1,
-      "alt": "PNG image",
-      "notes": ""
     },
     {
       "id": "p-mtqpcbp5-3zw6",
@@ -210,15 +199,6 @@
       "alt": "Vandy Photography Fabric"
     },
     {
-      "id": "p-msv43304-f0dq",
-      "src": "assets/img/portfolio/58362884-b171-46d3-a115-c1d3800065a5_2026-08-15_photo.jpg",
-      "title": "AES Yuletide Celebration",
-      "credit": "Shotwell photography",
-      "category": "performer",
-      "alt": "58362884 B171 46D3 A115 C1D3800065A5",
-      "videos": []
-    },
-    {
       "id": "p-mtqpd1g0-xf0g",
       "src": "assets/img/portfolio/photo_p-mtqpd1g0-xf0g.jpg",
       "title": "",
@@ -227,6 +207,15 @@
       "orient": "portrait",
       "span": 1,
       "alt": "IMG 2576"
+    },
+    {
+      "id": "p-msv43304-f0dq",
+      "src": "assets/img/portfolio/58362884-b171-46d3-a115-c1d3800065a5_2026-08-15_photo.jpg",
+      "title": "AES Yuletide Celebration",
+      "credit": "Shotwell photography",
+      "category": "performer",
+      "alt": "58362884 B171 46D3 A115 C1D3800065A5",
+      "videos": []
     },
     {
       "id": "p-mtqowq47-vh7y",
@@ -239,15 +228,6 @@
       "alt": "HJew FanDance"
     },
     {
-      "id": "p-msv36h3i-aqt1",
-      "src": "assets/img/portfolio/dsc04490_2026-08-15_photo.jpg",
-      "title": "AES Yuletide Celebration",
-      "credit": "Shotwell Photography",
-      "category": "performer",
-      "alt": "DSC04490",
-      "videos": []
-    },
-    {
       "id": "p-mtqivgd6-odw9",
       "src": "assets/img/portfolio/png-image_p-mtqivgd6-odw9.jpg",
       "title": "",
@@ -258,6 +238,15 @@
       "alt": "PNG image"
     },
     {
+      "id": "p-msv36h3i-aqt1",
+      "src": "assets/img/portfolio/dsc04490_2026-08-15_photo.jpg",
+      "title": "AES Yuletide Celebration",
+      "credit": "Shotwell Photography",
+      "category": "performer",
+      "alt": "DSC04490",
+      "videos": []
+    },
+    {
       "id": "p-mtjaqtko-gv5t",
       "src": "assets/img/portfolio/photo-by-luther-cherry_p-mtjaqtko-gv5t.jpg",
       "title": "<br>",
@@ -266,6 +255,16 @@
       "orient": "portrait",
       "span": 1,
       "alt": "Photo by Luther Cherry"
+    },
+    {
+      "id": "p-mti2g92p-wfc5",
+      "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
+      "title": "",
+      "credit": "ted forbes",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "1019460"
     },
     {
       "id": "p-mti3ibqa-7dwv",
@@ -297,14 +296,13 @@
       "videos": []
     },
     {
-      "id": "p-mti2g92p-wfc5",
-      "src": "assets/img/portfolio/1019460_p-mti2g92p-wfc5.jpg",
+      "id": "blue-silk",
+      "src": "assets/img/blue-dress-flow.jpg",
       "title": "",
-      "credit": "ted forbes",
+      "credit": "Linda I'anson",
       "category": "photoshoots",
-      "orient": "portrait",
-      "span": 1,
-      "alt": "1019460"
+      "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
+      "videos": []
     },
     {
       "id": "v-mt1qlt92-ai7k",
@@ -388,13 +386,14 @@
       "alt": "IMG 4720"
     },
     {
-      "id": "blue-silk",
-      "src": "assets/img/blue-dress-flow.jpg",
+      "id": "green-leotard",
+      "src": "assets/img/green-leotard.jpg",
       "title": "",
-      "credit": "Linda I'anson",
+      "credit": "ted forbes",
       "category": "photoshoots",
-      "alt": "Hannah mid-movement in a pale blue dress, fabric sweeping around her",
-      "videos": []
+      "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
+      "videos": [],
+      "notes": ""
     },
     {
       "id": "pointe-shoes",
@@ -407,16 +406,6 @@
       "notes": "<br>"
     },
     {
-      "id": "green-leotard",
-      "src": "assets/img/green-leotard.jpg",
-      "title": "",
-      "credit": "ted forbes",
-      "category": "photoshoots",
-      "alt": "Hannah in a green leotard with arms curved in a sculptural shape",
-      "videos": [],
-      "notes": ""
-    },
-    {
       "id": "meatpacking",
       "src": "assets/img/street-mirror.jpg",
       "title": "",
@@ -425,6 +414,16 @@
       "alt": "Hannah in sunglasses reflected in a mirrored wall on a New York street",
       "videos": [],
       "orient": "landscape"
+    },
+    {
+      "id": "mid-turn",
+      "src": "assets/img/portfolio/rehearsal-mid-turn_2026-08-15_photo.jpg",
+      "title": "",
+      "credit": "corey hayes",
+      "category": "photoshoots",
+      "alt": "Hannah mid-turn in rehearsal with one leg raised",
+      "videos": [],
+      "notes": "<br>"
     },
     {
       "id": "studio-duet",
@@ -436,14 +435,15 @@
       "videos": []
     },
     {
-      "id": "mid-turn",
-      "src": "assets/img/portfolio/rehearsal-mid-turn_2026-08-15_photo.jpg",
+      "id": "p-mts0a8va-lahe",
+      "src": "assets/img/portfolio/liftonic-1_p-mts0a8va-lahe.jpg",
       "title": "",
-      "credit": "corey hayes",
+      "credit": "just dushawn",
       "category": "photoshoots",
-      "alt": "Hannah mid-turn in rehearsal with one leg raised",
-      "videos": [],
-      "notes": "<br>"
+      "orient": "portrait",
+      "span": 1,
+      "alt": "Liftonic 1",
+      "notes": "Advertisement for Liftonic"
     }
   ],
   "upcoming": [
