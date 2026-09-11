@@ -116,6 +116,16 @@
   ],
   "portfolio": [
     {
+      "id": "p-mtxboxdk-qtx2",
+      "src": "assets/img/portfolio/131e8a18-a959-4bd9-a551-92df0f312e69_p-mtxboxdk-qtx2.jpg",
+      "title": "131E8A18 A959 4BD9 A551 92DF0F312E69",
+      "credit": "",
+      "category": "photoshoots",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "131E8A18 A959 4BD9 A551 92DF0F312E69"
+    },
+    {
       "id": "p-mttkqtf5-35jq",
       "src": "assets/img/portfolio/png-image_p-mttkqtf5-35jq.jpg",
       "title": "",
@@ -523,16 +533,7 @@
       "label": "Contact"
     }
   ],
-  "imageTune": {
-    "home.heroImage": {
-      "x": 50,
-      "y": 30,
-      "zoom": 100,
-      "bright": 100,
-      "contrast": 100,
-      "parallax": 22
-    }
-  },
+  "imageTune": {},
   "pages": {
     "portfolio": {
       "intro": "Please use tabs to find samples of my work",
