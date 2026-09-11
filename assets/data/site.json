@@ -523,7 +523,16 @@
       "label": "Contact"
     }
   ],
-  "imageTune": {},
+  "imageTune": {
+    "home.heroImage": {
+      "x": 50,
+      "y": 30,
+      "zoom": 100,
+      "bright": 100,
+      "contrast": 100,
+      "parallax": 22
+    }
+  },
   "pages": {
     "portfolio": {
       "intro": "Please use tabs to find samples of my work",
