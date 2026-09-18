@@ -466,7 +466,7 @@
       "year": "2026",
       "onsale": "tickets on sale now",
       "tickets": "https://beefandboards.com",
-      "poster": "assets/img/cats-poster.jpg",
+      "poster": "assets/img/shows/cats_cats-2026.jpg",
       "posterAlt": "CATS poster: glowing golden cat eyes with dancer silhouettes leaping inside the pupils",
       "featured": true
     },
@@ -562,6 +562,11 @@
       "heading": "Hannah Jew",
       "ctaHeadshots": "Headshots &amp; resume",
       "ctaPortfolio": "See the portfolio"
+    },
+    "upcoming": {
+      "kicker": "Upcoming",
+      "heading": "On stage <em>next</em>",
+      "intro": "Where to see Hannah live. Dates and ticket links are added as they're announced."
     }
   }
 }
