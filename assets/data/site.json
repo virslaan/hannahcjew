@@ -116,14 +116,25 @@
   ],
   "portfolio": [
     {
-      "id": "p-mv0lg3xj-z22s",
-      "src": "assets/img/portfolio/edited-45_p-mv0lg3xj-z22s.jpg",
-      "title": "edited 45",
+      "id": "p-mv0li7i1-x3z4",
+      "src": "assets/img/portfolio/edited-48_p-mv0li7i1-x3z4.jpg",
+      "title": "edited 48",
       "credit": "",
       "category": "performer",
       "orient": "portrait",
       "span": 1,
-      "alt": "edited 45"
+      "alt": "edited 48"
+    },
+    {
+      "id": "p-mv0lg3xj-z22s",
+      "src": "assets/img/portfolio/edited-45_p-mv0lg3xj-z22s.jpg",
+      "title": "Nightmare Screen",
+      "credit": "Photo by Corey haynes",
+      "category": "performer",
+      "orient": "landscape",
+      "span": 1,
+      "alt": "edited 45",
+      "notes": ""
     },
     {
       "id": "p-mtxboxdk-qtx2",
