@@ -1,9 +1,19 @@
 [
   {
+    "id": "p-mv0lktxl-3h5y",
+    "src": "assets/img/portfolio/png-image_p-mv0lktxl-3h5y.jpg",
+    "title": "",
+    "credit": "jeremy varner/varner creative",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "PNG image"
+  },
+  {
     "id": "p-mv0lk3ov-3g8v",
     "src": "assets/img/portfolio/png-image_p-mv0lk3ov-3g8v.jpg",
-    "title": "PNG image",
-    "credit": "",
+    "title": "",
+    "credit": "jeremy varner/varner creative",
     "category": "photoshoots",
     "orient": "portrait",
     "span": 1,
