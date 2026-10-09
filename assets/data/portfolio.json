@@ -1,9 +1,19 @@
 [
   {
+    "id": "p-mv0lk3ov-3g8v",
+    "src": "assets/img/portfolio/png-image_p-mv0lk3ov-3g8v.jpg",
+    "title": "PNG image",
+    "credit": "",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "PNG image"
+  },
+  {
     "id": "p-mv0li7i1-x3z4",
     "src": "assets/img/portfolio/edited-48_p-mv0li7i1-x3z4.jpg",
-    "title": "edited 48",
-    "credit": "",
+    "title": "Nightmare Screen",
+    "credit": "photo by corey haynes",
     "category": "performer",
     "orient": "portrait",
     "span": 1,
