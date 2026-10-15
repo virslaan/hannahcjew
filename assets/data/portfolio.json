@@ -1,11 +1,21 @@
 [
   {
-    "id": "p-mv9vejsy-1pik",
-    "src": "assets/img/portfolio/img-3329_p-mv9vejsy-1pik.jpg",
-    "title": "IMG 3329",
+    "id": "p-mv9vfrh5-0qm1",
+    "src": "assets/img/portfolio/img-3318_p-mv9vfrh5-0qm1.jpg",
+    "title": "CATS",
     "credit": "",
     "category": "performer",
     "orient": "portrait",
+    "span": 1,
+    "alt": "IMG 3318"
+  },
+  {
+    "id": "p-mv9vejsy-1pik",
+    "src": "assets/img/portfolio/img-3329_p-mv9vejsy-1pik.jpg",
+    "title": "CATS",
+    "credit": "Photo by indy ghostlight",
+    "category": "performer",
+    "orient": "landscape",
     "span": 1,
     "alt": "IMG 3329"
   },
