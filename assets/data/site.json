@@ -116,10 +116,20 @@
   ],
   "portfolio": [
     {
+      "id": "p-mv9vejsy-1pik",
+      "src": "assets/img/portfolio/img-3329_p-mv9vejsy-1pik.jpg",
+      "title": "IMG 3329",
+      "credit": "",
+      "category": "performer",
+      "orient": "portrait",
+      "span": 1,
+      "alt": "IMG 3329"
+    },
+    {
       "id": "p-mv9v7vu8-wnoi",
       "src": "assets/img/portfolio/img-3322_p-mv9v7vu8-wnoi.jpg",
-      "title": "IMG 3322",
-      "credit": "",
+      "title": "CATS",
+      "credit": "photo by indy Ghostlight",
       "category": "performer",
       "orient": "portrait",
       "span": 1,
