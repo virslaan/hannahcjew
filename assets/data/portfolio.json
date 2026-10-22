@@ -1,9 +1,19 @@
 [
   {
+    "id": "p-mvjrrpw9-fhsd",
+    "src": "assets/img/portfolio/hannah-jew-2026-198_p-mvjrrpw9-fhsd.jpg",
+    "title": "Hannah Jew 2026 198",
+    "credit": "",
+    "category": "photoshoots",
+    "orient": "portrait",
+    "span": 1,
+    "alt": "Hannah Jew 2026 198"
+  },
+  {
     "id": "p-mv9vfrh5-0qm1",
     "src": "assets/img/portfolio/img-3318_p-mv9vfrh5-0qm1.jpg",
     "title": "CATS",
-    "credit": "",
+    "credit": "PHOTO BY INDY GHOSTLIGHT",
     "category": "performer",
     "orient": "portrait",
     "span": 1,
