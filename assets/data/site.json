@@ -8,8 +8,8 @@
     "introImageAlt": "Hannah Jew seated in a studio, one foot en pointe, notes in hand",
     "nextShow": {
       "kicker": "currently",
-      "title": "Featured Dancer",
-      "role": "AES Indiana Yuletide Celebration w/ The Indianapolis Symphony Orchestra",
+      "title": "Dancer",
+      "role": "AES Indiana Yuletide Celebration w/Indianapolis Symphony Orchestra",
       "venue": "Indianapolis, IN",
       "link": "upcoming.html",
       "linkLabel": "All upcoming"
@@ -115,16 +115,6 @@
     }
   ],
   "portfolio": [
-    {
-      "id": "p-mw5an0hw-6y51",
-      "src": "assets/img/portfolio/hannah-jew-2026-311_p-mw5an0hw-6y51.jpg",
-      "title": "<br>",
-      "credit": "corey hayes photography",
-      "category": "photoshoots",
-      "orient": "portrait",
-      "span": 1,
-      "alt": "Hannah Jew 2026 311"
-    },
     {
       "id": "p-mvjrrpw9-fhsd",
       "src": "assets/img/portfolio/hannah-jew-2026-198_p-mvjrrpw9-fhsd.jpg",
